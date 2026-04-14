@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astroport.ONE — Swarm of Equals</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:#050a12;color:#e0f0ff;font-family:'Segoe UI',sans-serif;overflow-x:hidden;}
+body.sp{background:#0d1a0d;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;height:52px;
+  background:rgba(5,10,18,0.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(0,245,255,0.12);transition:background .5s;
+}
+body.sp nav{background:rgba(13,26,13,0.85);border-color:rgba(127,214,127,0.12);}
+.logo{font-family:'Courier New',monospace;font-size:1rem;color:#00f5ff;letter-spacing:3px;font-weight:700;}
+.logo span{color:#00ff88;}
+body.sp .logo{color:#7fd67f;}
+.nav-right{display:flex;align-items:center;gap:1.2rem;}
+nav a{color:rgba(255,255,255,0.5);text-decoration:none;font-size:.78rem;letter-spacing:1px;transition:color .2s;}
+nav a:hover{color:#00f5ff;}
+body.sp nav a:hover{color:#7fd67f;}
+
+/* ── TOGGLE ── */
+.tog-wrap{display:flex;align-items:center;gap:7px;cursor:pointer;}
+.tl{font-size:.65rem;letter-spacing:1px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.4);}
+.tl.active-cyber{color:#00f5ff;}
+.tl.active-solar{color:#7fd67f;}
+.tog-track{width:42px;height:21px;border-radius:11px;background:rgba(0,245,255,0.1);border:1px solid #00f5ff;position:relative;transition:all .4s;}
+.tog-thumb{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#00f5ff;transition:all .4s;}
+body.sp .tog-track{border-color:#7fd67f;background:rgba(127,214,127,0.1);}
+body.sp .tog-thumb{left:23px;background:#7fd67f;}
+
+/* ── HERO ── */
+#hero{
+  position:relative;width:100%;height:100vh;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+#canvas3d{position:absolute;inset:0;width:100%;height:100%;}
+.hero-ui{
+  position:relative;z-index:10;
+  display:flex;width:100%;height:100%;
+  pointer-events:none;
+}
+/* left text column */
+.hero-text{
+  width:340px;flex-shrink:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 0 0 3rem;
+  background:linear-gradient(90deg,rgba(5,10,18,0.82) 70%,transparent);
+}
+body.sp .hero-text{background:linear-gradient(90deg,rgba(13,26,13,0.82) 70%,transparent);}
+.hero-tag{font-family:'Courier New',monospace;font-size:.65rem;color:#00ff88;letter-spacing:3px;margin-bottom:.8rem;}
+body.sp .hero-tag{color:#e8d44d;}
+h1{font-family:'Courier New',monospace;font-size:2.8rem;color:#00f5ff;line-height:1.05;letter-spacing:3px;margin-bottom:1rem;}
+body.sp h1{color:#7fd67f;}
+.hero-sub{font-size:.88rem;color:rgba(255,255,255,0.6);line-height:1.75;margin-bottom:1.5rem;max-width:280px;}
+.hero-btns{display:flex;flex-direction:column;gap:.6rem;pointer-events:all;}
+.btn-p{
+  display:inline-block;padding:.55rem 1.2rem;
+  border:1px solid #00f5ff;background:rgba(0,245,255,0.08);
+  color:#00f5ff;font-family:'Courier New',monospace;font-size:.75rem;letter-spacing:2px;
+  text-decoration:none;border-radius:2px;transition:all .25s;width:fit-content;
+}
+.btn-p:hover{background:#00f5ff;color:#050a12;}
+body.sp .btn-p{border-color:#7fd67f;background:rgba(127,214,127,0.08);color:#7fd67f;}
+body.sp .btn-p:hover{background:#7fd67f;color:#0d1a0d;}
+.btn-s{
+  display:inline-block;padding:.55rem 1.2rem;
+  border:1px solid rgba(255,255,255,0.2);background:transparent;
+  color:rgba(255,255,255,0.45);font-family:'Courier New',monospace;font-size:.75rem;letter-spacing:2px;
+  text-decoration:none;border-radius:2px;transition:all .25s;width:fit-content;
+}
+.btn-s:hover{border-color:rgba(255,255,255,0.5);color:rgba(255,255,255,0.8);}
+/* right hints */
+.hero-right{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;padding:1.5rem;}
+.hint{font-family:'Courier New',monospace;font-size:.62rem;color:rgba(255,255,255,0.25);letter-spacing:2px;text-align:right;}
+
+/* ── PANEL ── */
+#panel{
+  position:fixed;right:0;top:52px;bottom:0;width:280px;
+  background:rgba(5,10,18,0.94);border-left:1px solid rgba(0,245,255,0.15);
+  backdrop-filter:blur(16px);transform:translateX(100%);transition:transform .3s ease;
+  overflow-y:auto;padding:1.2rem 1.2rem 2rem;z-index:400;
+  font-size:.8rem;line-height:1.7;color:rgba(255,255,255,0.65);
+}
+body.sp #panel{background:rgba(13,26,13,0.94);border-color:rgba(127,214,127,0.15);}
+#panel.open{transform:translateX(0);}
+#panel h3{font-family:'Courier New',monospace;color:#00f5ff;font-size:.85rem;letter-spacing:2px;margin-bottom:.2rem;}
+body.sp #panel h3{color:#7fd67f;}
+.p-sub{color:#5588aa;font-size:.65rem;font-family:'Courier New',monospace;word-break:break-all;margin-bottom:.8rem;}
+.p-sec{font-size:.62rem;letter-spacing:2px;color:#00ff88;font-family:'Courier New',monospace;margin:.7rem 0 .25rem;text-transform:uppercase;}
+body.sp .p-sec{color:#e8d44d;}
+.h-row{display:flex;align-items:center;gap:.5rem;}
+.hdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.svc-tag{display:inline-block;margin:.12rem .12rem 0 0;padding:.1rem .45rem;border-radius:2px;font-size:.62rem;font-family:'Courier New',monospace;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);}
+#pcls{position:absolute;top:.8rem;right:.8rem;background:none;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);width:22px;height:22px;border-radius:2px;cursor:pointer;font-size:.75rem;line-height:20px;text-align:center;}
+#pcls:hover{color:#fff;border-color:#fff;}
+
+/* ── TOOLTIP ── */
+#tt{
+  position:fixed;pointer-events:none;z-index:300;
+  background:rgba(5,10,18,0.92);border:1px solid rgba(0,245,255,0.35);
+  padding:.6rem .8rem;border-radius:3px;
+  font-family:'Courier New',monospace;font-size:.7rem;line-height:1.75;
+  color:#e0f0ff;min-width:190px;
+  opacity:0;transition:opacity .15s;backdrop-filter:blur(8px);
+}
+.tt-n{color:#00f5ff;font-size:.75rem;font-weight:700;margin-bottom:.1rem;}
+body.sp .tt-n{color:#7fd67f;}
+.tt-r{display:flex;align-items:center;gap:.35rem;}
+.tt-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* ── CONTENT SECTIONS ── */
+.sections{position:relative;z-index:10;background:#050a12;}
+body.sp .sections{background:#0d1a0d;}
+.sec{padding:4rem 2rem;max-width:1050px;margin:0 auto;}
+.sec-label{font-family:'Courier New',monospace;font-size:.62rem;color:#00ff88;letter-spacing:4px;margin-bottom:.4rem;}
+body.sp .sec-label{color:#e8d44d;}
+h2{font-family:'Courier New',monospace;font-size:clamp(1.4rem,3.5vw,2.2rem);color:#00f5ff;margin-bottom:.8rem;letter-spacing:2px;}
+body.sp h2{color:#7fd67f;}
+.sep{width:50px;height:2px;background:#00f5ff;margin-bottom:1.5rem;transition:background .5s;}
+body.sp .sep{background:#7fd67f;}
+p{color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:.9rem;font-size:.92rem;}
+strong{color:rgba(255,255,255,0.9);}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:1.5rem;}
+.card{
+  padding:1.3rem;border-radius:4px;
+  background:rgba(0,245,255,0.03);border:1px solid rgba(0,245,255,0.1);
+  transition:border-color .3s;
+}
+.card:hover{border-color:rgba(0,245,255,0.3);}
+body.sp .card{background:rgba(127,214,127,0.03);border-color:rgba(127,214,127,0.1);}
+body.sp .card:hover{border-color:rgba(127,214,127,0.3);}
+.card-icon{font-size:1.4rem;margin-bottom:.6rem;}
+.card h3{font-family:'Courier New',monospace;font-size:.8rem;color:#00f5ff;letter-spacing:2px;margin-bottom:.4rem;}
+body.sp .card h3{color:#7fd67f;}
+.card p{font-size:.82rem;margin:0;}
+
+/* DRAGONS GRID */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin-top:1.2rem;}
+.dcard{padding:1rem;border:1px solid rgba(255,255,255,0.08);border-radius:4px;text-align:center;background:rgba(255,255,255,0.02);transition:all .3s;}
+.dcard:hover{border-color:rgba(123,47,255,0.4);transform:translateY(-2px);}
+body.sp .dcard:hover{border-color:rgba(244,160,32,0.4);}
+.dcard .di{font-size:1.6rem;display:block;margin-bottom:.4rem;}
+.dcard h4{font-family:'Courier New',monospace;font-size:.72rem;color:#00f5ff;letter-spacing:1px;}
+body.sp .dcard h4{color:#7fd67f;}
+.dcard p{font-size:.72rem;margin:.2rem 0 0;}
+
+/* ZEN */
+.zen-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem;}
+@media(max-width:560px){.zen-grid{grid-template-columns:1fr;}}
+.zen-col{padding:1.3rem;border-radius:4px;border:1px solid rgba(255,255,255,0.08);}
+.zen-col.bad{border-color:rgba(255,68,68,0.2);background:rgba(255,68,68,0.03);}
+.zen-col.good{border-color:rgba(0,255,136,0.2);background:rgba(0,255,136,0.03);}
+.zen-col h3{font-family:'Courier New',monospace;font-size:.8rem;letter-spacing:2px;margin-bottom:.8rem;}
+.zen-col.bad h3{color:#ff4444;}
+.zen-col.good h3{color:#00ff88;}
+.zitem{display:flex;align-items:flex-start;gap:.45rem;margin-bottom:.4rem;font-size:.82rem;color:rgba(255,255,255,0.55);}
+.zdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.zd-bad{background:#ff4444;}
+.zd-good{background:#00ff88;}
+
+/* COMMONS */
+.commons{border:1px solid rgba(0,255,136,0.2);background:rgba(0,255,136,0.03);padding:1.8rem;border-radius:4px;margin-top:1.5rem;text-align:center;}
+.commons h3{font-family:'Courier New',monospace;color:#00ff88;font-size:.85rem;letter-spacing:2px;margin-bottom:.8rem;}
+body.sp .commons h3{color:#e8d44d;}
+.domains{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.8rem;}
+.dtag{padding:.2rem .7rem;border:1px solid rgba(0,255,136,0.25);font-family:'Courier New',monospace;font-size:.65rem;color:#00ff88;border-radius:2px;background:rgba(0,255,136,0.04);}
+body.sp .dtag{border-color:rgba(232,212,77,0.25);color:#e8d44d;background:rgba(232,212,77,0.04);}
+
+/* STACK */
+.stack{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem;}
+.stag{padding:.25rem .7rem;border:1px solid rgba(0,245,255,0.15);font-family:'Courier New',monospace;font-size:.7rem;color:#00f5ff;border-radius:2px;background:rgba(0,245,255,0.04);transition:all .2s;cursor:default;}
+.stag:hover{background:#00f5ff;color:#050a12;}
+body.sp .stag{border-color:rgba(127,214,127,0.15);color:#7fd67f;background:rgba(127,214,127,0.04);}
+body.sp .stag:hover{background:#7fd67f;color:#0d1a0d;}
+
+/* CTA */
+.cta{text-align:center;padding:4rem 2rem;border-top:1px solid rgba(0,245,255,0.08);border-bottom:1px solid rgba(0,245,255,0.08);background:rgba(0,245,255,0.02);}
+body.sp .cta{border-color:rgba(127,214,127,0.08);background:rgba(127,214,127,0.02);}
+.cta h2{font-size:1.8rem;margin-bottom:.8rem;}
+.cta p{max-width:560px;margin:0 auto 1.5rem;}
+.cta-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
+
+/* DIVIDER */
+hr{border:none;border-top:1px solid rgba(255,255,255,0.06);}
+
+/* FOOTER */
+footer{text-align:center;padding:1.5rem;font-family:'Courier New',monospace;font-size:.7rem;color:rgba(255,255,255,0.25);}
+footer a{color:#00f5ff;text-decoration:none;}
+body.sp footer a{color:#7fd67f;}
+
+@media(max-width:600px){
+  .hero-text{width:100%;padding:0 1.2rem;background:linear-gradient(180deg,transparent,rgba(5,10,18,0.9) 30%);}
+  .hero-ui{align-items:flex-end;padding-bottom:2rem;}
+  .hero-right{display:none;}
+  h1{font-size:2rem;}
+}
+
+/* ── MEDIA VIEWER ── */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1rem;margin-top:1rem;}
+.mcard{
+  padding:1.2rem;border-radius:4px;
+  background:rgba(0,245,255,0.03);border:1px solid rgba(0,245,255,0.1);
+  cursor:pointer;transition:all .25s;position:relative;
+}
+.mcard:hover{border-color:rgba(0,245,255,0.4);background:rgba(0,245,255,0.07);transform:translateY(-2px);}
+body.sp .mcard{background:rgba(127,214,127,0.03);border-color:rgba(127,214,127,0.1);}
+body.sp .mcard:hover{border-color:rgba(127,214,127,0.4);background:rgba(127,214,127,0.07);}
+.mcard-ico{font-size:1.6rem;margin-bottom:.5rem;}
+.mcard h4{font-family:'Courier New',monospace;font-size:.76rem;color:#00f5ff;letter-spacing:2px;margin-bottom:.25rem;}
+body.sp .mcard h4{color:#7fd67f;}
+.mcard p{font-size:.74rem;color:rgba(255,255,255,0.45);margin:0;word-break:break-all;}
+.mbadge{
+  position:absolute;top:.6rem;right:.6rem;
+  font-family:'Courier New',monospace;font-size:.58rem;letter-spacing:1px;padding:.12rem .4rem;border-radius:2px;
+}
+.mbadge-pdf{background:rgba(255,100,68,0.12);color:#ff6644;border:1px solid rgba(255,100,68,0.3);}
+.mbadge-video{background:rgba(0,255,136,0.1);color:#00ff88;border:1px solid rgba(0,255,136,0.25);}
+.mbadge-stream{background:rgba(123,47,255,0.12);color:#aa77ff;border:1px solid rgba(123,47,255,0.3);}
+.mcard-del{
+  position:absolute;bottom:.5rem;right:.6rem;
+  background:none;border:none;color:rgba(255,255,255,0.15);font-size:.72rem;cursor:pointer;padding:0;
+  transition:color .2s;
+}
+.mcard-del:hover{color:#ff4444;}
+.media-empty{color:rgba(255,255,255,0.25);font-size:.8rem;font-family:'Courier New',monospace;padding:.8rem 0;}
+/* MODAL */
+#mmModal{
+  display:none;position:fixed;inset:0;z-index:900;
+  background:rgba(2,5,10,0.93);backdrop-filter:blur(12px);
+  align-items:center;justify-content:center;padding:1rem;
+}
+#mmModal.open{display:flex;}
+.mm-box{
+  width:min(94vw,1000px);height:min(90vh,700px);
+  background:#050a12;border:1px solid rgba(0,245,255,0.2);
+  border-radius:6px;display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 0 60px rgba(0,245,255,0.06);
+}
+body.sp .mm-box{background:#0d1a0d;border-color:rgba(127,214,127,0.2);box-shadow:0 0 60px rgba(127,214,127,0.06);}
+.mm-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem 1rem;border-bottom:1px solid rgba(0,245,255,0.1);
+  background:rgba(0,245,255,0.03);flex-shrink:0;gap:.8rem;
+}
+body.sp .mm-head{border-color:rgba(127,214,127,0.1);background:rgba(127,214,127,0.03);}
+#mm-ttl{font-family:'Courier New',monospace;font-size:.76rem;color:#00f5ff;letter-spacing:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+body.sp #mm-ttl{color:#7fd67f;}
+.mm-cls{background:none;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.45);width:24px;height:24px;flex-shrink:0;border-radius:2px;cursor:pointer;font-size:.72rem;line-height:22px;text-align:center;transition:all .2s;}
+.mm-cls:hover{color:#fff;border-color:#fff;}
+#mm-body{flex:1;position:relative;background:#000;}
+#mm-body iframe,#mm-body video{position:absolute;inset:0;width:100%;height:100%;border:none;display:block;}
+</style>
+</head>
+<body id="body">
+
+<!-- NAV -->
+<nav>
+  <div class="logo">ASTRO<span>PORT</span>.ONE</div>
+  <div class="nav-right">
+    <a href="#network">RÉSEAU</a>
+    <a href="#dragons">DRAGONS</a>
+    <a href="#zen">ẐEN</a>
+    <a href="#media">MÉDIAS</a>
+    <a href="https://github.com/papiche/Astroport.ONE" target="_blank">GITHUB</a>
+    <div class="tog-wrap" onclick="toggleTheme()">
+      <span class="tl active-cyber" id="tlc">CYBER</span>
+      <div class="tog-track"><div class="tog-thumb" id="tthumb"></div></div>
+      <span class="tl" id="tls">SOLAR</span>
+    </div>
+  </div>
+</nav>
+
+<!-- TOOLTIP -->
+<div id="tt">
+  <div class="tt-n" id="tt-name"></div>
+  <div class="tt-r"><span class="tt-dot" id="tt-dot"></span><span id="tt-hl"></span></div>
+  <div style="margin-top:.2rem;color:rgba(255,255,255,0.4);font-size:.65rem" id="tt-svc"></div>
+</div>
+
+<!-- SIDE PANEL -->
+<div id="panel">
+  <button id="pcls" onclick="closePanel()">✕</button>
+  <div style="font-size:.6rem;font-family:'Courier New',monospace;color:#5588aa;letter-spacing:2px;margin-bottom:.3rem" id="p-type"></div>
+  <h3 id="p-name"></h3>
+  <div class="p-sub" id="p-peer"></div>
+  <div class="p-sec">UPlanet</div><div id="p-upl"></div>
+  <div class="p-sec">Santé PAF</div>
+  <div class="h-row"><span class="hdot" id="p-dot"></span><span id="p-hl"></span></div>
+  <div class="p-sec">Dragons actifs</div><div id="p-svc"></div>
+  <div class="p-sec">Constellation</div><div id="p-const" style="color:rgba(255,255,255,0.5)"></div>
+  <div class="p-sec">Connexions</div><div id="p-links" style="color:rgba(255,255,255,0.4);font-size:.72rem"></div>
+</div>
+
+<!-- HERO (canvas) -->
+<section id="hero">
+  <canvas id="canvas3d"></canvas>
+  <div class="hero-ui">
+    <div class="hero-text">
+      <div class="hero-tag">P2P-NATIVE · EDGE COMPUTING · SWARM OF EQUALS</div>
+      <h1>ASTRO<br>PORT<br>.ONE</h1>
+      <p class="hero-sub">Infrastructure décentralisée, souveraine et organique. Des nœuds égaux qui s'organisent sans chef d'orchestre.</p>
+      <div class="hero-btns">
+        <a href="#network" class="btn-p">EXPLORER LE RÉSEAU</a>
+        <a href="https://github.com/papiche/Astroport.ONE" target="_blank" class="btn-s">GITHUB →</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hint">DRAG · ZOOM · CLICK NODE</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT SECTIONS -->
+<div class="sections">
+
+<hr>
+<section class="sec" id="network">
+  <div class="sec-label">// ARCHITECTURE</div>
+  <h2>SWARM OF EQUALS</h2>
+  <div class="sep"></div>
+  <p>Contrairement à Kubernetes et ses architectures hiérarchiques, Astroport.ONE est un <strong>Essaim d'Égaux</strong>. Chaque station est un pair souverain qui réagit localement aux messages du réseau NOSTR. Pas de maître, pas d'esclave — seulement de la chorégraphie distribuée.</p>
+  <p>Le réseau s'organise en <strong>Constellations</strong> : des groupes de stations partageant une clé secrète commune. Les Hubs (PC puissants) et les Satellites (Raspberry Pi 5) coexistent comme égaux fonctionnels dans ce tissu vivant bâti sur IPFS et libp2p.</p>
+  <div class="cards">
+    <div class="card"><div class="card-icon">◎</div><h3>HUB STATION</h3><p>Serveur puissant, point d'ancrage. Héberge services lourds : Ollama IA, Nextcloud, SSH, passerelle IPFS publique.</p></div>
+    <div class="card"><div class="card-icon">◉</div><h3>SATELLITE</h3><p>Raspberry Pi 5, low-power. Mobile, résilient, souverain. Participe au Gossip NOSTR et aux tunnels /x/.</p></div>
+    <div class="card"><div class="card-icon">⬡</div><h3>CONSTELLATION</h3><p>Groupe de stations partageant une clé UPlanet. Coordonnées par NOSTR Gossip, reliées par tunnels IPFS libp2p.</p></div>
+    <div class="card"><div class="card-icon">∿</div><h3>TUNNELS /X/</h3><p>Tunnels IPFS chiffrés entre stations. Flux temps-réel, événements NOSTR, échanges ẐEN.</p></div>
+  </div>
+</section>
+
+<hr>
+<section class="sec" id="dragons">
+  <div class="sec-label">// SERVICES PUBLIÉS</div>
+  <h2>DRAGONS & SERVICES</h2>
+  <div class="sep"></div>
+  <p>Les <strong>Dragons</strong> sont les services publiés par chaque station, annoncés via NOSTR et accessibles aux pairs de la Constellation. Ils orbitent autour des nœuds dans la visualisation — chaque couleur représente un service.</p>
+  <div class="dgrid">
+    <div class="dcard"><span class="di">🤖</span><h4>OLLAMA</h4><p>IA locale souveraine. LLM on-premise.</p></div>
+    <div class="dcard"><span class="di">☁️</span><h4>NEXTCLOUD</h4><p>Stockage et collaboration décentralisés.</p></div>
+    <div class="dcard"><span class="di">🔐</span><h4>SSH TUNNEL</h4><p>Accès sécurisé pair-à-pair sans VPN centralisé.</p></div>
+    <div class="dcard"><span class="di">🌐</span><h4>IPFS GATEWAY</h4><p>Passerelle vers le web permanent.</p></div>
+    <div class="dcard"><span class="di">📡</span><h4>NOSTR RELAY</h4><p>Relais d'événements Gossip Protocol.</p></div>
+    <div class="dcard"><span class="di">🗺️</span><h4>UMAP/UPLANET</h4><p>Cartographie des Constellations.</p></div>
+  </div>
+</section>
+
+<hr>
+<section class="sec" id="zen">
+  <div class="sec-label">// ÉCONOMIE</div>
+  <h2>L'ÉCONOMIE ẐEN</h2>
+  <div class="sep"></div>
+  <p>Le <strong>ẐEN</strong> est l'unité de valeur interne du réseau. Contrairement à l'Euro — sphère fermée et hiérarchique — le ẐEN est un <strong>Plan Coopératif en Expansion</strong>, lié aux services réels rendus entre pairs et à la Preuve d'Activité Fraternelle (PAF).</p>
+  <div class="zen-grid">
+    <div class="zen-col bad">
+      <h3>⊖ SYSTÈME EURO</h3>
+      <div class="zitem"><span class="zdot zd-bad"></span>Sphère fermée, croissance finie</div>
+      <div class="zitem"><span class="zdot zd-bad"></span>Dette comme mécanisme de contrôle</div>
+      <div class="zitem"><span class="zdot zd-bad"></span>Banques centrales hiérarchiques</div>
+      <div class="zitem"><span class="zdot zd-bad"></span>Intérêts composés extractifs</div>
+      <div class="zitem"><span class="zdot zd-bad"></span>Point de défaillance unique</div>
+    </div>
+    <div class="zen-col good">
+      <h3>⊕ ÉCONOMIE ẐEN</h3>
+      <div class="zitem"><span class="zdot zd-good"></span>Plan expansif coopératif</div>
+      <div class="zitem"><span class="zdot zd-good"></span>Valeur liée aux services réels</div>
+      <div class="zitem"><span class="zdot zd-good"></span>Égaux sans autorité centrale</div>
+      <div class="zitem"><span class="zdot zd-good"></span>PAF : Preuve d'Activité Fraternelle</div>
+      <div class="zitem"><span class="zdot zd-good"></span>Résilient par conception</div>
+    </div>
+  </div>
+</section>
+
+<hr>
+<section class="sec" id="commons">
+  <div class="sec-label">// PHILOSOPHIE & FINANCEMENT</div>
+  <h2>COMMONS & LICENCE LIBRE</h2>
+  <div class="sep"></div>
+  <p>Les euros investis dans Astroport.ONE financent la <strong>recherche open source DIY</strong>, étendant les garanties de la <strong>Licence GPL et AGPL aux Biens Communs</strong>. L'infrastructure comme patrimoine collectif : chaque contribution renforce un réseau dont le code reste libre et auditable pour toujours.</p>
+  <div class="commons">
+    <h3>DOMAINES DE RECHERCHE FINANCÉS</h3>
+    <p style="font-size:.8rem;color:rgba(255,255,255,0.45);margin-bottom:.3rem">Projets DIY souverains, réplicables, sous licence libre</p>
+    <div class="domains">
+      <span class="dtag">ÉNERGIE SOLAIRE OFF-GRID</span>
+      <span class="dtag">AGRICULTURE NUMÉRIQUE P2P</span>
+      <span class="dtag">IA LOCALE SOUVERAINE</span>
+      <span class="dtag">CRYPTOGRAPHIE LIBRE</span>
+      <span class="dtag">RADIO MESH LORAWAN</span>
+      <span class="dtag">BIOREGIONALISME DIGITAL</span>
+      <span class="dtag">MONNAIE COMPLÉMENTAIRE</span>
+      <span class="dtag">FABRICATION DISTRIBUÉE</span>
+      <span class="dtag">SEMENCES OPEN SOURCE</span>
+    </div>
+  </div>
+  <div class="stack">
+    <span class="stag">GPL v3</span><span class="stag">AGPL v3</span><span class="stag">IPFS</span><span class="stag">libp2p</span>
+    <span class="stag">NOSTR</span><span class="stag">Bash</span><span class="stag">Raspberry Pi</span><span class="stag">WireGuard</span>
+    <span class="stag">Nginx</span><span class="stag">UPlanet</span><span class="stag">ẐEN Token</span>
+  </div>
+</section>
+
+<hr>
+<section class="sec" id="media">
+  <div class="sec-label">// DOCUMENTATION & MÉDIAS</div>
+  <h2>RESSOURCES MULTIMÉDIA</h2>
+  <div class="sep"></div>
+  <p>Présentations PDF et vidéos de démonstration du réseau Astroport.ONE.</p>
+  <div class="mgrid" id="mgrid"></div>
+</section>
+
+<div class="cta">
+  <h2>REJOINDRE L'ESSAIM</h2>
+  <p>Vous avez un Raspberry Pi 5, un vieux PC ou un serveur ? Devenez un nœud Astroport.ONE. Hébergez vos propres Dragons, participez à l'économie ẐEN.</p>
+  <div class="cta-btns">
+    <a href="https://github.com/papiche/Astroport.ONE" target="_blank" class="btn-p">INSTALLER ASTROPORT.ONE</a>
+    <a href="https://github.com/papiche/Astroport.ONE/blob/master/docs/DRAGONS_and_TUNNELS.md" target="_blank" class="btn-s">DOC DRAGONS →</a>
+  </div>
+</div>
+
+<footer>© 2024 Astroport.ONE · <a href="#">AGPL v3</a> · <a href="https://github.com/papiche/Astroport.ONE" target="_blank">GitHub</a> · Infrastructure as Choreography</footer>
+
+</div><!-- /sections -->
+
+<!-- MEDIA MODAL -->
+<div id="mmModal" onclick="if(event.target===this)closeMedia()">
+  <div class="mm-box">
+    <div class="mm-head">
+      <span id="mm-ttl"></span>
+      <button class="mm-cls" onclick="closeMedia()">✕</button>
+    </div>
+    <div id="mm-body"></div>
+  </div>
+</div>
+
+<script>
+// ── THREE.JS SETUP ──
+const cvs = document.getElementById('canvas3d');
+const W=()=>cvs.clientWidth, H=()=>cvs.clientHeight;
+const renderer = new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(W(),H());
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55,W()/H(),0.1,500);
+
+scene.add(new THREE.AmbientLight(0x112233,4));
+const sun = new THREE.DirectionalLight(0xffffff,1.8);
+sun.position.set(20,10,15); scene.add(sun);
+
+const GLOBE_R=8;
+
+// Earth texture
+function makeEarth(){
+  const c=document.createElement('canvas');c.width=1024;c.height=512;
+  const x=c.getContext('2d');
+  x.fillStyle='#0d3b6e';x.fillRect(0,0,1024,512);
+  x.fillStyle='#2d6a2d';
+  [[150,160,110,80],[270,140,60,50],[200,240,80,60],[280,200,50,40],[500,170,140,100],[530,250,100,80],[590,320,60,50],[700,160,100,80],[750,220,80,60],[720,300,50,40],[820,180,80,70],[860,260,60,50],[400,380,120,60],[500,360,80,50],[350,120,60,30],[920,150,60,50]].forEach(([a,b,w,h])=>{x.beginPath();x.ellipse(a,b,w,h,0,0,Math.PI*2);x.fill();});
+  x.fillStyle='rgba(220,240,255,0.7)';x.fillRect(0,0,1024,28);x.fillRect(0,484,1024,28);
+  return new THREE.CanvasTexture(c);
+}
+const earthTex=makeEarth();
+const globeMat=new THREE.MeshPhongMaterial({map:earthTex,transparent:true,opacity:0,shininess:25});
+const globe=new THREE.Mesh(new THREE.SphereGeometry(GLOBE_R,64,64),globeMat);
+const atmMat=new THREE.MeshBasicMaterial({color:0x44aaff,transparent:true,opacity:0,side:THREE.BackSide});
+const atm=new THREE.Mesh(new THREE.SphereGeometry(GLOBE_R*1.04,32,32),atmMat);
+
+// Stars
+const sp=new Float32Array(3000);for(let i=0;i<3000;i++)sp[i]=(Math.random()-.5)*400;
+const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+const starMat=new THREE.PointsMaterial({color:0xffffff,size:.15,transparent:true,opacity:.7});
+scene.add(new THREE.Points(sg,starMat));
+
+// ── NODES ──
+const hostnames=['alpha-hub','beta-sat','gamma-hub','delta-sat','epsilon-sat','zeta-hub','eta-sat','theta-sat','iota-hub','kappa-sat','lambda-sat','mu-hub'];
+const uplanets=['Forest_Commune','Solar_Farm','Ocean_Node','Mountain_Lab','Valley_Hub','Coast_Relay','Desert_Core','River_Camp','Peak_Station','Bay_Node','Cliff_Lab','Meadow_Hub'];
+const consts=['Alpha','Alpha','Beta','Beta','Beta','Alpha','Gamma','Gamma','Beta','Gamma','Alpha','Beta'];
+const svcs=[['Ollama','SSH'],['IPFS'],['Nextcloud','Ollama','SSH'],['SSH'],['NOSTR'],['Nextcloud','SSH'],['IPFS','Ollama'],['SSH'],['Ollama','Nextcloud','IPFS'],['SSH','NOSTR'],['IPFS'],['Nextcloud','Ollama','SSH','NOSTR']];
+const hC=['#00ff88','#00ff88','#00ff88','#f4a020','#00ff88','#ff4444','#00ff88','#f4a020','#00ff88','#00ff88','#ff4444','#00ff88'];
+const hL=['HEALTHY','HEALTHY','HEALTHY','WARNING','HEALTHY','PAF OVERDUE','HEALTHY','WARNING','HEALTHY','HEALTHY','PAF OVERDUE','HEALTHY'];
+const hubSet=new Set([0,2,5,8,11]);
+const svcCol={Ollama:0xff6b35,Nextcloud:0x1a9fff,SSH:0xffcc00,IPFS:0x00ff88,NOSTR:0xff4488};
+function rPeer(){return 'Qm'+Math.random().toString(36).substr(2,8).toUpperCase()+'…';}
+
+const rotG=new THREE.Group();
+rotG.add(globe);rotG.add(atm);
+scene.add(rotG);
+
+const nodes=[],nMesh=[],glowM=[];
+for(let i=0;i<12;i++){
+  const phi=Math.acos(1-2*(i+.5)/12);
+  const th=Math.PI*(1+Math.sqrt(5))*i;
+  const isHub=hubSet.has(i);
+  const pos=new THREE.Vector3(GLOBE_R*Math.sin(phi)*Math.cos(th),GLOBE_R*Math.cos(phi),GLOBE_R*Math.sin(phi)*Math.sin(th));
+  const sz=isHub?.32:.18;
+  const col=isHub?0x00f5ff:0x7b2fff;
+  const m=new THREE.Mesh(new THREE.SphereGeometry(sz,16,16),new THREE.MeshPhongMaterial({color:col,emissive:col,emissiveIntensity:1.2}));
+  m.position.copy(pos);m.userData.ni=i;
+  const gm=new THREE.Mesh(new THREE.SphereGeometry(sz*3,10,10),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.06}));
+  gm.position.copy(pos);
+  rotG.add(m);rotG.add(gm);
+  nodes.push({pos,isHub,hostname:hostnames[i],peerID:rPeer(),uplanet:uplanets[i],constellation:consts[i],health:hC[i],healthLabel:hL[i],services:svcs[i],phase:Math.random()*Math.PI*2});
+  nMesh.push(m);glowM.push(gm);
+}
+
+// Links
+const pairs=[[0,1],[0,2],[1,3],[2,4],[2,5],[3,6],[4,7],[5,8],[6,9],[7,10],[8,11],[9,10],[10,11],[1,5],[3,8],[4,9],[0,8],[2,11]];
+const lLines=[],lMats=[];
+pairs.forEach(([a,b])=>{
+  const g=new THREE.BufferGeometry().setFromPoints([nodes[a].pos.clone(),nodes[b].pos.clone()]);
+  const m=new THREE.LineBasicMaterial({color:0x00f5ff,transparent:true,opacity:.18});
+  const l=new THREE.Line(g,m);rotG.add(l);lLines.push(l);lMats.push(m);
+});
+
+// Particles
+const parts=[];
+pairs.forEach(([a,b])=>{for(let p=0;p<3;p++){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(.055,6,6),new THREE.MeshBasicMaterial({color:0x00ff88}));
+  m.userData={a,b,t:Math.random(),spd:.003+Math.random()*.004,dir:Math.random()>.5?1:-1};
+  rotG.add(m);parts.push(m);}
+});
+
+// Dragons
+const drags=[];
+nodes.forEach((n,i)=>n.services.forEach((svc,j)=>{
+  const or=n.isHub?.75:.48;
+  const m=new THREE.Mesh(new THREE.SphereGeometry(.065,6,6),new THREE.MeshBasicMaterial({color:svcCol[svc]||0xffffff}));
+  m.userData={ni:i,or,angle:(j/n.services.length)*Math.PI*2,spd:.5+Math.random()*.5};
+  rotG.add(m);drags.push(m);
+}));
+
+// ── CAMERA ──
+let cTh=.3,cPh=.25,cR=28,isDrag=false,prev={x:0,y:0};
+function setCam(){
+  camera.position.set(cR*Math.sin(cTh)*Math.cos(cPh),cR*Math.sin(cPh),cR*Math.cos(cTh)*Math.cos(cPh));
+  camera.lookAt(0,0,0);
+}
+setCam();
+
+const hero=document.getElementById('hero');
+hero.addEventListener('mousedown',e=>{isDrag=true;prev={x:e.clientX,y:e.clientY};});
+window.addEventListener('mouseup',()=>isDrag=false);
+hero.addEventListener('mousemove',e=>{
+  mouse.set((e.clientX/W())*2-1,-(e.clientY/H())*2+1);
+  ttX=e.clientX;ttY=e.clientY;
+  if(!isDrag)return;
+  cTh-=(e.clientX-prev.x)*.004;
+  cPh=Math.max(-1.2,Math.min(1.2,cPh-(e.clientY-prev.y)*.004));
+  prev={x:e.clientX,y:e.clientY};setCam();
+});
+hero.addEventListener('wheel',e=>{cR=Math.max(9,Math.min(55,cR+e.deltaY*.03));setCam();},{passive:true});
+let tp=null;
+hero.addEventListener('touchstart',e=>{tp=e.touches[0];isDrag=true;},{passive:true});
+hero.addEventListener('touchend',()=>{isDrag=false;tp=null;});
+hero.addEventListener('touchmove',e=>{
+  if(!tp)return;
+  cTh-=(e.touches[0].clientX-tp.clientX)*.005;
+  cPh=Math.max(-1.2,Math.min(1.2,cPh-(e.touches[0].clientY-tp.clientY)*.005));
+  tp=e.touches[0];setCam();e.preventDefault();
+},{passive:false});
+
+// ── RAYCASTER ──
+const ray=new THREE.Raycaster();
+const mouse=new THREE.Vector2(-9999,-9999);
+let ttX=0,ttY=0,hovIdx=-1;
+const tt=document.getElementById('tt');
+
+hero.addEventListener('click',e=>{
+  mouse.set((e.clientX/W())*2-1,-(e.clientY/H())*2+1);
+  ray.setFromCamera(mouse,camera);
+  const hits=ray.intersectObjects(nMesh);
+  if(hits.length)openPanel(hits[0].object.userData.ni);
+  else closePanel();
+});
+
+function openPanel(i){
+  const n=nodes[i];
+  document.getElementById('p-type').textContent=n.isHub?'◎ HUB STATION':'◉ SATELLITE';
+  document.getElementById('p-name').textContent=n.hostname.toUpperCase();
+  document.getElementById('p-peer').textContent='PeerID: '+n.peerID;
+  document.getElementById('p-upl').textContent=n.uplanet;
+  document.getElementById('p-dot').style.background=n.health;
+  document.getElementById('p-hl').textContent=n.healthLabel;
+  document.getElementById('p-svc').innerHTML=n.services.map(s=>`<span class="svc-tag">${s}</span>`).join('');
+  document.getElementById('p-const').textContent='Constellation '+n.constellation;
+  document.getElementById('p-links').textContent=pairs.filter(([a,b])=>a===i||b===i).map(([a,b])=>nodes[a===i?b:a].hostname).join(', ');
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel(){document.getElementById('panel').classList.remove('open');}
+
+// ── THEME ──
+let isSolar=false;
+function toggleTheme(){
+  isSolar=!isSolar;
+  document.getElementById('body').classList.toggle('sp',isSolar);
+  document.getElementById('tlc').className='tl'+(isSolar?'':' active-cyber');
+  document.getElementById('tls').className='tl'+(isSolar?' active-solar':'');
+  globeMat.opacity=isSolar?1:0;globe.visible=isSolar;
+  atmMat.opacity=isSolar?.12:0;atm.visible=isSolar;
+  starMat.opacity=isSolar?.3:.7;
+  const hc=isSolar?0x7fd67f:0x00f5ff;
+  const sc=isSolar?0xf4a020:0x7b2fff;
+  const pc=isSolar?0xe8d44d:0x00ff88;
+  nodes.forEach((_,i)=>{const c=nodes[i].isHub?hc:sc;nMesh[i].material.color.setHex(c);nMesh[i].material.emissive.setHex(c);glowM[i].material.color.setHex(c);});
+  lMats.forEach(m=>m.color.setHex(isSolar?0x7fd67f:0x00f5ff));
+  parts.forEach(p=>p.material.color.setHex(pc));
+}
+
+// ── ANIMATE ──
+const clock=new THREE.Clock();
+function animate(){
+  requestAnimationFrame(animate);
+  const t=clock.getElapsedTime();
+  if(!isDrag)rotG.rotation.y+=.0012;
+
+  nodes.forEach((nd,i)=>{
+    const off=isSolar?0:Math.sin(t*.6+nd.phase)*.12;
+    const dir=nd.pos.clone().normalize().multiplyScalar(GLOBE_R+off);
+    nMesh[i].position.copy(dir);glowM[i].position.copy(dir);
+    glowM[i].material.opacity=.04+Math.sin(t*.8+nd.phase)*.025;
+  });
+
+  pairs.forEach(([a,b],idx)=>{
+    const p=lLines[idx].geometry.attributes.position;
+    p.setXYZ(0,...nMesh[a].position.toArray());p.setXYZ(1,...nMesh[b].position.toArray());p.needsUpdate=true;
+  });
+
+  parts.forEach(p=>{
+    p.userData.t+=p.userData.spd*p.userData.dir;
+    if(p.userData.t>1)p.userData.t=0;if(p.userData.t<0)p.userData.t=1;
+    p.position.lerpVectors(nMesh[p.userData.a].position,nMesh[p.userData.b].position,p.userData.t);
+  });
+
+  drags.forEach(d=>{
+    d.userData.angle+=d.userData.spd*.02;
+    const ni=d.userData.ni,np=nMesh[ni].position.clone().normalize();
+    const t1=new THREE.Vector3().crossVectors(np,new THREE.Vector3(0,1,0)).normalize();
+    const t2=new THREE.Vector3().crossVectors(np,t1).normalize();
+    d.position.copy(nMesh[ni].position.clone().add(t1.clone().multiplyScalar(Math.cos(d.userData.angle)*d.userData.or)).add(t2.clone().multiplyScalar(Math.sin(d.userData.angle)*d.userData.or)));
+  });
+
+  // Tooltip
+  ray.setFromCamera(mouse,camera);
+  const hits=ray.intersectObjects(nMesh);
+  if(hits.length){
+    const idx=hits[0].object.userData.ni;
+    if(idx!==hovIdx){hovIdx=idx;const n=nodes[idx];
+      document.getElementById('tt-name').textContent=n.hostname.toUpperCase()+(n.isHub?' [HUB]':' [SAT]');
+      document.getElementById('tt-dot').style.background=n.health;
+      document.getElementById('tt-hl').textContent=n.healthLabel;
+      document.getElementById('tt-svc').textContent='⚡ '+n.services.join(' · ');
+    }
+    tt.style.opacity='1';tt.style.left=(ttX+14)+'px';tt.style.top=(ttY-8)+'px';
+    nMesh.forEach((m,i)=>m.scale.setScalar(i===idx?1.5:1));
+  } else {
+    hovIdx=-1;tt.style.opacity='0';nMesh.forEach(m=>m.scale.setScalar(1));
+  }
+
+  renderer.render(scene,camera);
+}
+animate();
+
+window.addEventListener('resize',()=>{
+  renderer.setSize(W(),H());
+  camera.aspect=W()/H();camera.updateProjectionMatrix();
+});
+
+// ── MEDIA VIEWER ──
+const mediaList=[];
+
+async function scanDir(dir,type,ext){
+  try{
+    const res=await fetch(dir);
+    if(!res.ok)return;
+    const html=await res.text();
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    [...doc.querySelectorAll('a[href]')]
+      .map(a=>a.getAttribute('href'))
+      .filter(h=>ext.test(h))
+      .forEach(file=>{
+        const name=decodeURIComponent(file);
+        mediaList.push({
+          url:dir+name,
+          type,
+          title:name.replace(/\.[^.]+$/,'').replace(/[_\-+]/g,' ').toUpperCase()
+        });
+      });
+  }catch(e){}
+}
+
+function renderMGrid(){
+  const icons={pdf:'📄',video:'🎬'};
+  const badgeCls={pdf:'mbadge-pdf',video:'mbadge-video'};
+  const badgeTxt={pdf:'PDF',video:'VIDÉO'};
+  const g=document.getElementById('mgrid');
+  if(!mediaList.length){
+    g.innerHTML='<div class="media-empty">Aucun fichier trouvé dans pdf/ ou video/.</div>';
+    return;
+  }
+  g.innerHTML=mediaList.map((m,i)=>`
+    <div class="mcard" onclick="openMedia(${i})">
+      <span class="mbadge ${badgeCls[m.type]}">${badgeTxt[m.type]}</span>
+      <div class="mcard-ico">${icons[m.type]}</div>
+      <h4>${m.title}</h4>
+    </div>`).join('');
+}
+
+function openMedia(i){
+  const m=mediaList[i];
+  document.getElementById('mm-ttl').textContent=m.title;
+  const body=document.getElementById('mm-body');
+  body.innerHTML='';
+  if(m.type==='video'){
+    const v=document.createElement('video');
+    v.src=m.url;v.controls=true;v.autoplay=true;
+    body.appendChild(v);
+  }else{
+    const f=document.createElement('iframe');
+    f.src=m.url;f.setAttribute('allowfullscreen','');
+    body.appendChild(f);
+  }
+  document.getElementById('mmModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeMedia(){
+  document.getElementById('mmModal').classList.remove('open');
+  document.getElementById('mm-body').innerHTML='';
+  document.body.style.overflow='';
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMedia();});
+
+(async()=>{
+  // 1. Essai manifest.json
+  try{
+    const res=await fetch('media.json');
+    if(res.ok){
+      const data=await res.json();
+      if(Array.isArray(data)&&data.length){
+        data.forEach(m=>mediaList.push(m));
+        return renderMGrid();
+      }
+    }
+  }catch(e){}
+  // 2. Fallback : scan des répertoires (nécessite autoindex nginx/apache)
+  await Promise.all([
+    scanDir('pdf/','pdf',/\.pdf$/i),
+    scanDir('video/','video',/\.(mp4|webm|ogg|mov)$/i),
+  ]);
+  renderMGrid();
+})();
+</script>
+</body>
+</html>
