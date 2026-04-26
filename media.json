@@ -1,17 +1,43 @@
 [
-  {
-    "url": "video/Astroport.mp4",
-    "type": "video",
-    "title": "ASTROPORT"
-  },
-  {
-    "url": "pdf/Astroport.ONE_Sovereign_P2P_Swarm.pdf",
-    "type": "pdf",
-    "title": "ASTROPORT.ONE SOVEREIGN P2P SWARM"
-  },
-  {
-    "url": "pdf/Sovereign_Internet_Manifesto.pdf",
-    "type": "pdf",
-    "title": "SOVEREIGN INTERNET MANIFESTO"
-  }
+{
+  "url": "video/Astroport.mp4",
+  "type": "video",
+  "title": "Web2 / WEB3 __ Deux Voix..."
+}
+,
+{
+  "url": "video/Heartbleed___Deux_Voies.mp4",
+  "type": "video",
+  "title": "Heartbleed___Deux_Voies"
+}
+,
+{
+  "url": "pdf/Astroport_Digital_Sovereignty.pdf",
+  "type": "pdf",
+  "title": "Astroport"
+}
+,
+{
+  "url": "pdf/Astroport.ONE_Sovereign_P2P_Swarm.pdf",
+  "type": "pdf",
+  "title": "SOVEREIGN P2P SWARM"
+}
+,
+{
+  "url": "pdf/L_Architecture_Souveraine.pdf",
+  "type": "pdf",
+  "title": "L_Architecture_Souveraine"
+}
+,
+{
+  "url": "pdf/Sovereign_Internet_Manifesto.pdf",
+  "type": "pdf",
+  "title": "INTERNET MANIFESTO"
+}
+,
+{
+  "url": "pdf/UPlanet_Sovereignty_Blueprint.pdf",
+  "type": "pdf",
+  "title": "UPlanet_Sovereignty_Blueprint"
+}
 ]
