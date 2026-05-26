@@ -42,13 +42,8 @@ Supported types: `"video"` (mp4, webm, ogg, mov), `"pdf"`.
 
 Title is displayed as-is in uppercase monospace; the fallback scanDir auto-generates titles by stripping extension and replacing `_-+` with spaces.
 
-## `dynhost-update.sh`
+## `microledger.me.sh`
 
-Cron script (`*/5 * * * *`) updating OVH DynDNS for `astroport.one` and `www.astroport.one`. Requires a `.env` file in the same directory:
+Script de publication : `ipfs add` du répertoire → met à jour `.chain` → git commit/push → DNSLink OVH upsert (`_dnslink.astroport.one` + `_dnslink.www.astroport.one`) → SSL auto via acme.sh + OVH DNS challenge.
 
-```bash
-LOGIN=your-ovh-dynhost-login
-PASSWORD=your-ovh-dynhost-password
-```
-
-IP detection: tries UPnP first (`upnpc`), then falls back to `api.ipify.org`. Only updates when IP changes (cached in `/tmp/dynhost_last_ip`). Logs to `~/.zen/tmp/dynhost.log`.
+L'A record `astroport.one` est **statique** (IP de la gateway publique `ipfs.copylaradio.com`). NPM sur la gateway proxifie `astroport.one:443` → `127.0.0.1:8080` (Kubo) avec `proxy_set_header Host $host` pour activer la résolution DNSLink. Le contenu est mis à jour uniquement via le TXT `_dnslink`.

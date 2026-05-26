@@ -231,3 +231,7 @@ Si tu veux, je peux aussi te fournir :
 
 * un script de déploiement automatique IPFS + DNS update
 * ou une config complète de gateway IPFS optimisée (NGINX / Caddy) ⚡
+### - (^‿‿^) - 
+/ipfs/
+### - (^‿‿^) - 
+/ipfs/QmbViUJZsXMvvCADsbBJRaWwHjN5kcDWiFqJ8UHPvTHFhw

@@ -2,7 +2,19 @@
 {
   "url": "video/Astroport.mp4",
   "type": "video",
-  "title": "Web2 / WEB3 __ Deux Voix..."
+  "title": "Astroport"
+}
+,
+{
+  "url": "video/Cosmos_Conscience.mp4",
+  "type": "video",
+  "title": "Cosmos_Conscience"
+}
+,
+{
+  "url": "video/FluffyRabbitStamping.mp4",
+  "type": "video",
+  "title": "FluffyRabbitStamping"
 }
 ,
 {
@@ -12,32 +24,50 @@
 }
 ,
 {
-  "url": "pdf/Astroport_Digital_Sovereignty.pdf",
-  "type": "pdf",
-  "title": "Astroport"
+  "url": "video/Le_champ_du_point_zéro.mp4",
+  "type": "video",
+  "title": "Le_champ_du_point_zéro"
+}
+,
+{
+  "url": "video/clic_cookie.mp4",
+  "type": "video",
+  "title": "clic_cookie"
 }
 ,
 {
   "url": "pdf/Astroport.ONE_Sovereign_P2P_Swarm.pdf",
   "type": "pdf",
-  "title": "SOVEREIGN P2P SWARM"
+  "title": "Astroport.ONE_Sovereign_P2P_Swarm"
+}
+,
+{
+  "url": "pdf/Astroport_Digital_Sovereignty.pdf",
+  "type": "pdf",
+  "title": "Astroport_Digital_Sovereignty"
 }
 ,
 {
   "url": "pdf/L_Architecture_Souveraine.pdf",
   "type": "pdf",
-  "title": "Architecture Souveraine"
+  "title": "L_Architecture_Souveraine"
 }
 ,
 {
   "url": "pdf/Sovereign_Internet_Manifesto.pdf",
   "type": "pdf",
-  "title": "INTERNET MANIFESTO"
+  "title": "Sovereign_Internet_Manifesto"
 }
 ,
 {
   "url": "pdf/UPlanet_Sovereignty_Blueprint.pdf",
   "type": "pdf",
-  "title": "UPlanet Sovereignty Blueprint"
+  "title": "UPlanet_Sovereignty_Blueprint"
+}
+,
+{
+  "url": "pdf/Unified_Resonance.pdf",
+  "type": "pdf",
+  "title": "Unified_Resonance"
 }
 ]
