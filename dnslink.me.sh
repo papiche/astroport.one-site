@@ -11,7 +11,7 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
     cat <<EOF
 Usage: $(basename "$0") [options]
 
-Publie astroport.one/ sur IPFS, met à jour .chain, commit+push git,
+Publie astroport.one/ sur IPFS, met à jour .chain,
 et met à jour le DNSLink OVH (_dnslink / _dnslink.www sur astroport.one).
 
 Options:
@@ -21,9 +21,8 @@ Flux:
   1. ipfs add -rwHq ./*          → nouveau CID IPFS
   2. Si CID inchangé             → exit 0 (rien à faire)
   3. Mise à jour .chain + .moats + README.md
-  4. git add / commit / push
-  5. DNSLink OVH upsert (_dnslink + _dnslink.www)
-  6. SSL auto via acme.sh + OVH DNS challenge
+  4. DNSLink OVH upsert (_dnslink + _dnslink.www)
+  5. SSL auto via acme.sh + OVH DNS challenge
 
 Credentials OVH (par priorité):
   a. Variables ENV: OVH_APP_KEY / OVH_APP_SECRET / OVH_CONSUMER_KEY
@@ -68,13 +67,6 @@ echo ${MOATS} > ${MY_PATH}/.moats
 
 echo "## README UPGRADE ${OLD}~${IPFSME}"
 sed -i "s~${OLD}~${IPFSME}~g" ${MY_PATH}/README.md
-
-echo "## AUTO GIT"
-echo '# ENTER COMMENT FOR YOUR COMMIT :'
-git -C "${MY_PATH}" add .
-read COMMENT \
-&& git -C "${MY_PATH}" commit -m "$COMMENT : https://astroport.one" \
-&& git -C "${MY_PATH}" push
 
 # ── DNSLINK OVH ───────────────────────────────────────────────────────────────
 OVH_TOOL="${HOME}/.zen/Astroport.ONE/admin/system/ovh.me.sh"

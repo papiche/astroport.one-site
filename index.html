@@ -147,14 +147,52 @@ body.sp .card h3{color:#7fd67f;}
 .card p{font-size:.82rem;margin:0;}
 
 /* DRAGONS GRID */
-.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin-top:1.2rem;}
-.dcard{padding:1rem;border:1px solid rgba(255,255,255,0.08);border-radius:4px;text-align:center;background:rgba(255,255,255,0.02);transition:all .3s;}
-.dcard:hover{border-color:rgba(123,47,255,0.4);transform:translateY(-2px);}
-body.sp .dcard:hover{border-color:rgba(244,160,32,0.4);}
-.dcard .di{font-size:1.6rem;display:block;margin-bottom:.4rem;}
-.dcard h4{font-family:'Courier New',monospace;font-size:.72rem;color:#00f5ff;letter-spacing:1px;}
-body.sp .dcard h4{color:#7fd67f;}
-.dcard p{font-size:.72rem;margin:.2rem 0 0;}
+.dgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.dcard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1.2rem 1rem;
+  height: 100%; /* Répartition uniforme de la hauteur */
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  text-align: center;
+  background: rgba(255,255,255,0.02);
+  transition: all .3s;
+}
+.dcard:hover {
+  border-color: rgba(123,47,255,0.4);
+  transform: translateY(-2px);
+  background: rgba(123,47,255,0.05);
+}
+body.sp .dcard:hover {
+  border-color: rgba(244,160,32,0.4);
+  background: rgba(244,160,32,0.05);
+}
+.dcard .di {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 0.8rem;
+}
+.dcard h4 {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #00f5ff;
+  letter-spacing: 1px;
+  margin-bottom: 0.4rem;
+}
+body.sp .dcard h4 { color: #7fd67f; }
+.dcard p {
+  font-size: 0.72rem;
+  margin: 0;
+  line-height: 1.5;
+}
 
 /* ZEN */
 .zen-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem;}
@@ -192,6 +230,124 @@ body.sp .cta{border-color:rgba(127,214,127,0.08);background:rgba(127,214,127,0.0
 .cta p{max-width:560px;margin:0 auto 1.5rem;}
 .cta-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
 
+/* ── BOUTON RECRUTEMENT (PULSE) ── */
+@keyframes pulse-cyber {
+  0% { box-shadow: 0 0 0 0 rgba(255, 68, 136, 0.6); }
+  70% { box-shadow: 0 0 0 12px rgba(255, 68, 136, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 68, 136, 0); }
+}
+@keyframes pulse-solar {
+  0% { box-shadow: 0 0 0 0 rgba(244, 160, 32, 0.6); }
+  70% { box-shadow: 0 0 0 12px rgba(244, 160, 32, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(244, 160, 32, 0); }
+}
+
+.btn-recruit {
+  display: inline-block;
+  padding: .65rem 1.5rem;
+  background: #ff4488;
+  color: #fff !important;
+  font-family: 'Courier New', monospace;
+  font-size: .9rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-decoration: none;
+  border-radius: 3px;
+  border: 1px solid #ff4488;
+  transition: all .25s;
+  animation: pulse-cyber 2s infinite;
+}
+.btn-recruit:hover {
+  background: transparent;
+  color: #ff4488 !important;
+}
+
+body.sp .btn-recruit {
+  background: #f4a020;
+  border-color: #f4a020;
+  color: #050a12 !important;
+  animation: pulse-solar 2s infinite;
+}
+body.sp .btn-recruit:hover {
+  background: transparent;
+  color: #f4a020 !important;
+}
+
+/* Lien de navigation recrutement */
+a.nav-recruit {
+  color: #ff4488 !important;
+  border: 1px solid #ff4488;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  font-weight: bold;
+}
+a.nav-recruit:hover {
+  background: #ff4488;
+  color: #fff !important;
+}
+body.sp a.nav-recruit {
+  color: #f4a020 !important;
+  border-color: #f4a020;
+}
+body.sp a.nav-recruit:hover {
+  background: #f4a020;
+  color: #050a12 !important;
+}
+
+/* ── PRICING / SOUTIEN ── */
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:2rem;}
+.tier{
+  background:rgba(0,245,255,0.02);border:1px solid rgba(0,245,255,0.15);
+  border-radius:4px;padding:2rem 1.5rem;text-align:center;position:relative;
+  transition:transform .3s;
+}
+.tier:hover{transform:translateY(-5px);border-color:#00f5ff;}
+body.sp .tier{background:rgba(127,214,127,0.02);border-color:rgba(127,214,127,0.15);}
+body.sp .tier:hover{border-color:#7fd67f;}
+.tier h3{font-family:'Courier New',monospace;color:#fff;font-size:1.1rem;letter-spacing:2px;margin-bottom:.5rem;}
+.tier .price{font-size:.85rem;color:#00f5ff;margin-bottom:1.5rem;font-family:'Courier New',monospace;}
+body.sp .tier .price{color:#7fd67f;}
+.tier ul{list-style:none;margin-bottom:2rem;text-align:left;}
+.tier ul li{font-size:.85rem;color:rgba(255,255,255,0.6);margin-bottom:.6rem;display:flex;align-items:flex-start;gap:8px;}
+.tier ul li::before{content:'✓';color:#00f5ff;font-size:.8rem;}
+body.sp .tier ul li::before{color:#7fd67f;}
+.tier-btn{
+  display:block;width:100%;padding:.6rem;background:rgba(0,245,255,0.1);
+  color:#00f5ff;text-decoration:none;font-family:'Courier New',monospace;
+  font-size:.8rem;letter-spacing:1px;border:1px solid #00f5ff;border-radius:2px;transition:all .3s;
+}
+.tier-btn:hover{background:#00f5ff;color:#050a12;}
+body.sp .tier-btn{color:#7fd67f;background:rgba(127,214,127,0.1);border-color:#7fd67f;}
+body.sp .tier-btn:hover{background:#7fd67f;color:#0d1a0d;}
+
+/* ── ALPHA ALERT ── */
+.alpha-box{
+  background:rgba(255,170,0,0.1);border-left:3px solid #ffaa00;
+  padding:1.5rem;margin:2rem auto;max-width:800px;text-align:left;
+  border-radius:0 4px 4px 0;
+}
+.alpha-box h4{color:#ffaa00;font-family:'Courier New',monospace;letter-spacing:2px;margin-bottom:.5rem;}
+.alpha-box p{font-size:.85rem;margin-bottom:.5rem;color:rgba(255,255,255,0.7);}
+
+/* INSTALL CMD */
+.install-cmd {
+  background: #050a12;
+  border: 1px dashed rgba(0, 245, 255, 0.4);
+  padding: 0.8rem 1.2rem;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 0 auto 1.5rem auto;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #00f5ff;
+  user-select: all; /* Permet de sélectionner tout le texte en un clic */
+}
+body.sp .install-cmd {
+  background: #0d1a0d;
+  border-color: rgba(127, 214, 127, 0.4);
+  color: #7fd67f;
+}
+
 /* DIVIDER */
 hr{border:none;border-top:1px solid rgba(255,255,255,0.06);}
 
@@ -199,6 +355,49 @@ hr{border:none;border-top:1px solid rgba(255,255,255,0.06);}
 footer{text-align:center;padding:1.5rem;font-family:'Courier New',monospace;font-size:.7rem;color:rgba(255,255,255,0.25);}
 footer a{color:#00f5ff;text-decoration:none;}
 body.sp footer a{color:#7fd67f;}
+/* ── MENU MOBILE ── */
+.nav-links { display: flex; align-items: center; gap: 1.2rem; }
+.menu-btn {
+  display: none; background: none; border: none;
+  color: #00f5ff; font-size: 1.5rem; cursor: pointer;
+  padding-left: 0.5rem; transition: color 0.3s;
+}
+body.sp .menu-btn { color: #7fd67f; }
+
+/* On passe en mode mobile dès 850px car il y a beaucoup de liens */
+@media(max-width: 850px) {
+  .menu-btn { display: block; }
+  .nav-links {
+    position: absolute;
+    top: 52px; /* Commence juste en dessous de la barre nav */
+    left: 0;
+    right: 0;
+    background: rgba(5,10,18,0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(0,245,255,0.15);
+    flex-direction: column;
+    padding: 1.5rem 0;
+    gap: 1.5rem;
+    
+    /* Animation de glissement et opacité */
+    transform: translateY(-150%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+    z-index: -1; /* Permet au menu de glisser sous la barre */
+  }
+  
+  .nav-links.open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  body.sp .nav-links {
+    background: rgba(13,26,13,0.95);
+    border-color: rgba(127,214,127,0.15);
+  }
+}
 
 @media(max-width:600px){
   .hero-text{width:100%;padding:0 1.2rem;background:linear-gradient(180deg,transparent,rgba(5,10,18,0.9) 30%);}
@@ -268,17 +467,28 @@ body.sp #mm-ttl{color:#7fd67f;}
 <!-- NAV -->
 <nav>
   <div class="logo">ASTRO<span>PORT</span>.ONE</div>
+  
   <div class="nav-right">
-    <a href="#network">RÉSEAU</a>
-    <a href="#dragons">DRAGONS</a>
-    <a href="#zen">ẐEN</a>
-    <a href="#media">MÉDIAS</a>
-    <a href="https://github.com/papiche/Astroport.ONE" target="_blank">GITHUB</a>
+    <!-- Conteneur des liens qui sera caché sur mobile -->
+    <div class="nav-links" id="nav-links">
+      <a href="#network" onclick="closeMenu()">RÉSEAU</a>
+      <a href="#dragons" onclick="closeMenu()">DRAGONS</a>
+      <a href="#ecosystem" onclick="closeMenu()">ÉCOSYSTÈME</a>
+      <a href="#soutien" onclick="closeMenu()">SOUTENIR</a>
+      <a href="#media" onclick="closeMenu()">MÉDIAS</a>
+      <a href="install.html" class="nav-recruit" onclick="closeMenu()">NOUS RECRUTONS</a>
+      <a href="https://github.com/papiche/Astroport.ONE" target="_blank" onclick="closeMenu()">GITHUB</a>
+    </div>
+
+    <!-- Le bouton Cyber/Solar reste toujours visible -->
     <div class="tog-wrap" onclick="toggleTheme()">
       <span class="tl active-cyber" id="tlc">CYBER</span>
       <div class="tog-track"><div class="tog-thumb" id="tthumb"></div></div>
       <span class="tl" id="tls">SOLAR</span>
     </div>
+
+    <!-- Bouton Hamburger (visible uniquement sur mobile) -->
+    <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">☰</button>
   </div>
 </nav>
 
@@ -345,14 +555,146 @@ body.sp #mm-ttl{color:#7fd67f;}
   <div class="sec-label">// SERVICES PUBLIÉS</div>
   <h2>DRAGONS & SERVICES</h2>
   <div class="sep"></div>
-  <p>Les <strong>Dragons</strong> sont les services publiés par chaque station, annoncés via NOSTR et accessibles aux pairs de la Constellation. Ils orbitent autour des nœuds dans la visualisation — chaque couleur représente un service.</p>
+  <p>Les <strong>Dragons</strong> sont les services publiés par chaque station. Gérés par <code>astrosystemctl</code>, ils orbitent autour des nœuds et transitent via des tunnels IPFS P2P chiffrés. Votre station peut héberger ses propres Dragons (si elle est puissante) ou se connecter silencieusement à ceux de l'essaim.</p>
+  
   <div class="dgrid">
-    <div class="dcard"><span class="di">🤖</span><h4>OLLAMA</h4><p>IA locale souveraine. LLM on-premise.</p></div>
-    <div class="dcard"><span class="di">☁️</span><h4>NEXTCLOUD</h4><p>Stockage et collaboration décentralisés.</p></div>
-    <div class="dcard"><span class="di">🔐</span><h4>SSH TUNNEL</h4><p>Accès sécurisé pair-à-pair sans VPN centralisé.</p></div>
-    <div class="dcard"><span class="di">🌐</span><h4>IPFS GATEWAY</h4><p>Passerelle vers le web permanent.</p></div>
-    <div class="dcard"><span class="di">📡</span><h4>NOSTR RELAY</h4><p>Relais d'événements Gossip Protocol.</p></div>
-    <div class="dcard"><span class="di">🗺️</span><h4>UMAP/UPLANET</h4><p>Cartographie des Constellations.</p></div>
+    <div class="dcard">
+      <span class="di">🤖</span>
+      <h4>BRO</h4>
+      <p>IA locale souveraine. LLM on-premise sans censure.</p>
+    </div>
+    <div class="dcard">
+      <span class="di">🎨</span>
+      <h4>COMFYUI</h4>
+      <p>Génération d'images & vidéos propulsée par votre GPU.</p>
+    </div>
+    <div class="dcard">
+      <span class="di">💬</span>
+      <h4>OPEN WEBUI</h4>
+      <p>Interface unifiée pour converser avec les IA de l'essaim.</p>
+    </div>
+    <div class="dcard">
+      <span class="di">🧠</span>
+      <h4>QDRANT</h4>
+      <p>Base vectorielle. La mémoire RAG de votre station.</p>
+    </div>
+    <div class="dcard">
+      <span class="di">☁️</span>
+      <h4>NEXTCLOUD</h4>
+      <p>Votre cloud privé. 128Go de stockage collaboratif.</p>
+    </div>
+    <div class="dcard">
+      <span class="di">🔍</span>
+      <h4>VANE</h4>
+      <p>Moteur de recherche IA connecté au web (type Perplexity).</p>
+    </div>
+    <div class="dcard">
+      <span class="di">🗣️</span>
+      <h4>ORPHEUS</h4>
+      <p>Synthèse vocale (TTS) locale pour la messagerie audio.</p>
+    </div>
+    <div class="dcard">
+      <span class="di">📻</span>
+      <h4>ICECAST</h4>
+      <p>Webradio et streaming audio P2P au sein de l'essaim.</p>
+    </div>
+    <div class="dcard">
+      <span class="di">🖥️</span>
+      <h4>WEBTOP</h4>
+      <p>Bureau virtuel Linux accessible directement via navigateur.</p>
+    </div>
+    <div class="dcard">
+      <span class="di">🔐</span>
+      <h4>TUNNEL SSH</h4>
+      <p>Accès admin pair-à-pair chiffré, sans VPN centralisé.</p>
+    </div>
+    <div class="dcard">
+      <span class="di">🌐</span>
+      <h4>IPFS KUBO</h4>
+      <p>La passerelle du web permanent hébergeant votre uDRIVE.</p>
+    </div>
+    <div class="dcard">
+      <span class="di">📡</span>
+      <h4>STRFRY</h4>
+      <p>Le relais NOSTR. Cœur social et signalisation du réseau.</p>
+    </div>
+  </div>
+</section>
+
+<hr>
+<section class="sec" id="ecosystem">
+  <div class="sec-label">// APPLICATIONS WEB3 SOUVERAINES</div>
+  <h2>L'ÉCOSYSTÈME UPLANET</h2>
+  <div class="sep"></div>
+  <p>En reprenant le contrôle de la clé aléatoire qui sécurise vos connexions (le "s" de "https"), vous parlez enfin d'égal à égal sur le web. À l'aide de vos clés API et cookies, votre <strong>AstroBot</strong> devient une réplique numérique vivante de vous-même dans le cyber-espace.</p>
+  
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🆔</div>
+      <h3>MULTIPASS & WOT.V2</h3>
+      <p>Votre identité souveraine. Une simple adresse email active votre MULTIPASS (ex: <code>/ipns/votre.email.astroport.one</code>). Ralliez 5 amis, visez une vingtaine de contacts locaux pour activer les fonctions de groupe de la Toile de Confiance.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📺</div>
+      <h3>NOSTRTUBE & VOCALS</h3>
+      <p>Nos plateformes vidéo et audio (via VDO.NINJA). Quel meilleur exemple concret que d'enregistrer l'expérience elle-même ? Naviguez librement, et choisissez vous-même ce que vous faites de votre historique.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">👛</div>
+      <h3>ZELKOVA (WALLET ẐEN)</h3>
+      <p>L'application portefeuille pour les membres de l'essaim. Sur UPlanet, <strong>1 Ẑ = 1 like</strong> ! Tous les euros reçus sont tracés sur la blockchain Duniter, permettant une micro-économie circulaire transparente.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🤝</div>
+      <h3>CROWDFUNDING COMMUNS</h3>
+      <p>Repérez des investissements (votre appart, une grange, une forêt, un jardin) et financez-les collectivement. La valeur est inscrite au registre notarié du collectif pour mettre ces biens en commun.</p>
+    </div>
+  </div>
+</section>
+
+<hr>
+<section class="sec" id="soutien">
+  <div class="sec-label">// OPEN COLLECTIVE</div>
+  <h2>DEVENIR PARRAIN & FINANCER LE RÉSEAU</h2>
+  <div class="sep"></div>
+  <p>Astroport.ONE est propulsé par le collectif G1FabLab. Vos dons en euros sur OpenCollective sont convertis en ẐEN : <strong>1/3 pour votre MULTIPASS, 2/3 pour la coopérative</strong> (inscrits sur votre ZEN Card). <em>Important : Utilisez le même email sur OpenCollective et votre MULTIPASS.</em></p>
+
+  <div class="tiers">
+    <div class="tier">
+      <h3>USAGER ACTIF</h3>
+      <div class="price">Recharge MULTIPASS</div>
+      <ul>
+        <li>Achat de crédits d'usage</li>
+        <li>1 ẐEN = 1 Like sur le réseau</li>
+        <li>Soutien à la R&D du G1FabLab</li>
+      </ul>
+      <a href="https://opencollective.com/monnaie-libre/contribute/adhesion-5eur-mois-4726" target="_blank" class="tier-btn">5€ / MOIS</a>
+      <a href="https://opencollective.com/monnaie-libre/projects/coeurbox/contribute/cotisation-services-cloud-usage-98388" target="_blank" class="tier-btn" style="margin-top:10px;background:transparent">DON PONCTUEL</a>
+    </div>
+
+    <div class="tier">
+      <h3>PARRAIN U.SOCIETY</h3>
+      <div class="price">Soutien Infrastructure</div>
+      <ul>
+        <li>uDRIVE 128Go + NextCloud</li>
+        <li>Ou Module IA + GPU (accès #BRO)</li>
+        <li>Statut de co-bâtisseur coopératif</li>
+      </ul>
+      <a href="https://opencollective.com/monnaie-libre/contribute/parrainage-infrastructure-extension-128-go-98386" target="_blank" class="tier-btn">PARRAINER (NEXTCLOUD)</a>
+      <a href="https://opencollective.com/monnaie-libre/contribute/parrainage-infrastructure-module-gpu-1-24-98385" target="_blank" class="tier-btn" style="margin-top:10px">PARRAINER (IA / GPU)</a>
+    </div>
+
+    <div class="tier">
+      <h3>ARMATEUR</h3>
+      <div class="price">Financer une Station</div>
+      <ul>
+        <li>Déploiement d'un nouveau nœud</li>
+        <li>Station Satellite Complète</li>
+        <li>Ou Station Deluxe GPU</li>
+      </ul>
+      <a href="https://opencollective.com/monnaie-libre/projects/coeurbox/contribute/love-box-le-claude-53061" target="_blank" class="tier-btn">STATION SATELLITE</a>
+      <a href="https://opencollective.com/monnaie-libre/projects/coeurbox/contribute/love-box-deluxe-gpu-49182" target="_blank" class="tier-btn" style="margin-top:10px">STATION GPU</a>
+    </div>
   </div>
 </section>
 
@@ -420,15 +762,27 @@ body.sp #mm-ttl{color:#7fd67f;}
 </section>
 
 <div class="cta">
-  <h2>REJOINDRE L'ESSAIM</h2>
-  <p>Vous avez un Raspberry Pi 5, un vieux PC ou un serveur ? Devenez un nœud Astroport.ONE. Hébergez vos propres Dragons, participez à l'économie ẐEN.</p>
+  <h2>ENTRER DANS LA ZONE ALPHA</h2>
+  <p>Vous avez un Raspberry Pi 5, un vieux PC ou un serveur ? Lancez cette commande pour rejoindre la Constellation ORIGIN et initier votre nœud.</p>
+  
+  <div class="install-cmd">
+    bash &lt;(curl -sL https://install.astroport.com)
+  </div>
+
+  <div class="alpha-box">
+    <h4>⚠️ ZONE DE CHANTIER (PHASE ALPHA)</h4>
+    <p>Pas de panique, tout ne fonctionne pas parfaitement... c'est expliqué, sûrement mal, ou trop peu... et c'est pour ça qu'on a besoin de vous !</p>
+    <p>L'objectif : comprendre et améliorer l'expérience utilisateur. Pour nous aider, utilisez le bouton <strong>"Un Bug ? Une amélioration ?"</strong> présent sur les interfaces, contactez <code>support@qo-op.com</code>, ou retrouvez-nous sur Coracle.</p>
+  </div>
+
   <div class="cta-btns">
-    <a href="https://github.com/papiche/Astroport.ONE" target="_blank" class="btn-p">INSTALLER ASTROPORT.ONE</a>
-    <a href="https://github.com/papiche/Astroport.ONE/blob/master/docs/DRAGONS_and_TUNNELS.md" target="_blank" class="btn-s">DOC DRAGONS →</a>
+    <a href="https://github.com/papiche/Astroport.ONE" target="_blank" class="btn-s">CODE SOURCE</a>
+    <a href="https://qo-op.com" target="_blank" class="btn-s">UPLANET ORIGIN</a>
+    <a href="install.html" class="btn-recruit">NOUS RECRUTONS !!</a>
   </div>
 </div>
 
-<footer>© 2024 Astroport.ONE · <a href="#">AGPL v3</a> · <a href="https://github.com/papiche/Astroport.ONE" target="_blank">GitHub</a> · Infrastructure as Choreography</footer>
+<footer>© 2024 Astroport.ONE · <a href="#">AGPL v3</a> · <a href="https://github.com/papiche/Astroport.ONE" target="_blank">GitHub</a> · Infrastructure as Choreography <a href="./atom4peace/" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></footer>
 
 </div><!-- /sections -->
 
@@ -444,6 +798,20 @@ body.sp #mm-ttl{color:#7fd67f;}
 </div>
 
 <script>
+// ── MENU MOBILE SETUP ──
+function toggleMenu() {
+  const nav = document.getElementById('nav-links');
+  const btn = document.getElementById('menu-btn');
+  nav.classList.toggle('open');
+  // Change l'icône : Hamburger ☰ <=> Croix ✕
+  btn.innerHTML = nav.classList.contains('open') ? '✕' : '☰';
+}
+
+function closeMenu() {
+  // Ferme le menu quand on clique sur un lien
+  document.getElementById('nav-links').classList.remove('open');
+  document.getElementById('menu-btn').innerHTML = '☰';
+}
 // ── THREE.JS SETUP ──
 const cvs = document.getElementById('canvas3d');
 const W=()=>cvs.clientWidth, H=()=>cvs.clientHeight;

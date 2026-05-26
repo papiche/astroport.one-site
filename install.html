@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devenir Armateur — Astroport.ONE</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:#050a12;color:#e0f0ff;font-family:'Segoe UI',sans-serif;overflow-x:hidden;}
+body.sp{background:#0d1a0d;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;height:52px;
+  background:rgba(5,10,18,0.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(0,245,255,0.12);transition:background .5s;
+}
+body.sp nav{background:rgba(13,26,13,0.85);border-color:rgba(127,214,127,0.12);}
+.logo{font-family:'Courier New',monospace;font-size:1rem;color:#00f5ff;letter-spacing:3px;font-weight:700;text-decoration:none;}
+.logo span{color:#00ff88;}
+body.sp .logo{color:#7fd67f;}
+.nav-right{display:flex;align-items:center;gap:1.2rem;}
+nav a{color:rgba(255,255,255,0.5);text-decoration:none;font-size:.78rem;letter-spacing:1px;transition:color .2s;}
+nav a:hover{color:#00f5ff;}
+body.sp nav a:hover{color:#7fd67f;}
+
+/* ── TOGGLE ── */
+.tog-wrap{display:flex;align-items:center;gap:7px;cursor:pointer;}
+.tl{font-size:.65rem;letter-spacing:1px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.4);}
+.tl.active-cyber{color:#00f5ff;}
+.tl.active-solar{color:#7fd67f;}
+.tog-track{width:42px;height:21px;border-radius:11px;background:rgba(0,245,255,0.1);border:1px solid #00f5ff;position:relative;transition:all .4s;}
+.tog-thumb{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#00f5ff;transition:all .4s;}
+body.sp .tog-track{border-color:#7fd67f;background:rgba(127,214,127,0.1);}
+body.sp .tog-thumb{left:23px;background:#7fd67f;}
+
+/* ── HEADER PAGE ── */
+.page-header {
+  padding: 8rem 2rem 3rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(0,245,255,0.05) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(0,245,255,0.1);
+}
+body.sp .page-header {
+  background: linear-gradient(180deg, rgba(127,214,127,0.05) 0%, transparent 100%);
+  border-bottom-color: rgba(127,214,127,0.1);
+}
+h1{font-family:'Courier New',monospace;font-size:2.5rem;color:#00f5ff;letter-spacing:3px;margin-bottom:1rem;}
+body.sp h1{color:#7fd67f;}
+.header-sub{font-size:1rem;color:rgba(255,255,255,0.6);line-height:1.75;max-width:600px;margin:0 auto;}
+
+/* ── CONTENT ── */
+.sections{position:relative;z-index:10;}
+.sec{padding:4rem 2rem;max-width:1050px;margin:0 auto;}
+.sec-label{font-family:'Courier New',monospace;font-size:.62rem;color:#00ff88;letter-spacing:4px;margin-bottom:.4rem;}
+body.sp .sec-label{color:#e8d44d;}
+h2{font-family:'Courier New',monospace;font-size:1.8rem;color:#00f5ff;margin-bottom:.8rem;letter-spacing:2px;}
+body.sp h2{color:#7fd67f;}
+.sep{width:50px;height:2px;background:#00f5ff;margin-bottom:1.5rem;}
+body.sp .sep{background:#7fd67f;}
+p{color:rgba(255,255,255,0.65);line-height:1.8;margin-bottom:1.2rem;font-size:.95rem;}
+strong{color:#fff;}
+a.link-hl { color: #00f5ff; text-decoration: none; border-bottom: 1px dotted #00f5ff; transition: all 0.2s;}
+a.link-hl:hover { background: rgba(0,245,255,0.1); }
+body.sp a.link-hl { color: #7fd67f; border-bottom-color: #7fd67f; }
+body.sp a.link-hl:hover { background: rgba(127,214,127,0.1); }
+
+/* ── INSTALL CMD ── */
+.install-cmd {
+  background: #000;
+  border: 1px dashed rgba(0, 245, 255, 0.4);
+  padding: 1.2rem;
+  border-radius: 4px;
+  display: block;
+  margin: 2rem auto;
+  max-width: 800px;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  color: #00f5ff;
+  user-select: all;
+  text-align: center;
+}
+body.sp .install-cmd {
+  border-color: rgba(127, 214, 127, 0.4);
+  color: #7fd67f;
+}
+
+/* ── CARDS (Steps & Options) ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem;}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:1.5rem;margin-top:2rem;}
+@media(max-width:650px){.grid-2, .grid-3{grid-template-columns:1fr;}}
+
+.step-card {
+  padding: 1.8rem;
+  background: rgba(0,245,255,0.03);
+  border: 1px solid rgba(0,245,255,0.15);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+}
+body.sp .step-card {
+  background: rgba(127,214,127,0.03);
+  border-color: rgba(127,214,127,0.15);
+}
+.step-card h3 {
+  font-family: 'Courier New', monospace;
+  color: #00f5ff;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+body.sp .step-card h3 { color: #7fd67f; }
+.step-card .num {
+  background: #00f5ff; color: #000;
+  width: 24px; height: 24px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: bold; flex-shrink: 0;
+}
+body.sp .step-card .num { background: #7fd67f; }
+.step-card p { font-size: 0.85rem; margin-bottom: 0; flex-grow: 1; }
+.step-card ul { list-style: none; margin-top: 1rem; }
+.step-card ul li { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; display: flex; gap: 8px;}
+.step-card ul li::before { content: '→'; color: #00ff88; font-weight: bold; }
+body.sp .step-card ul li::before { color: #e8d44d; }
+
+/* ── HIGHLIGHTS & INFO BOXES ── */
+.huge-val {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #00ff88;
+  display: block;
+  margin: 1rem 0 0.5rem;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 10px rgba(0,255,136,0.3);
+}
+body.sp .huge-val { color: #e8d44d; text-shadow: 0 0 10px rgba(232,212,77,0.3); }
+
+.info-box{
+  background:rgba(0,255,136,0.05);border-left:3px solid #00ff88;
+  padding:1.5rem;margin:2rem 0;border-radius:0 4px 4px 0;
+}
+body.sp .info-box{background:rgba(232,212,77,0.05);border-color:#e8d44d;}
+.info-box h4{color:#00ff88;font-family:'Courier New',monospace;letter-spacing:1px;margin-bottom:.5rem;}
+body.sp .info-box h4{color:#e8d44d;}
+.info-box p{font-size:.88rem;margin-bottom:0;}
+
+/* FOOTER */
+footer{text-align:center;padding:2rem;font-family:'Courier New',monospace;font-size:.7rem;color:rgba(255,255,255,0.25);border-top:1px solid rgba(255,255,255,0.05);}
+footer a{color:#00f5ff;text-decoration:none;}
+body.sp footer a{color:#7fd67f;}
+
+/* MENU MOBILE */
+.nav-links { display: flex; align-items: center; gap: 1.2rem; }
+.menu-btn {
+  display: none; background: none; border: none;
+  color: #00f5ff; font-size: 1.5rem; cursor: pointer;
+  padding-left: 0.5rem; transition: color 0.3s;
+}
+body.sp .menu-btn { color: #7fd67f; }
+
+@media(max-width: 850px) {
+  .menu-btn { display: block; }
+  .nav-links {
+    position: absolute; top: 52px; left: 0; right: 0;
+    background: rgba(5,10,18,0.95); backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(0,245,255,0.15);
+    flex-direction: column; padding: 1.5rem 0; gap: 1.5rem;
+    transform: translateY(-150%); opacity: 0; visibility: hidden;
+    transition: all 0.4s ease; z-index: -1;
+  }
+  .nav-links.open { transform: translateY(0); opacity: 1; visibility: visible; }
+  body.sp .nav-links { background: rgba(13,26,13,0.95); border-color: rgba(127,214,127,0.15); }
+}
+</style>
+</head>
+<body id="body">
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">ASTRO<span>PORT</span>.ONE</a>
+  <div class="nav-right">
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" onclick="closeMenu()">← RETOUR AU SITE</a>
+    </div>
+    <div class="tog-wrap" onclick="toggleTheme()">
+      <span class="tl active-cyber" id="tlc">CYBER</span>
+      <div class="tog-track"><div class="tog-thumb" id="tthumb"></div></div>
+      <span class="tl" id="tls">SOLAR</span>
+    </div>
+    <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">☰</button>
+  </div>
+</nav>
+
+<header class="page-header">
+  <h1>NOUS RECRUTONS DES ARMATEURS ET CAPITAINES</h1>
+  <p class="header-sub">Transformez votre matériel dormant en infrastructure rétribuée. Contribuez à l'écosystème UPlanet, gagnez des ẐEN, et formez-vous à la souveraineté numérique.</p>
+</header>
+
+<div class="sections">
+
+<section class="sec">
+  <div class="sec-label">// DÉMYSTIFICATION</div>
+  <h2>LA PEUR DE LA FACTURE D'ÉLECTRICITÉ</h2>
+  <div class="sep"></div>
+  <p>Beaucoup hésitent à laisser tourner un ordinateur ou un Raspberry Pi 24h/24 par peur du coût électrique. <strong>C'est un mythe.</strong></p>
+  <p>Un Raspberry Pi 5 consomme environ 5 Watts. Sur une année complète, cela représente <strong>moins de 15 € d'électricité</strong> (à peine plus d'1€ par mois). Un vieux PC portable recyclé en serveur consommera souvent moins que la box TV de votre FAI en veille.</p>
+  
+  <div class="info-box">
+    <h4>LA RÉCOMPENSE DE BASE : 1xPAF</h4>
+    <p>En hébergeant une station légère (Raspberry), vous devenez <strong>Armateur</strong>. Le protocole vous verse automatiquement une Participation Aux Frais (PAF) de <strong>14 ẐEN par semaine</strong>. Cette compensation couvre très largement vos frais réels d'électricité et d'usure matérielle.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-label">// À CHACUN SON MATÉRIEL</div>
+  <h2>VOTRE PROFIL, VOS AVANTAGES</h2>
+  <div class="sep"></div>
+  <p>La rétribution d'un nœud Astroport est proportionnelle à sa puissance (RAM, CPU, et surtout VRAM GPU). Voici ce que vous pouvez gagner selon votre profil :</p>
+
+  <div class="grid-3">
+    <div class="step-card">
+      <h3><span class="num">🎮</span> GAMER (Windows / Linux)</h3>
+      <p>Vous avez une grosse carte graphique pour jouer ? Ne la laissez pas dormir ! En installant Astroport (dual-boot ou Linux), la VRAM fait exploser votre Power-Score.</p>
+      <span class="huge-val">Jusqu'à 75 Ẑ / sem</span>
+      <ul>
+        <li>PAF Armateur jusqu'à 25 Ẑ/sem</li>
+        <li>Rétribution Capitaine (2x PAF) : 50 Ẑ/sem</li>
+        <li><strong>Total : ~300 Ẑ / mois !</strong></li>
+        <li>Idéal pour faire tourner ComfyUI et les LLMs (Ollama) pour le reste de l'essaim.</li>
+      </ul>
+    </div>
+    
+    <div class="step-card">
+      <h3><span class="num">💻</span> DÉVELOPPEUR</h3>
+      <p>Faites tourner un nœud de développement pour construire l'avenir du web P2P. La puissance de votre machine de DEV est valorisée par le réseau.</p>
+      <span class="huge-val">Jusqu'à 105 Ẑ / sem</span>
+      <ul>
+        <li>PAF Machine DEV : 35 Ẑ/sem</li>
+        <li>Rétribution Capitaine : 70 Ẑ/sem</li>
+        <li><strong>Conversion Fiat :</strong> Envoyez vos factures à OpenCollective pour convertir vos Ẑen en Euros ! <br><br><a href="https://opencollective.com/monnaie-libre/updates/troczen-comment-on-concilie-code-libre-travail-humain-et-factures" target="_blank" class="link-hl">Lire comment concilier code libre et factures →</a></li>
+      </ul>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="num">🍎</span> UTILISATEUR MAC</h3>
+      <p>Apple verrouille son écosystème. L'installation native Astroport n'est pas encore 100% compatible macOS. <strong>Mais vous pouvez nous aider !</strong></p>
+      <span class="huge-val">Appel à l'aide</span>
+      <ul>
+        <li>Aidez le collectif à compiler l'application Zelkova (wallet Ẑen) pour iOS.</li>
+        <li><strong>Le conseil libriste :</strong> Fuyez les prisons dorées. Plébiscitez les téléphones libres comme les <em>FairPhone</em> tournant sous <em>/e/OS</em>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-label">// L'ACADÉMIE DES CAPITAINES</div>
+  <h2>FORMATION CONTINUE & ENTRAIDE P2P</h2>
+  <div class="sep"></div>
+  <p>Devenir Capitaine, ce n'est pas être laissé seul face à un écran noir. <strong>Tous les Capitaines se forment entre eux et constituent la base documentaire du réseau en temps réel.</strong> Mieux que les IA fermées des GAFAM, nous élevons nos propres modèles <em>Open Source / Open Weight</em> et partageons nos savoirs.</p>
+
+  <div class="grid-3">
+    <div class="step-card" style="background:transparent;">
+      <h3 style="color:#fff;">WoTx2 (Certification)</h3>
+      <p>La Toile de Confiance des compétences. Vous apprenez Linux, Bash ou le réseau IPFS ? Faites-vous certifier (Adoubement) par un pair. Vous débloquez des badges cryptographiques officiels. <br><br><a href="https://github.com/papiche/Astroport.ONE/blob/master/docs/reference/WOTX2_SYSTEM.md" target="_blank" class="link-hl">Doc WoTx2 →</a></p>
+    </div>
+    <div class="step-card" style="background:transparent;">
+      <h3 style="color:#fff;">MineLife (Savoir partagé)</h3>
+      <p>Notre Wikipédia décentralisé assemblé par les pairs. Chaque tutoriel, chaque découverte que vous documentez enrichit la base de connaissances commune (indexée par Qdrant) et interrogeable par l'IA #BRO.<br><br><a href="https://github.com/papiche/Astroport.ONE/blob/master/docs/how-to/MINELIFE.md" target="_blank" class="link-hl">Doc MineLife →</a></p>
+    </div>
+    <div class="step-card" style="background:transparent;">
+      <h3 style="color:#fff;">Grimoire Live (Vidéos)</h3>
+      <p>Dès que vous validez une compétence, le système "Grimoire" compile automatiquement une courte vidéo de votre réussite. Vous pouvez aussi lancer des Live de formation P2P enregistrés et publiés sur NOSTR.<br><br><a href="https://github.com/papiche/Astroport.ONE/blob/master/docs/how-to/GRIMOIRE_LIVE.md" target="_blank" class="link-hl">Doc Grimoire Live →</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-label">// PROCÉDURE</div>
+  <h2>L'INSTALLATION EN 3 ÉTAPES</h2>
+  <div class="sep"></div>
+  <p>Que vous vouliez être simple Armateur ou devenir Capitaine, le début de l'aventure tient en une ligne de commande :</p>
+
+  <div class="install-cmd">
+    bash &lt;(curl -sL https://install.astroport.com)
+  </div>
+
+  <div class="grid-2">
+    <div class="step-card">
+      <h3><span class="num">1</span> Lancer le script</h3>
+      <p>Ouvrez un terminal sur votre machine Linux (Debian, Ubuntu, Mint) et collez la commande. Le script installe Docker, gère le réseau et vous laisse choisir votre profil d'installation (Standard, IA, Nextcloud).</p>
+    </div>
+    
+    <div class="step-card">
+      <h3><span class="num">2</span> Créer son MULTIPASS</h3>
+      <p>Ouvrez votre navigateur web sur <code>http://127.0.0.1:54321/g1</code>. Saisissez votre adresse email. Le système génère automatiquement vos clés cryptographiques souveraines.</p>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top: 1.5rem; border-color:#ff4488; background:rgba(255,68,136,0.05);">
+    <h4 style="color:#ff4488;"><span class="num" style="display:inline-block;background:transparent;border:1px solid currentColor;border-radius:50%;width:20px;height:20px;text-align:center;line-height:18px;margin-right:8px;">3</span> Rencontrer la Constellation</h4>
+    <p>Copiez votre clé secrète <strong><code>nsec</code></strong> générée. C'est elle qui vous permettra de rencontrer un Capitaine de la constellation (sur NOSTR ou par email à <em>support@qo-op.com</em>) pour officialiser l'entrée de votre machine. Si vous souhaitez en rester là, vous toucherez vos 1xPAF d'Armateur. Si vous voulez aller plus loin, commencez votre formation de Capitaine !</p>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  © 2024-2026 Astroport.ONE · <a href="https://github.com/papiche/Astroport.ONE" target="_blank">Code Source AGPL v3</a> <a href="./atom4peace/" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+</footer>
+
+<script>
+// THEME TOGGLE
+let isSolar=false;
+function toggleTheme(){
+  isSolar=!isSolar;
+  document.getElementById('body').classList.toggle('sp',isSolar);
+  document.getElementById('tlc').className='tl'+(isSolar?'':' active-cyber');
+  document.getElementById('tls').className='tl'+(isSolar?' active-solar':'');
+}
+// MENU MOBILE SETUP
+function toggleMenu() {
+  const nav = document.getElementById('nav-links');
+  const btn = document.getElementById('menu-btn');
+  nav.classList.toggle('open');
+  btn.innerHTML = nav.classList.contains('open') ? '✕' : '☰';
+}
+function closeMenu() {
+  document.getElementById('nav-links').classList.remove('open');
+  document.getElementById('menu-btn').innerHTML = '☰';
+}
+</script>
+
+</body>
+</html>
