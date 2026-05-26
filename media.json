@@ -6,12 +6,6 @@
 }
 ,
 {
-  "url": "video/Cosmos_Conscience.mp4",
-  "type": "video",
-  "title": "Cosmos_Conscience"
-}
-,
-{
   "url": "video/FluffyRabbitStamping.mp4",
   "type": "video",
   "title": "FluffyRabbitStamping"
@@ -21,12 +15,6 @@
   "url": "video/Heartbleed___Deux_Voies.mp4",
   "type": "video",
   "title": "Heartbleed___Deux_Voies"
-}
-,
-{
-  "url": "video/Le_champ_du_point_zéro.mp4",
-  "type": "video",
-  "title": "Le_champ_du_point_zéro"
 }
 ,
 {
@@ -63,11 +51,5 @@
   "url": "pdf/UPlanet_Sovereignty_Blueprint.pdf",
   "type": "pdf",
   "title": "UPlanet_Sovereignty_Blueprint"
-}
-,
-{
-  "url": "pdf/Unified_Resonance.pdf",
-  "type": "pdf",
-  "title": "Unified_Resonance"
 }
 ]
