@@ -460,6 +460,40 @@ body.sp #mm-ttl{color:#7fd67f;}
 .mm-cls:hover{color:#fff;border-color:#fff;}
 #mm-body{flex:1;position:relative;background:#000;}
 #mm-body iframe,#mm-body video{position:absolute;inset:0;width:100%;height:100%;border:none;display:block;}
+
+/* ── LIVE MODE ── */
+.live-btn{
+  background:transparent;border:1px solid rgba(0,255,136,0.3);
+  color:rgba(0,255,136,0.5);font-family:'Courier New',monospace;
+  font-size:.62rem;letter-spacing:1px;padding:3px 9px;border-radius:2px;
+  cursor:pointer;transition:all .3s;white-space:nowrap;
+}
+.live-btn:hover{border-color:rgba(0,255,136,0.7);color:#00ff88;}
+.live-btn.active{
+  background:rgba(0,255,136,0.1);border-color:#00ff88;color:#00ff88;
+  animation:pulse-live 1.8s infinite;
+}
+body.sp .live-btn{border-color:rgba(127,214,127,0.3);color:rgba(127,214,127,0.5);}
+body.sp .live-btn.active{border-color:#7fd67f;color:#7fd67f;background:rgba(127,214,127,0.1);}
+@keyframes pulse-live{
+  0%{box-shadow:0 0 0 0 rgba(0,255,136,0.5);}
+  70%{box-shadow:0 0 0 7px rgba(0,255,136,0);}
+  100%{box-shadow:0 0 0 0 rgba(0,255,136,0);}
+}
+#live-bar{
+  display:none;position:fixed;top:52px;left:0;right:0;z-index:450;
+  background:rgba(0,255,136,0.05);border-bottom:1px solid rgba(0,255,136,0.15);
+  padding:4px 1.5rem;font-family:'Courier New',monospace;font-size:.6rem;
+  color:rgba(0,255,136,0.8);letter-spacing:1px;
+  align-items:center;gap:1rem;flex-wrap:wrap;
+}
+body.sp #live-bar{background:rgba(127,214,127,0.05);border-color:rgba(127,214,127,0.15);color:rgba(127,214,127,0.8);}
+#live-relay-input{
+  background:rgba(0,0,0,0.4);border:1px solid rgba(0,255,136,0.25);
+  color:#00ff88;font-family:'Courier New',monospace;font-size:.6rem;
+  padding:2px 7px;border-radius:2px;width:250px;outline:none;
+}
+body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
 </style>
 </head>
 <body id="body">
@@ -487,10 +521,23 @@ body.sp #mm-ttl{color:#7fd67f;}
       <span class="tl" id="tls">SOLAR</span>
     </div>
 
+    <!-- Bouton LIVE — stations NOSTR réelles -->
+    <button class="live-btn" id="live-btn" onclick="toggleLive()" title="Afficher les vraies stations de la constellation">⬤ LIVE</button>
+
     <!-- Bouton Hamburger (visible uniquement sur mobile) -->
     <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">☰</button>
   </div>
 </nav>
+
+<!-- Barre de statut LIVE -->
+<div id="live-bar">
+  <span style="font-weight:700;letter-spacing:2px;">⬤ LIVE NOSTR</span>
+  <input id="live-relay-input" type="text" value="wss://relay.copylaradio.com"
+    placeholder="wss://relay…" title="Relay NOSTR — modifiable" />
+  <span id="live-count" style="color:rgba(255,255,255,0.45);">0 station</span>
+  <span id="live-status">Connexion…</span>
+  <a id="live-swarm-link" href="#" style="display:none;color:inherit;text-decoration:none;margin-left:auto;" title="Voir dashboard économique"></a>
+</div>
 
 <!-- TOOLTIP -->
 <div id="tt">
@@ -797,6 +844,20 @@ body.sp #mm-ttl{color:#7fd67f;}
   </div>
 </div>
 
+<!-- ── Libs UPlanet (heartbox, coop-config, nostr, feedback)
+     Chemin relatif ../copylaradio.com/ si servi via /ipns/ sur la gateway,
+     sinon chemin absolu vers la gateway coopérative. ── -->
+<script>
+(function(){
+  var _base = window.location.pathname.startsWith('/ipns/')
+    ? '../copylaradio.com/'
+    : '//ipfs.copylaradio.com/ipns/copylaradio.com/';
+  ['nostr.bundle.js','heartbox.js','feedback.js'].forEach(function(lib){
+    document.write('<scr'+'ipt src="'+_base+lib+'"><\/scr'+'ipt>');
+  });
+})();
+</script>
+
 <script>
 // ── MENU MOBILE SETUP ──
 function toggleMenu() {
@@ -864,6 +925,10 @@ function rPeer(){return 'Qm'+Math.random().toString(36).substr(2,8).toUpperCase(
 const rotG=new THREE.Group();
 rotG.add(globe);rotG.add(atm);
 scene.add(rotG);
+
+/* Calque LIVE — tourne avec le globe */
+const liveGroup=new THREE.Group();
+rotG.add(liveGroup);
 
 const nodes=[],nMesh=[],glowM=[];
 for(let i=0;i<12;i++){
@@ -941,12 +1006,16 @@ hero.addEventListener('touchmove',e=>{
 // ── RAYCASTER ──
 const ray=new THREE.Raycaster();
 const mouse=new THREE.Vector2(-9999,-9999);
-let ttX=0,ttY=0,hovIdx=-1;
+let ttX=0,ttY=0,hovIdx=-1,liveHovId=null;
 const tt=document.getElementById('tt');
 
 hero.addEventListener('click',e=>{
   mouse.set((e.clientX/W())*2-1,-(e.clientY/H())*2+1);
   ray.setFromCamera(mouse,camera);
+  if(isLive&&liveMeshList.length>0){
+    const lhits=ray.intersectObjects(liveMeshList.map(n=>n.mesh));
+    if(lhits.length){openLivePanel(lhits[0].object.userData.station);return;}
+  }
   const hits=ray.intersectObjects(nMesh);
   if(hits.length)openPanel(hits[0].object.userData.ni);
   else closePanel();
@@ -985,6 +1054,9 @@ function toggleTheme(){
   parts.forEach(p=>p.material.color.setHex(pc));
 }
 
+// ── LIVE MODE — var (pas de TDZ contrairement à let/const) ──
+var isLive=false,liveDisconnect=null,liveMeshList=[];
+
 // ── ANIMATE ──
 const clock=new THREE.Clock();
 function animate(){
@@ -1018,21 +1090,66 @@ function animate(){
     d.position.copy(nMesh[ni].position.clone().add(t1.clone().multiplyScalar(Math.cos(d.userData.angle)*d.userData.or)).add(t2.clone().multiplyScalar(Math.sin(d.userData.angle)*d.userData.or)));
   });
 
-  // Tooltip
+  /* ── Nœuds LIVE ── */
+  if(isLive){
+    liveMeshList.forEach(function(n){
+      var off=Math.sin(t*.55+n.phase)*.09;
+      var dir=n.pos.clone().normalize().multiplyScalar(GLOBE_R+off);
+      n.mesh.position.copy(dir);n.glow.position.copy(dir);
+      n.glow.material.opacity=.05+Math.sin(t*.9+n.phase)*.03;
+      if(n.gpuDot){
+        n.gpuAngle+=.025;
+        var np=n.pos.clone().normalize();
+        var t1=new THREE.Vector3().crossVectors(np,new THREE.Vector3(0,1,0)).normalize();
+        var t2=new THREE.Vector3().crossVectors(np,t1).normalize();
+        var orb=n.mesh.geometry.parameters.radius*2.4;
+        n.gpuDot.position.copy(dir.clone()
+          .add(t1.clone().multiplyScalar(Math.cos(n.gpuAngle)*orb))
+          .add(t2.clone().multiplyScalar(Math.sin(n.gpuAngle)*orb)));
+      }
+    });
+  }
+
+  // Tooltip — priorité aux nœuds LIVE si actifs
   ray.setFromCamera(mouse,camera);
-  const hits=ray.intersectObjects(nMesh);
-  if(hits.length){
-    const idx=hits[0].object.userData.ni;
-    if(idx!==hovIdx){hovIdx=idx;const n=nodes[idx];
-      document.getElementById('tt-name').textContent=n.hostname.toUpperCase()+(n.isHub?' [HUB]':' [SAT]');
-      document.getElementById('tt-dot').style.background=n.health;
-      document.getElementById('tt-hl').textContent=n.healthLabel;
-      document.getElementById('tt-svc').textContent='⚡ '+n.services.join(' · ');
+  let tooltipHandled=false;
+  if(isLive&&liveMeshList.length>0){
+    const lhits=ray.intersectObjects(liveMeshList.map(n=>n.mesh));
+    if(lhits.length){
+      const s=lhits[0].object.userData.station;
+      const sid=s.stationId;
+      if(sid!==liveHovId){
+        liveHovId=sid;hovIdx=-1;
+        document.getElementById('tt-name').textContent=s.stationName+(s.hwTier==='brain'?' [HUB]':' [SAT]');
+        document.getElementById('tt-dot').style.background=healthToHex(s.healthStatus);
+        document.getElementById('tt-hl').textContent=s.healthStatus.toUpperCase().replace(/_/g,' ');
+        var vram=s.hwGpuVram||0,ram=s.hwRamGb||0,mem=Math.round(ram+vram);
+        var bil=(s.bilan>=0?'+':'')+s.bilan.toFixed(1)+'Ẑ';
+        document.getElementById('tt-svc').textContent='⚡'+(s.hwPowerScore||0)+'pts 💾'+mem+'Go · '+bil+' 👤'+s.multipassUsed;
+      }
+      tt.style.opacity='1';tt.style.left=(ttX+14)+'px';tt.style.top=(ttY-8)+'px';
+      liveMeshList.forEach(n=>n.mesh.scale.setScalar(n.station.stationId===sid?1.6:1));
+      tooltipHandled=true;
+    } else {
+      liveHovId=null;liveMeshList.forEach(n=>n.mesh.scale.setScalar(1));
     }
-    tt.style.opacity='1';tt.style.left=(ttX+14)+'px';tt.style.top=(ttY-8)+'px';
-    nMesh.forEach((m,i)=>m.scale.setScalar(i===idx?1.5:1));
-  } else {
-    hovIdx=-1;tt.style.opacity='0';nMesh.forEach(m=>m.scale.setScalar(1));
+  }
+  if(!tooltipHandled){
+    const hits=ray.intersectObjects(nMesh);
+    if(hits.length){
+      const idx=hits[0].object.userData.ni;
+      if(idx!==hovIdx){hovIdx=idx;const n=nodes[idx];
+        document.getElementById('tt-name').textContent=n.hostname.toUpperCase()+(n.isHub?' [HUB]':' [SAT]');
+        document.getElementById('tt-dot').style.background=n.health;
+        document.getElementById('tt-hl').textContent=n.healthLabel;
+        document.getElementById('tt-svc').textContent='⚡ '+n.services.join(' · ');
+      }
+      tt.style.opacity='1';tt.style.left=(ttX+14)+'px';tt.style.top=(ttY-8)+'px';
+      nMesh.forEach((m,i)=>m.scale.setScalar(i===idx?1.5:1));
+    } else {
+      hovIdx=-1;tt.style.opacity='0';
+      nMesh.forEach(m=>m.scale.setScalar(1));
+    }
   }
 
   renderer.render(scene,camera);
@@ -1043,6 +1160,243 @@ window.addEventListener('resize',()=>{
   renderer.setSize(W(),H());
   camera.aspect=W()/H();camera.updateProjectionMatrix();
 });
+
+// ── LIVE MODE — fonctions ────────────────────────────────────────────────
+
+/* Lat/lon → position 3D sur le globe (convention Three.js) */
+function latLonToVec3(lat,lon,r){
+  const phi=(90-lat)*Math.PI/180;
+  const theta=(lon+180)*Math.PI/180;
+  return new THREE.Vector3(
+    -r*Math.sin(phi)*Math.cos(theta),
+     r*Math.cos(phi),
+     r*Math.sin(phi)*Math.sin(theta)
+  );
+}
+
+/* Couleur hex d'un statut de santé */
+function healthToHex(status){
+  const m={healthy:'#00ff88',warning:'#ffd32a',critical:'#ff4757',
+            volunteer:'#cc77ff',rnd_solidarity:'#00d4ff',
+            assets_solidarity:'#7bed9f',growth_slowdown:'#ffd32a'};
+  return m[status]||'#808090';
+}
+function healthToInt(status){return parseInt(healthToHex(status).slice(1),16);}
+
+/* hwPowerScore → couleur (violet→bleu→cyan→vert→jaune→rouge) */
+function powerToColor(ps){
+  var stops=[[0,0x8844ff],[30,0x2288ff],[80,0x00d4ff],[150,0x00ff88],[300,0xffd32a],[600,0xff4444]];
+  if(ps<=stops[0][0])return stops[0][1];
+  if(ps>=stops[stops.length-1][0])return stops[stops.length-1][1];
+  for(var i=1;i<stops.length;i++){
+    if(ps<=stops[i][0]){
+      var t=(ps-stops[i-1][0])/(stops[i][0]-stops[i-1][0]);
+      var a=stops[i-1][1],b=stops[i][1];
+      var r=Math.round(((a>>16)&0xff)*(1-t)+((b>>16)&0xff)*t);
+      var g=Math.round(((a>>8)&0xff)*(1-t)+((b>>8)&0xff)*t);
+      var bl=Math.round((a&0xff)*(1-t)+(b&0xff)*t);
+      return (r<<16)|(g<<8)|bl;
+    }
+  }
+  return stops[stops.length-1][1];
+}
+
+/* Ajouter un nœud LIVE dans la scène */
+function addLiveNode(station){
+  var pos;
+  if(station.stationLat||station.stationLon){
+    pos=latLonToVec3(station.stationLat,station.stationLon,GLOBE_R);
+  } else {
+    var idx=liveMeshList.length;
+    var phi=Math.acos(1-2*(idx+.5)/Math.max(liveMeshList.length+20,30));
+    var th=Math.PI*(1+Math.sqrt(5))*idx;
+    pos=new THREE.Vector3(GLOBE_R*Math.sin(phi)*Math.cos(th),GLOBE_R*Math.cos(phi),GLOBE_R*Math.sin(phi)*Math.sin(th));
+  }
+  var isBrain=station.hwTier==='brain',isStd=station.hwTier==='standard';
+  var baseSz=isBrain?.38:isStd?.26:.16;
+  var mp=Math.max(station.multipassTotal||50,50);
+  var sz=baseSz*Math.sqrt(mp/250);
+  var powerCol=powerToColor(station.hwPowerScore||0);
+  var healthCol=healthToInt(station.healthStatus);
+  var mesh=new THREE.Mesh(
+    new THREE.SphereGeometry(sz,16,16),
+    new THREE.MeshPhongMaterial({color:powerCol,emissive:powerCol,emissiveIntensity:1.6})
+  );
+  mesh.position.copy(pos);
+  mesh.userData={station,isHub:isBrain||isStd};
+  var glow=new THREE.Mesh(
+    new THREE.SphereGeometry(sz*3.8,10,10),
+    new THREE.MeshBasicMaterial({color:healthCol,transparent:true,opacity:.07})
+  );
+  glow.position.copy(pos);
+  liveGroup.add(mesh);liveGroup.add(glow);
+  var gpuDot=null;
+  if(station.hwGpuVram>0){
+    gpuDot=new THREE.Mesh(
+      new THREE.SphereGeometry(sz*.32,8,8),
+      new THREE.MeshPhongMaterial({color:0xffcc00,emissive:0xffaa00,emissiveIntensity:1.2})
+    );
+    liveGroup.add(gpuDot);
+  }
+  liveMeshList.push({mesh,glow,gpuDot,pos:pos.clone(),phase:Math.random()*Math.PI*2,gpuAngle:Math.random()*Math.PI*2,station});
+}
+
+function clearLiveNodes(){
+  liveMeshList.forEach(function(n){
+    liveGroup.remove(n.mesh);liveGroup.remove(n.glow);
+    n.mesh.geometry.dispose();n.glow.geometry.dispose();
+    n.mesh.material.dispose();n.glow.material.dispose();
+    if(n.gpuDot){liveGroup.remove(n.gpuDot);n.gpuDot.geometry.dispose();n.gpuDot.material.dispose();}
+  });
+  liveMeshList=[];
+}
+
+function detectLiveRelay(){
+  const input=document.getElementById('live-relay-input');
+  if(input&&input.value.trim())return input.value.trim();
+  if(window.CoopConfig&&typeof window.CoopConfig.detectRelay==='function')return window.CoopConfig.detectRelay();
+  const h=window.location.hostname;
+  if(h==='127.0.0.1'||h==='localhost')return 'ws://127.0.0.1:7777';
+  if(h.endsWith('astroport.one'))return 'wss://relay.copylaradio.com';
+  return 'wss://relay.'+h.replace(/^(ipfs\.|u\.|www\.)/,'');
+}
+
+function toggleLive(){
+  isLive=!isLive;
+  const btn=document.getElementById('live-btn');
+  const bar=document.getElementById('live-bar');
+  if(isLive){
+    btn.classList.add('active');
+    bar.style.display='flex';
+    activateLive();
+  } else {
+    btn.classList.remove('active');
+    bar.style.display='none';
+    deactivateLive();
+  }
+}
+
+function activateLive(){
+  if(typeof UPlanetHeartbox==='undefined'){
+    console.error('[LIVE] heartbox.js non chargé — UPlanetHeartbox undefined');
+    document.getElementById('live-status').textContent='❌ heartbox.js non chargé';
+    isLive=false;
+    document.getElementById('live-btn').classList.remove('active');
+    document.getElementById('live-bar').style.display='none';
+    return;
+  }
+  const relay=detectLiveRelay();
+  document.getElementById('live-relay-input').value=relay;
+  document.getElementById('live-status').textContent='⏳ Connexion…';
+  document.getElementById('live-count').textContent='0 station';
+  console.log('[LIVE] Connexion relay:', relay);
+  console.log('[LIVE] UPlanetHeartbox:', typeof UPlanetHeartbox);
+
+  /* Masquer les nœuds fictifs */
+  nMesh.forEach(function(m){m.visible=false;});
+  glowM.forEach(function(m){m.visible=false;});
+  lLines.forEach(function(m){m.visible=false;});
+  parts.forEach(function(p){p.visible=false;});
+  drags.forEach(function(d){d.visible=false;});
+
+  liveDisconnect=UPlanetHeartbox.init(relay,{
+    onUpdate(stationId,station){
+      console.log('[LIVE] Station reçue:', stationId,
+        '| santé:', station.healthStatus,
+        '| tier:', station.hwTier,
+        '| lat:', station.stationLat, 'lon:', station.stationLon,
+        '| bilan:', station.bilan);
+      const existing=liveMeshList.find(n=>n.station.stationId===stationId);
+      if(!existing){
+        addLiveNode(station);
+        console.log('[LIVE] Nœud 3D ajouté — total:', liveMeshList.length);
+      } else {
+        var powerCol=powerToColor(station.hwPowerScore||0);
+        var healthCol=healthToInt(station.healthStatus);
+        existing.mesh.material.color.setHex(powerCol);
+        existing.mesh.material.emissive.setHex(powerCol);
+        existing.glow.material.color.setHex(healthCol);
+        existing.station=station;
+        console.log('[LIVE] Nœud mis à jour:', stationId);
+      }
+      const cnt=liveMeshList.length;
+      document.getElementById('live-count').textContent=cnt+' station'+(cnt>1?'s':'');
+      document.getElementById('live-status').textContent='⬤';
+    },
+    onEose(){
+      const cnt=liveMeshList.length;
+      console.log('[LIVE] EOSE —', cnt, 'station(s) chargée(s)');
+      if(cnt===0){
+        console.warn('[LIVE] Aucune station kind:30850 sur', relay,
+          '— vérifier que les stations publient ECONOMY.broadcast.sh');
+      }
+      document.getElementById('live-status').textContent=
+        cnt>0?'✅ '+cnt+' station'+(cnt>1?'s':'')+' chargées'
+             :'⚠️ Aucun événement kind:30850 — relay: '+relay;
+      /* Lien vers le swarm dashboard */
+      const link=document.getElementById('live-swarm-link');
+      if(cnt>0&&link){
+        const relayHost=relay.replace(/^wss?:\/\//,'').replace(/:\d+$/,'');
+        const domain=relayHost.replace(/^relay\./,'');
+        link.href='https://'+domain+'/economy.Swarm.html';
+        link.textContent='→ Dashboard Swarm';link.style.display='inline';
+      }
+    },
+    onError(err){
+      console.error('[LIVE] Erreur relay:', err);
+      document.getElementById('live-status').textContent='❌ '+(err&&err.message?err.message:String(err));
+    }
+  });
+}
+
+function deactivateLive(){
+  if(liveDisconnect){try{liveDisconnect();}catch(e){}liveDisconnect=null;}
+  clearLiveNodes();
+  /* Restaurer les nœuds fictifs */
+  nMesh.forEach(function(m){m.visible=true;});
+  glowM.forEach(function(m){m.visible=true;});
+  lLines.forEach(function(m){m.visible=true;});
+  parts.forEach(function(p){p.visible=true;});
+  drags.forEach(function(d){d.visible=true;});
+}
+
+function openLivePanel(station){
+  const tierLabel=station.hwTier==='brain'?'🔥 BRAIN HUB':station.hwTier==='standard'?'⚡ STANDARD':'🌿 SATELLITE';
+  document.getElementById('p-type').textContent=tierLabel;
+  document.getElementById('p-name').textContent=station.stationName.toUpperCase();
+  const week=station.week?' · Sem. '+station.week:'';
+  document.getElementById('p-peer').textContent=station.stationId.substring(0,20)+'…'+week;
+  const geo=(station.stationLat||station.stationLon)
+    ?' · '+station.stationLat.toFixed(2)+'°, '+station.stationLon.toFixed(2)+'°':'';
+  document.getElementById('p-upl').textContent='Swarm: '+(station.swarmId||'default')+geo;
+  document.getElementById('p-dot').style.background=healthToHex(station.healthStatus);
+  const bilan=(station.bilan>=0?'+':'')+station.bilan.toFixed(2)+'Ẑ';
+  document.getElementById('p-hl').textContent=
+    station.healthStatus.replace(/_/g,' ').toUpperCase()
+    +' · Bilan: '+bilan+' · Runway: '+station.weeksRunway+' sem.';
+
+  var svcs=[];
+  var totalMem=(station.hwRamGb||0)+(station.hwGpuVram||0);
+  if(station.hwTier==='brain')   svcs.push('BRO-IA');
+  if(station.hwGpuVram>0)        svcs.push('GPU '+station.hwGpuVram.toFixed(0)+'Go VRAM');
+  if(station.hwStorageReady)     svcs.push('STORAGE');
+  if(station.hwProviderReady)    svcs.push('PROVIDER');
+  if(station.hwDragonRank&&station.hwDragonRank!=='light') svcs.push(station.hwDragonRank.replace(/_/g,'-').toUpperCase());
+  if(station.hwCpuCores>1)       svcs.push(station.hwCpuCores+'c/'+totalMem.toFixed(0)+'Go RAM+VRAM');
+  svcs.push('NOSTR');svcs.push('IPFS');
+  document.getElementById('p-svc').innerHTML=svcs.map(s=>`<span class="svc-tag">${s}</span>`).join('');
+
+  document.getElementById('p-const').textContent=
+    'Rev: '+station.revenueTotal.toFixed(1)+'Ẑ'
+    +' · 👤'+station.multipassUsed+'/'+station.multipassTotal
+    +' · 🏠'+station.zencardRenters+'+'+station.zencardOwners;
+  document.getElementById('p-links').textContent=
+    'Cash:'+station.cashBalance.toFixed(0)+'Ẑ'
+    +' R&D:'+station.rndBalance.toFixed(0)+'Ẑ'
+    +' Assets:'+station.assetsBalance.toFixed(0)+'Ẑ'
+    +' Impôt:'+station.impotBalance.toFixed(0)+'Ẑ';
+  document.getElementById('panel').classList.add('open');
+}
 
 // ── MEDIA VIEWER ──
 const mediaList=[];
