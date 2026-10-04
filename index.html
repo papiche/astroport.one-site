@@ -188,6 +188,7 @@ body.sp .dcard:hover {
   margin-bottom: 0.4rem;
 }
 body.sp .dcard h4 { color: #7fd67f; }
+a.dcard { text-decoration: none; color: inherit; cursor: pointer; }
 .dcard p {
   font-size: 0.72rem;
   margin: 0;
@@ -509,6 +510,8 @@ body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
       <a href="#dragons" onclick="closeMenu()">DRAGONS</a>
       <a href="#ecosystem" onclick="closeMenu()">ÉCOSYSTÈME</a>
       <a href="#soutien" onclick="closeMenu()">SOUTENIR</a>
+      <a href="#savoir" onclick="closeMenu()">SAVOIR</a>
+      <a href="#zines" onclick="closeMenu()">ZINES</a>
       <a href="#media" onclick="closeMenu()">MÉDIAS</a>
       <a href="install.html" class="nav-recruit" onclick="closeMenu()">NOUS RECRUTONS</a>
       <a href="https://github.com/papiche/Astroport.ONE" target="_blank" onclick="closeMenu()">GITHUB</a>
@@ -589,6 +592,7 @@ body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
   <div class="sep"></div>
   <p>Contrairement à Kubernetes et ses architectures hiérarchiques, Astroport.ONE est un <strong>Essaim d'Égaux</strong>. Chaque station est un pair souverain qui réagit localement aux messages du réseau NOSTR. Pas de maître, pas d'esclave — seulement de la chorégraphie distribuée.</p>
   <p>Le réseau s'organise en <strong>Constellations</strong> : des groupes de stations partageant une clé secrète commune. Les Hubs (PC puissants) et les Satellites (Raspberry Pi 5) coexistent comme égaux fonctionnels dans ce tissu vivant bâti sur IPFS et libp2p.</p>
+  <img src="astroport_illustration.svg" alt="Schéma de l'essaim Astroport.ONE : Hubs, Satellites, Dragons et tunnels P2P" style="width:100%;max-width:680px;display:block;margin:1.5rem auto;">
   <div class="cards">
     <div class="card"><div class="card-icon">◎</div><h3>HUB STATION</h3><p>Serveur puissant, point d'ancrage. Héberge services lourds : Ollama IA, Nextcloud, SSH, passerelle IPFS publique.</p></div>
     <div class="card"><div class="card-icon">◉</div><h3>SATELLITE</h3><p>Raspberry Pi 5, low-power. Mobile, résilient, souverain. Participe au Gossip NOSTR et aux tunnels /x/.</p></div>
@@ -772,6 +776,46 @@ body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
 </section>
 
 <hr>
+<section class="sec" id="savoir">
+  <div class="sec-label">// SAVOIR LIBRE</div>
+  <h2>APPORTER LE WEB3 AUX BIBLIOTHÈQUES LIBRES</h2>
+  <div class="sep"></div>
+  <p>UPlanet trace chaque média introduit dans le réseau, et convertit chaque <strong>Like en ẐEN</strong>. Nous voulons apporter cette traçabilité et cette rémunération aux plateformes de savoir <strong>ouvert et légal</strong>, pour que le partage de connaissance profite directement à ceux qui la publient et la font vivre.</p>
+  <div class="dgrid">
+    <a class="dcard" href="https://archive.org" target="_blank" rel="noopener">
+      <span class="di">🏛️</span>
+      <h4>INTERNET ARCHIVE</h4>
+      <p>Livres, revues, logiciels et médias en accès libre légal.</p>
+    </a>
+    <a class="dcard" href="https://www.gutenberg.org" target="_blank" rel="noopener">
+      <span class="di">📖</span>
+      <h4>PROJECT GUTENBERG</h4>
+      <p>Œuvres du domaine public, libres de droits.</p>
+    </a>
+    <a class="dcard" href="https://fr.wikipedia.org" target="_blank" rel="noopener">
+      <span class="di">🌐</span>
+      <h4>WIKIPÉDIA & WIKISOURCE</h4>
+      <p>Encyclopédie et textes sources libres, coopératifs.</p>
+    </a>
+    <a class="dcard" href="https://arxiv.org" target="_blank" rel="noopener">
+      <span class="di">🔬</span>
+      <h4>ARXIV / ZENODO</h4>
+      <p>Publications scientifiques en accès ouvert.</p>
+    </a>
+    <a class="dcard" href="https://standardebooks.org" target="_blank" rel="noopener">
+      <span class="di">📚</span>
+      <h4>STANDARD EBOOKS</h4>
+      <p>Éditions numériques soignées du domaine public.</p>
+    </a>
+    <a class="dcard" href="https://openlibrary.org" target="_blank" rel="noopener">
+      <span class="di">📗</span>
+      <h4>OPEN LIBRARY</h4>
+      <p>Catalogue ouvert, un livre par page web.</p>
+    </a>
+  </div>
+</section>
+
+<hr>
 <section class="sec" id="commons">
   <div class="sec-label">// PHILOSOPHIE & FINANCEMENT</div>
   <h2>COMMONS & LICENCE LIBRE</h2>
@@ -796,6 +840,31 @@ body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
     <span class="stag">GPL v3</span><span class="stag">AGPL v3</span><span class="stag">IPFS</span><span class="stag">libp2p</span>
     <span class="stag">NOSTR</span><span class="stag">Bash</span><span class="stag">Raspberry Pi</span><span class="stag">WireGuard</span>
     <span class="stag">Nginx</span><span class="stag">UPlanet</span><span class="stag">ẐEN Token</span>
+  </div>
+</section>
+
+<hr>
+<section class="sec" id="zines">
+  <div class="sec-label">// DOCUMENTS & ZINES</div>
+  <h2>VISION, CONTRATS & MANIFESTES</h2>
+  <div class="sep"></div>
+  <p>Au-delà du code, le projet s'appuie sur des documents imprimables : le rapport de recherche fondateur, un contrat légal de prêt à l'usage (commodat), et des ZINE pliables qui expliquent le mouvement à toute personne, connectée ou non.</p>
+  <div class="dgrid">
+    <a class="dcard" href="https://u.copylaradio.com/earth/ZINE.html" target="_blank" rel="noopener">
+      <span class="di">📄</span>
+      <h4>ZINE ARMATEUR</h4>
+      <p>Contrat légal de commodat (Art. 1875 du Code civil) pour héberger une station chez soi, à imprimer et signer.</p>
+    </a>
+    <a class="dcard" href="https://u.copylaradio.com/earth/ZINE.MIZ.html" target="_blank" rel="noopener">
+      <span class="di">🌲</span>
+      <h4>ZINE MADE IN ZION</h4>
+      <p>Les 4 Piliers de l'Académie low-tech : habitat, énergie, mobilité, forêt-jardin — version imprimable recto/verso.</p>
+    </a>
+    <a class="dcard" href="https://u.copylaradio.com/earth/ZINE.MOUVEMENT.html" target="_blank" rel="noopener">
+      <span class="di">🌾</span>
+      <h4>ZINE DU MOUVEMENT</h4>
+      <p>« Révèle ton art » — le nouveau rite de passage, et la Déclaration de Talent pour rejoindre un collectif UPlanet Ẑen.</p>
+    </a>
   </div>
 </section>
 
@@ -1338,7 +1407,7 @@ function activateLive(){
       if(cnt>0&&link){
         const relayHost=relay.replace(/^wss?:\/\//,'').replace(/:\d+$/,'');
         const domain=relayHost.replace(/^relay\./,'');
-        link.href='https://'+domain+'/economy.Swarm.html';
+        link.href='https://u.'+domain+'/earth/economy.Swarm.html';
         link.textContent='→ Dashboard Swarm';link.style.display='inline';
       }
     },

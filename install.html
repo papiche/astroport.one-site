@@ -149,6 +149,14 @@ body.sp .info-box{background:rgba(232,212,77,0.05);border-color:#e8d44d;}
 body.sp .info-box h4{color:#e8d44d;}
 .info-box p{font-size:.88rem;margin-bottom:0;}
 
+/* ── COST / BENEFIT TABLE ── */
+.cost-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.85rem;}
+.cost-table td{padding:.55rem .3rem;border-bottom:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.75);}
+.cost-table td:last-child{text-align:right;font-family:'Courier New',monospace;white-space:nowrap;}
+.cost-table tr.hl td{color:#00ff88;font-weight:bold;border-bottom:none;font-size:1rem;padding-top:.8rem;}
+body.sp .cost-table tr.hl td{color:#e8d44d;}
+.cost-table tr.sub td{color:rgba(255,255,255,0.4);font-size:.75rem;font-style:italic;}
+
 /* FOOTER */
 footer{text-align:center;padding:2rem;font-family:'Courier New',monospace;font-size:.7rem;color:rgba(255,255,255,0.25);border-top:1px solid rgba(255,255,255,0.05);}
 footer a{color:#00f5ff;text-decoration:none;}
@@ -224,7 +232,7 @@ body.sp .menu-btn { color: #7fd67f; }
 
   <div class="grid-3">
     <div class="step-card">
-      <h3><span class="num">🎮</span> GAMER (Windows / Linux)</h3>
+      <h3><span class="num">🎮</span> GAMER (Windows -> Linux !)</h3>
       <p>Vous avez une grosse carte graphique pour jouer ? Ne la laissez pas dormir ! En installant Astroport (dual-boot ou Linux), la VRAM fait exploser votre Power-Score.</p>
       <span class="huge-val">Jusqu'à 75 Ẑ / sem</span>
       <ul>
@@ -255,6 +263,21 @@ body.sp .menu-btn { color: #7fd67f; }
         <li><strong>Le conseil libriste :</strong> Fuyez les prisons dorées. Plébiscitez les téléphones libres comme les <em>FairPhone</em> tournant sous <em>/e/OS</em>.</li>
       </ul>
     </div>
+  </div>
+
+  <div class="info-box" style="margin-top:2rem;">
+    <h4>💰 LE VRAI CALCUL : ÉLECTRICITÉ VS ẐEN (EXEMPLE RTX 3090)</h4>
+    <p>Beaucoup imaginent qu'une grosse carte graphique allumée 24h/24 va plomber la facture. Voici le calcul réel pour un PC Gamer équipé d'une <strong>RTX 3090</strong> (puissance moyenne mesurée : 66,27 W, entre veille et calcul IA en tâche de fond), comparé aux gains ẐEN d'un nœud Armateur + Capitaine :</p>
+    <table class="cost-table">
+      <tr><td>Consommation électrique</td><td>1,590 kWh / jour</td></tr>
+      <tr class="sub"><td>Tarif réglementé EDF, option Base</td><td>0,1940 €/kWh</td></tr>
+      <tr><td>Coût électrique</td><td>0,308 € / jour</td></tr>
+      <tr><td>Coût électrique mensuel (×30)</td><td>≈ 9,24 € / mois</td></tr>
+      <tr class="sub"><td>Coût électrique annuel</td><td>≈ 112 € / an</td></tr>
+      <tr><td>Gain ẐEN potentiel (Armateur + Capitaine)</td><td>Jusqu'à 300 Ẑ / mois</td></tr>
+      <tr class="hl"><td>Bénéfice net estimé</td><td>≈ +290 € / mois</td></tr>
+    </table>
+    <p style="margin-top:1rem;font-size:.8rem;opacity:.8;">Base de calcul : <strong>1 Ẑen ≈ 1 €</strong> (mode ẐEN de production UPlanet). En laissant votre GPU au service du réseau (ComfyUI / Ollama pour l'essaim) plutôt qu'en veille, le gain ẐEN couvre plus de <strong>30 fois</strong> le coût électrique réel — la facture d'électricité n'est plus un frein, elle devient un détail.</p>
   </div>
 </section>
 
