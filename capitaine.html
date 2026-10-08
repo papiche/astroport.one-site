@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide du Capitaine — Astroport.ONE</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:110px;}
+body{background:#050a12;color:#e0f0ff;font-family:'Segoe UI',sans-serif;overflow-x:hidden;}
+body.sp{background:#0d1a0d;}
+
+/* ── NAV (même charte que install.html) ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:52px;background:rgba(5,10,18,0.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,245,255,0.12);transition:background .5s;}
+body.sp nav{background:rgba(13,26,13,0.9);border-color:rgba(127,214,127,0.12);}
+.logo{font-family:'Courier New',monospace;font-size:1rem;color:#00f5ff;letter-spacing:3px;font-weight:700;text-decoration:none;}
+.logo span{color:#00ff88;}
+body.sp .logo{color:#7fd67f;}
+.nav-right{display:flex;align-items:center;gap:1.2rem;}
+nav a{color:rgba(255,255,255,0.5);text-decoration:none;font-size:.78rem;letter-spacing:1px;transition:color .2s;}
+nav a:hover{color:#00f5ff;}
+body.sp nav a:hover{color:#7fd67f;}
+.nav-links{display:flex;align-items:center;gap:1.2rem;}
+.tog-wrap{display:flex;align-items:center;gap:7px;cursor:pointer;}
+.tl{font-size:.65rem;letter-spacing:1px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.4);}
+.tl.active-cyber{color:#00f5ff;}
+.tl.active-solar{color:#7fd67f;}
+.tog-track{width:42px;height:21px;border-radius:11px;background:rgba(0,245,255,0.1);border:1px solid #00f5ff;position:relative;transition:all .4s;}
+.tog-thumb{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#00f5ff;transition:all .4s;}
+body.sp .tog-track{border-color:#7fd67f;background:rgba(127,214,127,0.1);}
+body.sp .tog-thumb{left:23px;background:#7fd67f;}
+.menu-btn{display:none;background:none;border:none;color:#00f5ff;font-size:1.5rem;cursor:pointer;padding-left:.5rem;}
+body.sp .menu-btn{color:#7fd67f;}
+
+/* ── EN-TÊTE ── */
+.page-header{padding:7.5rem 2rem 2.5rem;text-align:center;background:linear-gradient(180deg,rgba(0,245,255,0.05) 0%,transparent 100%);border-bottom:1px solid rgba(0,245,255,0.1);}
+body.sp .page-header{background:linear-gradient(180deg,rgba(127,214,127,0.05) 0%,transparent 100%);border-bottom-color:rgba(127,214,127,0.1);}
+h1{font-family:'Courier New',monospace;font-size:2.3rem;color:#00f5ff;letter-spacing:3px;margin-bottom:1rem;}
+body.sp h1{color:#7fd67f;}
+.header-sub{font-size:1rem;color:rgba(255,255,255,0.6);line-height:1.75;max-width:720px;margin:0 auto;}
+
+/* ── PARCOURS (barre d'étapes collante) ── */
+.steps-bar{position:sticky;top:52px;z-index:400;background:rgba(5,10,18,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,245,255,0.1);}
+body.sp .steps-bar{background:rgba(13,26,13,0.92);border-color:rgba(127,214,127,0.12);}
+.steps-in{max-width:1100px;margin:0 auto;display:flex;gap:.4rem;overflow-x:auto;padding:.55rem 1rem;scrollbar-width:none;}
+.steps-in::-webkit-scrollbar{display:none;}
+.steps-in a{flex:0 0 auto;display:flex;align-items:center;gap:.45rem;padding:.3rem .7rem;border:1px solid rgba(255,255,255,0.12);border-radius:20px;color:rgba(255,255,255,0.6);text-decoration:none;font-family:'Courier New',monospace;font-size:.68rem;letter-spacing:1px;white-space:nowrap;transition:all .2s;}
+.steps-in a b{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.12);font-size:.65rem;}
+.steps-in a:hover,.steps-in a.on{border-color:#00f5ff;color:#00f5ff;}
+.steps-in a.on b{background:#00f5ff;color:#000;}
+body.sp .steps-in a:hover,body.sp .steps-in a.on{border-color:#7fd67f;color:#7fd67f;}
+body.sp .steps-in a.on b{background:#7fd67f;}
+
+/* ── CONTENU ── */
+.sec{padding:3.5rem 2rem;max-width:1100px;margin:0 auto;}
+.sec-label{font-family:'Courier New',monospace;font-size:.62rem;color:#00ff88;letter-spacing:4px;margin-bottom:.4rem;}
+body.sp .sec-label{color:#e8d44d;}
+h2{font-family:'Courier New',monospace;font-size:1.7rem;color:#00f5ff;margin-bottom:.8rem;letter-spacing:2px;}
+body.sp h2{color:#7fd67f;}
+h3.sub{font-family:'Courier New',monospace;font-size:1.05rem;color:#fff;margin:1.8rem 0 .6rem;letter-spacing:1px;}
+.sep{width:50px;height:2px;background:#00f5ff;margin-bottom:1.5rem;}
+body.sp .sep{background:#7fd67f;}
+p{color:rgba(255,255,255,0.68);line-height:1.8;margin-bottom:1.1rem;font-size:.95rem;}
+strong{color:#fff;}
+em{color:rgba(255,255,255,0.85);}
+hr{border:0;border-top:1px solid rgba(255,255,255,0.06);max-width:1100px;margin:0 auto;}
+a.link-hl{color:#00f5ff;text-decoration:none;border-bottom:1px dotted #00f5ff;}
+body.sp a.link-hl{color:#7fd67f;border-bottom-color:#7fd67f;}
+code{font-family:'Courier New',monospace;font-size:.85em;color:#00f5ff;background:rgba(0,245,255,0.07);padding:.05rem .3rem;border-radius:2px;}
+body.sp code{color:#7fd67f;background:rgba(127,214,127,0.07);}
+
+/* ── CARTES / ENCADRÉS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem;}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.3rem;margin-top:1.5rem;}
+.grid-2>*,.grid-3>*{min-width:0;}
+.step-card{padding:1.4rem;background:rgba(0,245,255,0.03);border:1px solid rgba(0,245,255,0.15);border-radius:4px;display:flex;flex-direction:column;}
+body.sp .step-card{background:rgba(127,214,127,0.03);border-color:rgba(127,214,127,0.15);}
+.step-card h3{font-family:'Courier New',monospace;color:#00f5ff;font-size:1rem;margin-bottom:.7rem;display:flex;align-items:center;gap:10px;}
+body.sp .step-card h3{color:#7fd67f;}
+.step-card p{font-size:.85rem;margin-bottom:0;}
+.num{background:#00f5ff;color:#000;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:bold;flex-shrink:0;}
+body.sp .num{background:#7fd67f;}
+.info-box{background:rgba(0,255,136,0.05);border-left:3px solid #00ff88;padding:1.1rem 1.4rem;margin:1.4rem 0;border-radius:0 4px 4px 0;}
+body.sp .info-box{background:rgba(232,212,77,0.05);border-color:#e8d44d;}
+.info-box h4{color:#00ff88;font-family:'Courier New',monospace;letter-spacing:1px;margin-bottom:.4rem;font-size:.9rem;}
+body.sp .info-box h4{color:#e8d44d;}
+.info-box p{font-size:.88rem;margin-bottom:.3rem;}
+.info-box p:last-child{margin-bottom:0;}
+.warn-box{background:rgba(255,68,136,0.06);border-left:3px solid #ff4488;padding:1.1rem 1.4rem;margin:1.4rem 0;border-radius:0 4px 4px 0;}
+.warn-box h4{color:#ff4488;font-family:'Courier New',monospace;letter-spacing:1px;margin-bottom:.4rem;font-size:.9rem;}
+.warn-box p{font-size:.88rem;margin-bottom:.3rem;}
+.warn-box p:last-child{margin-bottom:0;}
+
+/* ── COMMANDES COPIABLES ── */
+.cmd{position:relative;background:#000;border:1px dashed rgba(0,245,255,0.35);border-radius:4px;padding:.9rem 5.2rem .9rem 1rem;margin:.8rem 0 1.2rem;font-family:'Courier New',monospace;font-size:.85rem;color:#00f5ff;overflow-x:auto;white-space:pre;}
+body.sp .cmd{border-color:rgba(127,214,127,0.4);color:#7fd67f;}
+.cmd .cp,.cp{position:absolute;top:.5rem;right:.5rem;background:rgba(0,245,255,0.08);border:1px solid #00f5ff;color:#00f5ff;font-family:'Courier New',monospace;font-size:.62rem;letter-spacing:1px;padding:.25rem .55rem;border-radius:2px;cursor:pointer;}
+body.sp .cp{background:rgba(127,214,127,0.08);border-color:#7fd67f;color:#7fd67f;}
+.cp:hover{background:#00f5ff;color:#000;}
+body.sp .cp:hover{background:#7fd67f;color:#0d1a0d;}
+.cp.ok{background:#00ff88;color:#000;border-color:#00ff88;}
+
+/* ── TABLEAUX ── */
+.tabwrap{overflow-x:auto;border:1px solid rgba(0,245,255,0.12);border-radius:4px;margin:1rem 0;}
+body.sp .tabwrap{border-color:rgba(127,214,127,0.15);}
+table.t{width:100%;border-collapse:collapse;font-size:.82rem;min-width:620px;}
+.t th{font-family:'Courier New',monospace;font-size:.6rem;letter-spacing:2px;color:#00ff88;text-align:left;padding:.6rem .7rem;border-bottom:1px solid rgba(0,245,255,0.25);background:rgba(0,0,0,0.25);}
+body.sp .t th{color:#e8d44d;border-color:rgba(127,214,127,0.3);}
+.t td{padding:.65rem .7rem;border-bottom:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.75);vertical-align:middle;line-height:1.5;}
+.t tr:last-child td{border-bottom:0;}
+.t td.m{font-family:'Courier New',monospace;color:#00f5ff;white-space:nowrap;}
+body.sp .t td.m{color:#7fd67f;}
+.pill{display:inline-block;padding:.08rem .5rem;border-radius:10px;font-family:'Courier New',monospace;font-size:.62rem;letter-spacing:1px;border:1px solid;}
+.pill.go{color:#00ff88;border-color:#00ff88;background:rgba(0,255,136,0.08);}
+.pill.no{color:#ff4488;border-color:#ff4488;background:rgba(255,68,136,0.08);}
+.pill.opt{color:#ffb000;border-color:#ffb000;background:rgba(255,176,0,0.08);}
+.mini{background:rgba(0,245,255,0.07);border:1px solid #00f5ff;color:#00f5ff;font-family:'Courier New',monospace;font-size:.6rem;letter-spacing:1px;padding:.2rem .5rem;border-radius:2px;cursor:pointer;margin-right:.3rem;}
+body.sp .mini{background:rgba(127,214,127,0.07);border-color:#7fd67f;color:#7fd67f;}
+.mini:hover{background:#00f5ff;color:#000;}
+.tres{font-family:'Courier New',monospace;font-size:.62rem;margin-left:.3rem;}
+
+/* ── FIGURES ── */
+.fig{margin:1.3rem 0;border:1px solid rgba(0,245,255,0.12);border-radius:4px;background:rgba(0,0,0,0.25);overflow-x:auto;}
+body.sp .fig{border-color:rgba(127,214,127,0.15);}
+.fig svg{display:block;width:100%;height:auto;min-width:640px;}
+.fig img{display:block;max-width:100%;height:auto;margin:0 auto;}
+.figcap{font-family:'Courier New',monospace;font-size:.68rem;color:rgba(255,255,255,0.45);letter-spacing:.5px;line-height:1.6;padding:.7rem 1rem;border-top:1px solid rgba(255,255,255,0.06);}
+.imgs{display:grid;grid-template-columns:1.6fr 1fr;gap:1rem;align-items:start;}
+@media(max-width:800px){.imgs{grid-template-columns:1fr;}}
+.svg-t{font-family:'Courier New',monospace;fill:#e0f0ff;}
+.svg-d{font-family:'Segoe UI',sans-serif;fill:rgba(255,255,255,0.58);}
+.stk{stroke:#00f5ff;}
+body.sp .stk{stroke:#7fd67f;}
+.fil{fill:#00f5ff;}
+body.sp .fil{fill:#7fd67f;}
+.acc{fill:#00ff88;}
+body.sp .acc{fill:#e8d44d;}
+
+/* ── CHECKLIST ── */
+.prog{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin:.4rem 0 1.2rem;}
+.prog i{display:block;height:100%;width:0;background:#00ff88;transition:width .4s;}
+body.sp .prog i{background:#e8d44d;}
+.check{list-style:none;}
+.check li{display:flex;gap:.8rem;align-items:flex-start;padding:.7rem .9rem;border:1px solid rgba(255,255,255,0.08);border-radius:4px;margin-bottom:.5rem;cursor:pointer;transition:background .2s;font-size:.9rem;color:rgba(255,255,255,0.75);line-height:1.55;}
+.check li:hover{background:rgba(255,255,255,0.04);}
+.check li input{margin-top:.25rem;accent-color:#00ff88;width:16px;height:16px;flex-shrink:0;}
+.check li.done{color:rgba(255,255,255,0.4);text-decoration:line-through;border-color:rgba(0,255,136,0.25);}
+.check li small{display:block;color:rgba(255,255,255,0.4);text-decoration:none;font-size:.75rem;}
+
+/* ── CONFIGURATEUR / CALCULATEUR ── */
+.form{display:flex;flex-wrap:wrap;gap:1rem 1.4rem;align-items:flex-end;padding:1.1rem 1.2rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.18);border-radius:4px;margin:1rem 0;}
+body.sp .form{background:rgba(127,214,127,0.04);border-color:rgba(127,214,127,0.2);}
+.form label{display:flex;flex-direction:column;gap:.3rem;font-family:'Courier New',monospace;font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,0.5);}
+.form input{background:rgba(0,0,0,0.45);border:1px solid rgba(0,245,255,0.3);color:#00f5ff;font-family:'Courier New',monospace;font-size:.9rem;padding:.45rem .7rem;border-radius:3px;outline:none;min-width:190px;}
+body.sp .form input{border-color:rgba(127,214,127,0.3);color:#7fd67f;}
+.form input:focus{border-color:#00ff88;}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.8rem;margin:1rem 0;}
+.out div{padding:.9rem 1rem;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:4px;}
+.out b{display:block;font-family:'Courier New',monospace;font-size:1.35rem;color:#00ff88;}
+body.sp .out b{color:#e8d44d;}
+.out span{font-size:.72rem;color:rgba(255,255,255,0.5);}
+.out .bad b{color:#ff4488;}
+
+/* ── LIVE ── */
+.live{border:1px solid rgba(0,255,136,0.25);border-radius:4px;background:rgba(0,0,0,0.3);}
+body.sp .live{border-color:rgba(127,214,127,0.25);}
+.live-bar{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;padding:.8rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);font-family:'Courier New',monospace;font-size:.7rem;color:rgba(255,255,255,0.55);}
+.live-bar input{flex:1;min-width:210px;background:rgba(0,0,0,0.45);border:1px solid rgba(0,255,136,0.3);color:#00ff88;font-family:'Courier New',monospace;font-size:.78rem;padding:.4rem .6rem;border-radius:3px;outline:none;}
+body.sp .live-bar input{border-color:rgba(127,214,127,0.3);color:#7fd67f;}
+.live-bar button{background:rgba(0,255,136,0.08);border:1px solid #00ff88;color:#00ff88;font-family:'Courier New',monospace;font-size:.7rem;letter-spacing:1px;padding:.4rem .9rem;border-radius:3px;cursor:pointer;}
+.live-bar button:hover{background:#00ff88;color:#050a12;}
+body.sp .live-bar button{background:rgba(127,214,127,0.08);border-color:#7fd67f;color:#7fd67f;}
+body.sp .live-bar button:hover{background:#7fd67f;color:#0d1a0d;}
+#live-st{margin-left:auto;}
+.live .tabwrap{border:0;margin:0;border-radius:0;}
+.live td.w{font-family:'Courier New',monospace;white-space:nowrap;}
+.neg{color:#ff4488;}
+.pos{color:#00ff88;}
+
+footer{text-align:center;padding:2rem;font-family:'Courier New',monospace;font-size:.7rem;color:rgba(255,255,255,0.25);border-top:1px solid rgba(255,255,255,0.05);}
+footer a{color:#00f5ff;text-decoration:none;}
+body.sp footer a{color:#7fd67f;}
+
+@media(max-width:850px){
+  h1{font-size:1.6rem;}
+  .grid-2{grid-template-columns:1fr;}
+  .menu-btn{display:block;}
+  .nav-links{position:absolute;top:52px;left:0;right:0;background:rgba(5,10,18,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,245,255,0.15);flex-direction:column;padding:1.4rem 0;gap:1.3rem;transform:translateY(-150%);opacity:0;visibility:hidden;transition:all .4s ease;z-index:-1;}
+  .nav-links.open{transform:translateY(0);opacity:1;visibility:visible;}
+  body.sp .nav-links{background:rgba(13,26,13,0.96);border-color:rgba(127,214,127,0.15);}
+  .sec{padding:2.6rem 1.1rem;}
+}
+
+/* ── MENU COMMUN (identique sur toutes les pages) ── */
+nav a.on{color:#00f5ff;}
+body.sp nav a.on{color:#7fd67f;}
+a.nav-recruit{color:#ff4488 !important;border:1px solid #ff4488;padding:0.2rem 0.6rem;border-radius:3px;font-weight:bold;}
+a.nav-recruit:hover,a.nav-recruit.on{background:#ff4488;color:#fff !important;}
+body.sp a.nav-recruit{color:#f4a020 !important;border-color:#f4a020;}
+body.sp a.nav-recruit:hover,body.sp a.nav-recruit.on{background:#f4a020;color:#050a12 !important;}
+/* barre de sections de la page (sous le menu) */
+.subnav{position:sticky;top:52px;z-index:400;background:rgba(5,10,18,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,245,255,0.1);}
+body.sp .subnav{background:rgba(13,26,13,0.92);border-color:rgba(127,214,127,0.12);}
+.subnav-in{max-width:1100px;margin:0 auto;display:flex;gap:.4rem;overflow-x:auto;padding:.55rem 1rem;scrollbar-width:none;}
+.subnav-in::-webkit-scrollbar{display:none;}
+.subnav-in a{flex:0 0 auto;padding:.28rem .75rem;border:1px solid rgba(255,255,255,0.12);border-radius:20px;color:rgba(255,255,255,0.6);text-decoration:none;font-family:'Courier New',monospace;font-size:.66rem;letter-spacing:1px;white-space:nowrap;transition:all .2s;}
+.subnav-in a:hover,.subnav-in a.on{border-color:#00f5ff;color:#00f5ff;}
+body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7fd67f;}
+
+/* menu hamburger sous 1040px (5 liens + bascule de thème) */
+@media(max-width:1040px){
+  .menu-btn{display:block;}
+  .nav-links{position:absolute;top:52px;left:0;right:0;background:rgba(5,10,18,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,245,255,0.15);flex-direction:column;padding:1.4rem 0;gap:1.3rem;transform:translateY(-150%);opacity:0;visibility:hidden;transition:all .4s ease;z-index:-1;}
+  .nav-links.open{transform:translateY(0);opacity:1;visibility:visible;}
+  body.sp .nav-links{background:rgba(13,26,13,0.96);border-color:rgba(127,214,127,0.15);}
+}
+@media(max-width:600px){ nav{padding:0 .8rem;} .logo{letter-spacing:1px;font-size:.85rem;} .nav-right{gap:.6rem;} .tl{display:none;} }
+</style>
+</head>
+<body id="body">
+
+<nav>
+  <a href="index.html" class="logo">ASTRO<span>PORT</span>.ONE</a>
+  <div class="nav-right">
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" onclick="closeMenu()">ACCUEIL</a>
+      <a href="architecture.html" onclick="closeMenu()">ARCHITECTURE</a>
+      <a href="capitaine.html" class="on" onclick="closeMenu()">GUIDE CAPITAINE</a>
+      <a href="install.html" class="nav-recruit" onclick="closeMenu()">NOUS RECRUTONS</a>
+      <a href="https://github.com/papiche/Astroport.ONE" target="_blank" rel="noopener" onclick="closeMenu()">GITHUB</a>
+    </div>
+    <div class="tog-wrap" onclick="toggleTheme()">
+      <span class="tl active-cyber" id="tlc">CYBER</span>
+      <div class="tog-track"><div class="tog-thumb" id="tthumb"></div></div>
+      <span class="tl" id="tls">SOLAR</span>
+    </div>
+    <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">☰</button>
+  </div>
+</nav>
+
+<header class="page-header">
+  <h1>GUIDE DU CAPITAINE</h1>
+  <p class="header-sub">Ouvrir sa CoeurBOX au monde en six étapes : régler la box, brancher <strong>Nginx Proxy Manager</strong>, installer <strong>NextCloud</strong>, déclarer sa consommation et sa production d'énergie, puis se voir apparaître en <strong>LIVE</strong> dans la constellation.</p>
+</header>
+
+<div class="steps-bar"><div class="steps-in" id="steps">
+  <a href="#principe"><b>1</b>PRINCIPE</a>
+  <a href="#avant"><b>2</b>PRÉPARER</a>
+  <a href="#ports"><b>3</b>PORTS</a>
+  <a href="#npm"><b>4</b>NGINX PROXY MANAGER</a>
+  <a href="#nextcloud"><b>5</b>NEXTCLOUD</a>
+  <a href="#paf"><b>6</b>PAF &amp; ÉNERGIE</a>
+  <a href="#live"><b>7</b>LIVE</a>
+</div></div>
+
+<!-- ═════════════ 1 · PRINCIPE ═════════════ -->
+<section class="sec" id="principe">
+  <div class="sec-label">// ÉTAPE 1 · COMPRENDRE</div>
+  <h2>LA PASSERELLE ENTRE WEB2 ET WEB3</h2>
+  <div class="sep"></div>
+  <p>Votre CoeurBOX est la porte d'entrée de vos proches vers un internet qu'ils ne subissent plus. Astroport.ONE fait la <strong>jonction entre le Web2</strong> (une adresse email, un lieu sur la carte, un smartphone) <strong>et le Web3</strong> (des clefs cryptographiques, IPFS, NOSTR, la monnaie libre Ğ1). Personne n'a besoin d'apprendre la cryptographie : <strong>EMAIL + GPS = MULTIPASS</strong>.</p>
+
+  <div class="fig">
+  <svg viewBox="0 0 900 270" role="img" aria-label="Email et position GPS donnent un MULTIPASS, qui ouvre NOSTR, IPFS et la Ğ1">
+    <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fil"/></marker></defs>
+    <text x="95" y="24" text-anchor="middle" class="svg-t" font-size="12" style="fill:#8fa8ff">WEB2 · ce que vous connaissez</text>
+    <rect x="20" y="40" width="150" height="62" rx="5" fill="rgba(79,124,255,0.08)" stroke="#6f8fff"/>
+    <text x="95" y="68" text-anchor="middle" class="svg-t" font-size="14" font-weight="700">✉ EMAIL</text>
+    <text x="95" y="88" text-anchor="middle" class="svg-d" font-size="11">votre adresse habituelle</text>
+    <rect x="20" y="130" width="150" height="62" rx="5" fill="rgba(79,124,255,0.08)" stroke="#6f8fff"/>
+    <text x="95" y="158" text-anchor="middle" class="svg-t" font-size="14" font-weight="700">📍 GPS</text>
+    <text x="95" y="178" text-anchor="middle" class="svg-d" font-size="11">où vous vivez</text>
+    <path d="M170 71 C 230 71, 250 120, 300 130" fill="none" class="stk" stroke-width="1.6" marker-end="url(#a1)"/>
+    <path d="M170 161 C 230 161, 250 140, 300 135" fill="none" class="stk" stroke-width="1.6" marker-end="url(#a1)"/>
+    <text x="235" y="215" text-anchor="middle" class="svg-t" font-size="20" style="fill:#e8d44d">=</text>
+    <circle cx="380" cy="132" r="74" fill="rgba(0,245,255,0.06)" class="stk" stroke-width="2"/>
+    <text x="380" y="120" text-anchor="middle" class="svg-t acc" font-size="16" font-weight="700">MULTIPASS</text>
+    <text x="380" y="142" text-anchor="middle" class="svg-d" font-size="11">identité souveraine</text>
+    <text x="380" y="158" text-anchor="middle" class="svg-d" font-size="11">créée sur votre CoeurBOX</text>
+    <path d="M454 100 L 560 56" fill="none" class="stk" stroke-width="1.6" marker-end="url(#a1)"/>
+    <path d="M454 132 L 560 132" fill="none" class="stk" stroke-width="1.6" marker-end="url(#a1)"/>
+    <path d="M454 164 L 560 208" fill="none" class="stk" stroke-width="1.6" marker-end="url(#a1)"/>
+    <text x="730" y="24" text-anchor="middle" class="svg-t acc" font-size="12">WEB3 · ce qu'il ouvre</text>
+    <rect x="560" y="34" width="320" height="50" rx="5" fill="rgba(0,245,255,0.05)" class="stk"/>
+    <text x="576" y="56" class="svg-t acc" font-size="13" font-weight="700">NOSTR</text><text x="576" y="74" class="svg-d" font-size="11">messages, vidéos, likes : sans plateforme</text>
+    <rect x="560" y="108" width="320" height="50" rx="5" fill="rgba(0,245,255,0.05)" class="stk"/>
+    <text x="576" y="130" class="svg-t acc" font-size="13" font-weight="700">IPFS · uDRIVE</text><text x="576" y="148" class="svg-d" font-size="11">vos fichiers, adressés par leur contenu</text>
+    <rect x="560" y="182" width="320" height="50" rx="5" fill="rgba(0,245,255,0.05)" class="stk"/>
+    <text x="576" y="204" class="svg-t acc" font-size="13" font-weight="700">Ğ1 · ẐEN</text><text x="576" y="222" class="svg-d" font-size="11">monnaie libre et unité de compte coopérative</text>
+    <text x="450" y="260" text-anchor="middle" class="svg-d" font-size="11">Le Capitaine héberge la passerelle : sa box fait le pont, ses amis n'ont qu'un email à donner.</text>
+  </svg>
+  </div>
+
+  <div class="grid-3">
+    <div class="step-card"><h3>🧭 Votre rôle</h3><p>Le <strong>Capitaine</strong> accueille des MULTIPASS sur sa station, la maintient en ligne et touche une rétribution en échange. Vous pouvez aussi être simple <em>Armateur</em> (l'hébergeur matériel).</p></div>
+    <div class="step-card"><h3>💶 Votre PAF</h3><p>Chaque station apportée se voit attribuer une <strong>Participation Aux Frais</strong>, négociée avec la constellation, qui rembourse ses frais réels (étape 6).</p></div>
+    <div class="step-card"><h3>👀 Votre visibilité</h3><p>Votre station affiche sa consommation et sa production d'énergie. En mode <strong>LIVE</strong>, toute la constellation la voit (étape 7).</p></div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ═════════════ 2 · PRÉPARER ═════════════ -->
+<section class="sec" id="avant">
+  <div class="sec-label">// ÉTAPE 2 · PRÉPARER</div>
+  <h2>AVANT DE COMMENCER</h2>
+  <div class="sep"></div>
+  <p>Cochez au fur et à mesure : votre avancement est gardé dans ce navigateur. Chaque point renvoie à l'étape qui l'explique.</p>
+  <div class="prog"><i id="prog-bar"></i></div>
+  <ul class="check" id="check">
+    <li data-k="install"><input type="checkbox"><div>Astroport.ONE est installé sur la CoeurBOX <small>Commande en une ligne sur la page <a class="link-hl" href="install.html">Nous recrutons</a> : <code>bash &lt;(curl -sL https://install.astroport.com)</code></small></div></li>
+    <li data-k="ip"><input type="checkbox"><div>La CoeurBOX a une adresse IP locale fixe <small>Dans l'interface de votre box : réservez l'adresse (bail DHCP statique) pour que les redirections ne cassent pas au redémarrage.</small></div></li>
+    <li data-k="dom"><input type="checkbox"><div>J'ai un nom de domaine qui pointe vers l'IP publique de ma box <small>Un enregistrement DNS <code>A</code> pour <code>astroport</code>, <code>ipfs</code>, <code>relay</code>, <code>u</code> et <code>cloud</code> (ou un joker <code>*</code>).</small></div></li>
+    <li data-k="ports"><input type="checkbox"><div>Les ports 80, 443 et 4001 sont redirigés vers la CoeurBOX <small>Voir l'étape 3.</small></div></li>
+    <li data-k="npm"><input type="checkbox"><div>Les hôtes sont créés dans Nginx Proxy Manager, avec leur certificat et les trois chemins de <code>u.</code> <small>Voir l'étape 4 (A à D).</small></div></li>
+    <li data-k="nc"><input type="checkbox"><div>NextCloud est installé et répond sur <code>cloud.mondomaine</code> <small>Voir l'étape 5.</small></div></li>
+    <li data-k="paf"><input type="checkbox"><div>Ma PAF est négociée et ma consommation est mesurée <small>Voir l'étape 6.</small></div></li>
+    <li data-k="live"><input type="checkbox"><div>Je me vois en LIVE dans la constellation <small>Voir l'étape 7.</small></div></li>
+  </ul>
+</section>
+
+<hr>
+
+<!-- ═════════════ 3 · PORTS ═════════════ -->
+<section class="sec" id="ports">
+  <div class="sec-label">// ÉTAPE 3 · OUVRIR LA BOX</div>
+  <h2>TROIS PORTS SUFFISENT</h2>
+  <div class="sep"></div>
+  <p>Beaucoup de services tournent sur votre CoeurBOX, mais <strong>un seul point d'entrée</strong> les protège : Nginx Proxy Manager (NPM). Sur votre box Internet, vous ne redirigez que ce qui mène à NPM, plus le port des pairs IPFS.</p>
+
+  <div class="fig">
+  <svg viewBox="0 0 900 330" role="img" aria-label="Internet, box, Nginx Proxy Manager sur le port 443, puis les services internes">
+    <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fil"/></marker></defs>
+    <!-- Internet -->
+    <ellipse cx="70" cy="165" rx="55" ry="40" fill="rgba(79,124,255,0.08)" stroke="#6f8fff"/>
+    <text x="70" y="162" text-anchor="middle" class="svg-t" font-size="13" font-weight="700">INTERNET</text>
+    <text x="70" y="180" text-anchor="middle" class="svg-d" font-size="10">vos amis</text>
+    <path d="M125 165 L 205 165" fill="none" class="stk" stroke-width="2" marker-end="url(#a2)"/>
+    <text x="165" y="154" text-anchor="middle" class="svg-t" font-size="11" style="fill:#e8d44d">443</text>
+    <!-- box -->
+    <rect x="205" y="120" width="120" height="90" rx="5" fill="rgba(255,176,0,0.07)" stroke="#ffb000"/>
+    <text x="265" y="152" text-anchor="middle" class="svg-t" font-size="13" font-weight="700" style="fill:#ffb000">VOTRE BOX</text>
+    <text x="265" y="170" text-anchor="middle" class="svg-d" font-size="10">redirections :</text>
+    <text x="265" y="186" text-anchor="middle" class="svg-t" font-size="10" style="fill:#ffb000">80 · 443 · 4001</text>
+    <path d="M325 165 L 395 165" fill="none" class="stk" stroke-width="2" marker-end="url(#a2)"/>
+    <!-- NPM -->
+    <rect x="395" y="105" width="130" height="120" rx="5" fill="rgba(0,245,255,0.07)" class="stk" stroke-width="2"/>
+    <text x="460" y="138" text-anchor="middle" class="svg-t acc" font-size="14" font-weight="700">NPM</text>
+    <text x="460" y="157" text-anchor="middle" class="svg-d" font-size="10">Nginx Proxy Manager</text>
+    <text x="460" y="177" text-anchor="middle" class="svg-d" font-size="10">HTTPS · certificats</text>
+    <text x="460" y="195" text-anchor="middle" class="svg-d" font-size="10">aiguille par nom d'hôte</text>
+    <!-- services -->
+    <g font-family="Courier New, monospace" font-size="11">
+      <path d="M525 150 C 560 100, 570 55, 600 45" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M525 158 C 560 140, 570 112, 600 105" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M525 172 C 560 185, 570 170, 600 165" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M525 182 C 560 215, 570 228, 600 225" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M525 195 C 560 250, 570 285, 600 285" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
+      <rect x="600" y="26" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="43" class="acc">astroport.mondomaine → :12345</text><text x="612" y="58" class="svg-d" font-size="10">carte de la station</text>
+      <rect x="600" y="86" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="103" class="acc">ipfs.mondomaine → :8080</text><text x="612" y="118" class="svg-d" font-size="10">passerelle IPFS</text>
+      <rect x="600" y="146" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="163" class="acc">relay.mondomaine → :7777</text><text x="612" y="178" class="svg-d" font-size="10">relais NOSTR (WebSocket)</text>
+      <rect x="600" y="206" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="223" class="acc">u.mondomaine → :54321</text><text x="612" y="238" class="svg-d" font-size="10">UPassport : MULTIPASS</text>
+      <rect x="600" y="266" width="280" height="40" rx="4" fill="rgba(255,176,0,0.07)" stroke="#ffb000"/><text x="612" y="283" style="fill:#ffb000">cloud.mondomaine → :8001</text><text x="612" y="298" class="svg-d" font-size="10">NextCloud (étape 5)</text>
+    </g>
+    <text x="265" y="258" text-anchor="middle" class="svg-d" font-size="10">4001 : les pairs IPFS</text>
+    <path d="M265 210 L 265 245" fill="none" stroke="#ffb000" stroke-width="1.4" stroke-dasharray="3 4"/>
+  </svg>
+  </div>
+
+  <h3 class="sub">Sur votre box Internet : à rediriger (NAT/PAT)</h3>
+  <div class="tabwrap"><table class="t">
+    <tr><th>PORT</th><th>PROTOCOLE</th><th>VERS</th><th>POURQUOI</th><th></th></tr>
+    <tr><td class="m">80</td><td>TCP</td><td class="m">CoeurBOX :80</td><td>NPM : redirige vers HTTPS et obtient les certificats Let's Encrypt</td><td><span class="pill go">OUVRIR</span></td></tr>
+    <tr><td class="m">443</td><td>TCP</td><td class="m">CoeurBOX :443</td><td>NPM : tout le HTTPS et le WebSocket (relais NOSTR, UPassport…)</td><td><span class="pill go">OUVRIR</span></td></tr>
+    <tr><td class="m">4001</td><td>TCP + UDP</td><td class="m">CoeurBOX :4001</td><td>IPFS : les pairs de l'essaim vous trouvent et vous échangent des blocs</td><td><span class="pill go">OUVRIR</span></td></tr>
+    <tr><td class="m">30333</td><td>TCP + UDP</td><td class="m">CoeurBOX :30333</td><td>Seulement si vous hébergez un nœud Duniter v2s (blockchain Ğ1)</td><td><span class="pill opt">OPTIONNEL</span></td></tr>
+  </table></div>
+
+  <div class="warn-box">
+    <h4>À NE JAMAIS REDIRIGER</h4>
+    <p><code>81</code> (administration de NPM), <code>5001</code> (API IPFS), <code>7777</code>, <code>8080</code>, <code>12345</code>, <code>54321</code> (services, déjà joignables via NPM en HTTPS), <code>8001/8002/8443</code> (NextCloud). Le pare-feu <code>firewall.sh</code> de la CoeurBOX les ferme à Internet : ils ne sont accessibles que depuis votre réseau local.</p>
+  </div>
+</section>
+
+<hr>
+
+<!-- ═════════════ 4 · NPM ═════════════ -->
+<section class="sec" id="npm">
+  <div class="sec-label">// ÉTAPE 4 · CONFIGURER</div>
+  <h2>NGINX PROXY MANAGER, PAS À PAS</h2>
+  <div class="sep"></div>
+  <p>NPM est le standardiste de votre CoeurBOX : un visiteur demande <code>relay.mondomaine</code>, NPM le sert au bon service, en HTTPS. Bonne nouvelle : l'installateur crée déjà ces hôtes pour vous (<code>install/setup/setup_npm.sh</code>). Cette étape sert à <strong>vérifier, réparer ou refaire à la main</strong>.</p>
+
+  <h3 class="sub">A · Se connecter</h3>
+  <div class="grid-3">
+    <div class="step-card"><h3><span class="num">1</span> Ouvrir l'interface</h3><p>Depuis un appareil de <strong>votre réseau local</strong> : <code>http://IP_DE_LA_COEURBOX:81</code> (ou <code>http://127.0.0.1:81</code> sur la CoeurBOX elle-même).</p></div>
+    <div class="step-card"><h3><span class="num">2</span> S'identifier</h3><p>Utilisateur <code>support@qo-op.com</code>. L'installateur a remplacé le mot de passe par défaut par un mot de passe généré, gardé dans un fichier (commande ci-dessous).</p></div>
+    <div class="step-card"><h3><span class="num">3</span> Aller aux hôtes</h3><p>Menu <strong>Hosts → Proxy Hosts</strong>. C'est là que vous voyez la liste des services publiés (capture ci-dessous).</p></div>
+  </div>
+  <div class="cmd">cat ~/.zen/nginx-proxy-manager/data/.admin_pass<button class="cp" type="button">COPIER</button></div>
+
+  <h3 class="sub">B · Le configurateur : vos valeurs, prêtes à recopier</h3>
+  <p>Renseignez votre domaine et l'adresse locale de la CoeurBOX : le tableau se met à jour, avec des boutons pour copier chaque nom et <strong>tester</strong> que l'hôte répond depuis Internet.</p>
+  <div class="form">
+    <label>VOTRE DOMAINE<input id="dom" type="text" value="mondomaine.fr" autocomplete="off" spellcheck="false"></label>
+    <label>IP LOCALE DE LA COEURBOX<input id="lip" type="text" value="192.168.1.16" autocomplete="off" spellcheck="false"></label>
+  </div>
+  <div class="tabwrap"><table class="t" id="hosts-tab">
+    <thead><tr><th>DOMAIN NAMES</th><th>SCHEME</th><th>FORWARD HOSTNAME / IP</th><th>PORT</th><th>WEBSOCKETS</th><th>RÔLE</th><th></th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <div class="fig">
+    <div class="imgs">
+      <div><img src="img/npm-proxy-hosts.jpg" alt="Liste des Proxy Hosts de NPM : astroport, ipfs, relay et u, vers les ports 12345, 8080, 7777 et 54321, tous en Let's Encrypt et en ligne" loading="lazy"></div>
+      <div><img src="img/npm-custom-locations.jpg" alt="Onglet Custom Locations de l'hôte u. (uSPOT API) dans NPM : /ipns et /ipfs vers le port 8080, /12345 vers le port 12345" loading="lazy"></div>
+    </div>
+    <div class="figcap">À GAUCHE : la liste des quatre hôtes de base, chacun en <b>Let's Encrypt</b>, accès <b>Public</b>, statut <b>Online</b>. À DROITE : l'onglet <b>Custom Locations</b> de l'hôte <b>u.</b> (uSPOT API) : <code>/ipns</code> et <code>/ipfs</code> → port 8080 (passerelle IPFS), <code>/12345</code> → port 12345 (carte de la station). Cet exemple utilise 192.168.1.16 : remplacez par l'IP de votre CoeurBOX.</div>
+  </div>
+
+  <h3 class="sub">C · Créer un hôte (et son certificat)</h3>
+  <div class="grid-2">
+    <div class="step-card"><h3><span class="num">1</span> Onglet « Details »</h3><p><strong>Add Proxy Host</strong>. Domain Names = le nom du tableau. Scheme <code>http</code>, Forward Hostname/IP = l'IP de la CoeurBOX, Forward Port = le port du tableau. Cochez <strong>Websockets Support</strong> là où le tableau l'indique (relais NOSTR et UPassport en ont besoin).</p></div>
+    <div class="step-card"><h3><span class="num">2</span> Onglet « SSL »</h3><p>SSL Certificate : <strong>Request a new SSL Certificate</strong> (Let's Encrypt), puis cochez <strong>Force SSL</strong> et <strong>HTTP/2 Support</strong>, acceptez les conditions et indiquez un email. Les ports 80 et 443 doivent déjà être redirigés (étape 3), sinon la demande échoue.</p></div>
+  </div>
+  <div class="info-box">
+    <h4>L'HÔTE ipfs AVEC SON CHEMIN /12345/</h4>
+    <p>Pour que les stations se synchronisent entre elles, l'hôte <code>ipfs</code> sert aussi <code>/12345/</code>. Dans l'onglet <strong>Advanced</strong> (Custom Nginx Configuration), collez :</p>
+    <div class="cmd" id="adv-cmd" style="margin-bottom:.4rem;">location /12345/ {
+    proxy_pass http://192.168.1.16:12345/;
+}<button class="cp" type="button">COPIER</button></div>
+  </div>
+  <h3 class="sub">D · Les trois chemins de <code>u.</code> (uSPOT API)</h3>
+  <p>L'hôte <code>u.</code> sert l'API uSPOT/UPassport (port 54321). On lui ajoute <strong>trois chemins personnalisés</strong> qui renvoient vers d'autres services de la CoeurBOX : un même nom de domaine donne alors accès à l'API, à la passerelle IPFS et à la carte de la station. <strong>L'installateur ne crée pas ces chemins</strong> : à ajouter à la main.</p>
+  <div class="grid-3">
+    <div class="step-card"><h3><span class="num">1</span> Ouvrir l'hôte</h3><p>Hosts → Proxy Hosts → les trois points de la ligne <code>u.</code> → <strong>Edit</strong>.</p></div>
+    <div class="step-card"><h3><span class="num">2</span> Custom Locations</h3><p>Onglet <strong>Custom Locations</strong> → <strong>Add location</strong>, trois fois. Pour chacune : le chemin, Scheme <code>http</code>, l'IP et le port du tableau ci-dessous.</p></div>
+    <div class="step-card"><h3><span class="num">3</span> Enregistrer</h3><p><strong>Save</strong>. Testez ensuite <code>https://u.mondomaine/12345</code> dans le navigateur : la carte de votre station doit s'afficher.</p></div>
+  </div>
+  <div class="tabwrap"><table class="t" id="loc-tab">
+    <thead><tr><th>HÔTE</th><th>LOCATION</th><th>SCHEME</th><th>FORWARD HOSTNAME / IP</th><th>FORWARD PORT</th><th>VERS</th><th></th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <p>Pour tout refaire en une commande à partir de ce que l'installateur sait déjà (hôtes et certificats, <em>sans</em> les chemins de <code>u.</code>) :</p>
+  <div class="cmd">~/.zen/Astroport.ONE/install/setup/setup_npm.sh<button class="cp" type="button">COPIER</button></div>
+</section>
+
+<hr>
+
+<!-- ═════════════ 5 · NEXTCLOUD ═════════════ -->
+<section class="sec" id="nextcloud">
+  <div class="sec-label">// ÉTAPE 5 · LE CLOUD DES PROCHES</div>
+  <h2>NEXTCLOUD : SYNCHRONISER SON SMARTPHONE CHEZ SOI</h2>
+  <div class="sep"></div>
+  <p>C'est ce service qui permet à <strong>vous-même et à vos amis</strong> de sauvegarder et synchroniser leur smartphone — photos, contacts, agenda, documents — <strong>à un endroit connu et sûr</strong> : votre CoeurBOX, plutôt que chez un géant du numérique. Chaque personne garde ses données, vous gardez la maîtrise du lieu.</p>
+
+  <div class="grid-3">
+    <div class="step-card"><h3>📱 Pour qui ?</h3><p>Pour vous, votre famille, vos amis : chacun un compte, <strong>128 Go</strong> prévus par ZenCard, des sauvegardes de téléphone automatiques.</p></div>
+    <div class="step-card"><h3>🔒 Pourquoi chez vous ?</h3><p>Les données restent sur un matériel que vous connaissez. Si vous le souhaitez, un disque dédié en <code>BTRFS</code> (<code>/nextcloud-data</code>) apporte compression et instantanés.</p></div>
+    <div class="step-card"><h3>🚪 Quelle porte ?</h3><p>NextCloud AIO écoute en interne sur <code>8001</code> ; NPM le publie sur <code>cloud.mondomaine</code> en HTTPS. Rien d'autre à ouvrir sur la box.</p></div>
+  </div>
+
+  <h3 class="sub">Installer (à lancer sur la CoeurBOX)</h3>
+  <div class="cmd">cd ~/.zen/Astroport.ONE
+./install.sh "" "" "" nextcloud<button class="cp" type="button">COPIER</button></div>
+  <p>Ou, si Astroport.ONE est déjà installé, seulement le conteneur :</p>
+  <div class="cmd">docker compose -f ~/.zen/Astroport.ONE/_DOCKER/nextcloud/docker-compose.yml up -d<button class="cp" type="button">COPIER</button></div>
+  <p>Ensuite, <strong>relancez la configuration de NPM</strong> : elle détecte NextCloud et crée l'hôte <code>cloud.mondomaine</code> automatiquement.</p>
+  <div class="cmd">~/.zen/Astroport.ONE/install/setup/setup_npm.sh<button class="cp" type="button">COPIER</button></div>
+
+  <div class="tabwrap"><table class="t">
+    <tr><th>PORT</th><th>CE QUE C'EST</th><th>ACCÈS</th></tr>
+    <tr><td class="m">8001</td><td>NextCloud lui-même (Apache), publié par NPM</td><td><span class="pill go">VIA NPM (HTTPS)</span></td></tr>
+    <tr><td class="m">8002</td><td>Tableau de bord de NextCloud AIO (mises à jour, sauvegardes)</td><td><span class="pill no">RÉSEAU LOCAL SEULEMENT</span></td></tr>
+    <tr><td class="m">8443</td><td>Assistant de première configuration d'AIO</td><td><span class="pill no">RÉSEAU LOCAL SEULEMENT</span></td></tr>
+  </table></div>
+
+  <h3 class="sub">Brancher un smartphone, en trois gestes</h3>
+  <div class="grid-3">
+    <div class="step-card"><h3><span class="num">1</span> Créer le compte</h3><p>Dans NextCloud, créez un compte pour la personne (ou laissez-la le faire : son email, c'est son MULTIPASS).</p></div>
+    <div class="step-card"><h3><span class="num">2</span> Installer l'appli</h3><p>Sur le téléphone, installez l'application <strong>Nextcloud</strong>, indiquez le serveur <code>https://cloud.mondomaine</code> et connectez-vous.</p></div>
+    <div class="step-card"><h3><span class="num">3</span> Activer la sauvegarde</h3><p>Dans l'appli, activez le <strong>téléversement automatique des photos</strong> : le téléphone se synchronise désormais chez vous.</p></div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ═════════════ 6 · PAF & ÉNERGIE ═════════════ -->
+<section class="sec" id="paf">
+  <div class="sec-label">// ÉTAPE 6 · LA JUSTE PART</div>
+  <h2>PAF, CONSOMMATION ET PRODUCTION D'ÉNERGIE</h2>
+  <div class="sep"></div>
+  <p>Chaque station apportée par un nouvel <strong>Armateur</strong> ou <strong>Capitaine</strong> se voit attribuer une <strong>PAF</strong> (Participation Aux Frais), négociée avec la constellation. Pour que ce remboursement reste honnête, la station <strong>affiche ce qu'elle consomme et ce qu'elle produit</strong>.</p>
+
+  <div class="grid-2">
+    <div class="step-card"><h3>⚡ Consommation · PowerJoular</h3><p>Mesure la consommation réelle du processeur et de la machine, jour après jour. Publiée dans l'état de la station (<code>energy</code> : kWh du jour, du mois, total, puissance moyenne).</p><div class="cmd" style="margin-bottom:0;margin-top:.8rem;">~/.zen/Astroport.ONE/install/install_powerjoular.sh<button class="cp" type="button">COPIER</button></div></div>
+    <div class="step-card"><h3>☀ Production · Victron MPPT</h3><p>Lit votre régulateur solaire par Bluetooth. Publiée dans l'état de la station (<code>solar</code> : puissance instantanée, énergie du jour, du mois, tension de batterie).</p><div class="cmd" style="margin-bottom:0;margin-top:.8rem;">~/.zen/Astroport.ONE/install/install_victron.sh<button class="cp" type="button">COPIER</button></div></div>
+  </div>
+
+  <h3 class="sub">Calculez votre bilan</h3>
+  <p>Des ordres de grandeur pour comprendre. La PAF réelle de votre station est négociée avec la constellation.</p>
+  <div class="form">
+    <label>PUISSANCE MOYENNE (W)<input id="c-w" type="number" min="0" step="1" value="8"></label>
+    <label>TARIF ÉLECTRIQUE (€/kWh)<input id="c-t" type="number" min="0" step="0.001" value="0.194"></label>
+    <label>PRODUCTION SOLAIRE (Wh/JOUR)<input id="c-s" type="number" min="0" step="10" value="0"></label>
+    <label>MA PAF (Ẑ/SEMAINE)<input id="c-p" type="number" min="0" step="1" value="14"></label>
+  </div>
+  <div class="out" id="calc-out"></div>
+  <p class="figcap" style="padding:0;border:0;">Base : 1 Ẑen ≈ 1 € en mode ẐEN de production. Un Raspberry Pi tourne autour de quelques watts ; un PC de jeu avec carte graphique monte à plusieurs dizaines de watts en moyenne (exemple chiffré sur la page <a class="link-hl" href="install.html">Nous recrutons</a>).</p>
+</section>
+
+<hr>
+
+<!-- ═════════════ 7 · LIVE ═════════════ -->
+<section class="sec" id="live">
+  <div class="sec-label">// ÉTAPE 7 · SE VOIR EN VRAI</div>
+  <h2>LE MODE LIVE</h2>
+  <div class="sep"></div>
+  <p>Votre station publie régulièrement son état de santé, sa PAF, sa consommation et sa production sur le relais NOSTR de la constellation. Interrogez un relais : vous voyez <strong>les stations qu'il connaît</strong>, en direct. Si vous changez de relais, appuyez sur <strong>INTERROGER</strong> pour relire la constellation telle que ce relais la voit.</p>
+
+  <div class="live">
+    <div class="live-bar">
+      <span style="color:#00ff88;letter-spacing:2px;">⬤ LIVE NOSTR</span>
+      <input id="lv-relay" type="text" value="wss://relay.copylaradio.com" spellcheck="false" autocomplete="off" aria-label="Relais NOSTR">
+      <button id="lv-go" type="button">⟳ INTERROGER</button>
+      <span id="lv-st">Prêt</span>
+    </div>
+    <div class="tabwrap"><table class="t" id="lv-tab">
+      <thead><tr><th>STATION</th><th>SANTÉ</th><th>PUISSANCE</th><th>PAF (Ẑ)</th><th>BILAN (Ẑ)</th><th>CONSO.</th><th>SOLAIRE</th></tr></thead>
+      <tbody><tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.4);padding:1.6rem;">Appuyez sur <b>INTERROGER</b> pour charger les stations du relais.</td></tr></tbody>
+    </table></div>
+  </div>
+  <p class="figcap" style="padding:.6rem 0 0;border:0;">CONSO. : puissance moyenne récente (PowerJoular) et énergie du jour. SOLAIRE : puissance instantanée et énergie du jour (Victron). « — » : la station ne publie pas encore cette mesure. Pour la vue 3D de la constellation, utilisez le bouton <b>LIVE</b> de la <a class="link-hl" href="index.html">page d'accueil</a>.</p>
+</section>
+
+<footer>
+  © 2024-2026 Astroport.ONE · <a href="index.html">Accueil</a> · <a href="architecture.html">Architecture</a> · <a href="capitaine.html">Guide capitaine</a> · <a href="install.html">Nous recrutons</a> · <a href="https://github.com/papiche/Astroport.ONE" target="_blank" rel="noopener">GitHub</a> · AGPL v3
+</footer>
+
+<!-- Libs UPlanet (même chargement que la page d'accueil) -->
+<script>
+(function(){
+  var _base = window.location.pathname.startsWith('/ipns/')
+    ? '../copylaradio.com/'
+    : '//ipfs.copylaradio.com/ipns/copylaradio.com/';
+  ['nostr.bundle.js','heartbox.js'].forEach(function(lib){
+    document.write('<scr'+'ipt src="'+_base+lib+'"><\/scr'+'ipt>');
+  });
+})();
+</script>
+
+<script>
+/* ── Thème + menu ── */
+let isSolar=false;
+function toggleTheme(){
+  isSolar=!isSolar;
+  document.getElementById('body').classList.toggle('sp',isSolar);
+  document.getElementById('tlc').className='tl'+(isSolar?'':' active-cyber');
+  document.getElementById('tls').className='tl'+(isSolar?' active-solar':'');
+}
+function toggleMenu(){
+  const nav=document.getElementById('nav-links'),btn=document.getElementById('menu-btn');
+  nav.classList.toggle('open'); btn.textContent=nav.classList.contains('open')?'✕':'☰';
+}
+function closeMenu(){ document.getElementById('nav-links').classList.remove('open'); document.getElementById('menu-btn').textContent='☰'; }
+
+const $=id=>document.getElementById(id);
+function store(k,v){ try{ localStorage.setItem('cap.'+k,v); }catch(e){} }
+function load(k,d){ try{ const v=localStorage.getItem('cap.'+k); return v===null?d:v; }catch(e){ return d; } }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ── Copier ── */
+function copyText(t,btn){
+  const done=()=>{ if(!btn) return; const o=btn.textContent; btn.textContent='COPIÉ ✓'; btn.classList.add('ok'); setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1400); };
+  if(navigator.clipboard&&window.isSecureContext){ navigator.clipboard.writeText(t).then(done,()=>fallback()); } else fallback();
+  function fallback(){ const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} ta.remove(); done(); }
+}
+document.querySelectorAll('.cmd .cp').forEach(b=>{
+  b.addEventListener('click',()=>{ const box=b.parentElement; const clone=box.cloneNode(true); clone.querySelectorAll('button').forEach(x=>x.remove()); copyText(clone.textContent.trim(),b); });
+});
+
+/* ── Barre d'étapes : met en avant la section visible ── */
+(function(){
+  const links=[...document.querySelectorAll('#steps a')];
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id)); const on=document.querySelector('#steps a.on'); if(on&&on.scrollIntoView) on.scrollIntoView({block:'nearest',inline:'center'}); } }); },{rootMargin:'-30% 0px -60% 0px'});
+  secs.forEach(s=>s&&io.observe(s));
+})();
+
+/* ── Liste de contrôle ── */
+(function(){
+  const items=[...document.querySelectorAll('#check li')];
+  function paint(){ const n=items.filter(li=>li.querySelector('input').checked).length; $('prog-bar').style.width=(n/items.length*100)+'%'; items.forEach(li=>li.classList.toggle('done',li.querySelector('input').checked)); }
+  items.forEach(li=>{
+    const cb=li.querySelector('input'), k='chk.'+li.dataset.k;
+    cb.checked=load(k,'0')==='1';
+    li.addEventListener('click',e=>{ if(e.target.tagName==='A') return; if(e.target!==cb) cb.checked=!cb.checked; store(k,cb.checked?'1':'0'); paint(); });
+  });
+  paint();
+})();
+
+/* ── Configurateur NPM ── */
+const HOSTS=[
+  {sub:'astroport',port:12345,ws:false,role:'Carte de la station, découverte de l\'essaim'},
+  {sub:'ipfs',     port:8080, ws:false,role:'Passerelle IPFS publique (+ chemin /12345/)'},
+  {sub:'relay',    port:7777, ws:true, role:'Relais NOSTR (strfry)'},
+  {sub:'u',        port:54321,ws:true, role:'uSPOT API (UPassport) : MULTIPASS, API + 3 chemins (voir D)'},
+  {sub:'cloud',    port:8001, ws:false,role:'NextCloud (étape 5)',opt:true},
+  {sub:'g1',       port:9944, ws:true, role:'RPC Duniter, si vous hébergez un nœud Ğ1',opt:true}
+];
+function validDomain(d){ return /^(?=.{3,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i.test(d); }
+function validIp(i){ return /^((25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(25[0-5]|2[0-4]\d|1?\d?\d)$/.test(i); }
+function renderHosts(){
+  const dom=$('dom').value.trim().toLowerCase(), ip=$('lip').value.trim();
+  const okD=validDomain(dom), okI=validIp(ip);
+  $('dom').style.borderColor=okD?'':'#ff4488'; $('lip').style.borderColor=okI?'':'#ff4488';
+  const d=okD?dom:'mondomaine.fr', a=okI?ip:'192.168.1.16';
+  if(okD) store('dom',dom); if(okI) store('ip',ip);
+  const tb=$('hosts-tab').querySelector('tbody'); tb.innerHTML='';
+  HOSTS.forEach(h=>{
+    const fq=h.sub+'.'+d, tr=document.createElement('tr');
+    tr.innerHTML='<td class="m">'+esc(fq)+(h.opt?' <span class="pill opt">OPTION</span>':'')+'</td><td class="m">http</td><td class="m">'+esc(a)+'</td><td class="m">'+h.port+'</td><td>'+(h.ws?'<span class="pill go">OUI</span>':'<span style="color:rgba(255,255,255,0.35)">non</span>')+'</td><td>'+esc(h.role)+'</td><td style="white-space:nowrap"><button class="mini" data-cp="'+esc(fq)+'" type="button">COPIER</button><button class="mini" data-test="'+esc(fq)+'" data-ws="'+(h.ws?1:0)+'" type="button">TESTER</button><span class="tres"></span></td>';
+    tb.appendChild(tr);
+  });
+  /* chemins personnalisés de u. */
+  const LOCS=[['/ipns',8080,'passerelle IPFS (noms IPNS)'],['/ipfs',8080,'passerelle IPFS (contenus)'],['/12345',12345,'carte de la station']];
+  const lb=$('loc-tab').querySelector('tbody'); lb.innerHTML='';
+  LOCS.forEach(l=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td class="m">u.'+esc(d)+'</td><td class="m">'+esc(l[0])+'</td><td class="m">http</td><td class="m">'+esc(a)+'</td><td class="m">'+l[1]+'</td><td>'+esc(l[2])+'</td><td><button class="mini" data-cp="'+esc(l[0])+'" type="button">COPIER LE CHEMIN</button></td>';
+    lb.appendChild(tr);
+  });
+  /* config avancée de l'hôte ipfs, avec l'IP choisie */
+  const adv=$('adv-cmd'); const btn=adv.querySelector('button');
+  adv.firstChild.textContent='location /12345/ {\n    proxy_pass http://'+a+':12345/;\n}';
+  adv.appendChild(btn);
+}
+$('loc-tab').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b&&b.dataset.cp) copyText(b.dataset.cp,b); });
+$('hosts-tab').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.cp) copyText(b.dataset.cp,b);
+  if(b.dataset.test) testHost(b.dataset.test,b.dataset.ws==='1',b.parentElement.querySelector('.tres'));
+});
+function testHost(host,ws,out){
+  out.style.color='rgba(255,255,255,0.5)'; out.textContent='…test';
+  const ok=t=>{ out.style.color='#00ff88'; out.textContent='✔ '+t; }, ko=t=>{ out.style.color='#ff4488'; out.textContent='✘ '+t; };
+  if(ws){
+    let done=false; const to=setTimeout(()=>{ if(!done){done=true;try{s.close();}catch(e){}ko('pas de réponse');} },7000);
+    let s; try{ s=new WebSocket('wss://'+host); }catch(e){ clearTimeout(to); return ko('invalide'); }
+    s.onopen=()=>{ if(done) return; done=true; clearTimeout(to); try{s.close();}catch(e){} ok('WebSocket ouvert'); };
+    s.onerror=()=>{ if(done) return; done=true; clearTimeout(to); ko('injoignable'); };
+  }else{
+    const c=new AbortController(), to=setTimeout(()=>c.abort(),7000);
+    fetch('https://'+host+'/',{mode:'no-cors',cache:'no-store',signal:c.signal}).then(()=>{clearTimeout(to);ok('répond en HTTPS');}).catch(()=>{clearTimeout(to);ko('injoignable (DNS, port 443 ou certificat)');});
+  }
+}
+$('dom').value=load('dom','mondomaine.fr'); $('lip').value=load('ip','192.168.1.16');
+$('dom').addEventListener('input',renderHosts); $('lip').addEventListener('input',renderHosts);
+renderHosts();
+
+/* ── Calculateur énergie / PAF ── */
+function calc(){
+  const w=Math.max(0,+$('c-w').value||0), t=Math.max(0,+$('c-t').value||0), s=Math.max(0,+$('c-s').value||0), p=Math.max(0,+$('c-p').value||0);
+  const kwhDay=w*24/1000, solKwh=s/1000, net=Math.max(0,kwhDay-solKwh);
+  const costMonth=net*30*t, pafMonth=p*52/12, bilan=pafMonth-costMonth;
+  const auto=kwhDay>0?Math.min(100,solKwh/kwhDay*100):0;
+  $('calc-out').innerHTML=
+    '<div><b>'+kwhDay.toFixed(2)+' kWh</b><span>consommés par jour</span></div>'+
+    '<div><b>'+costMonth.toFixed(2)+' €</b><span>d\'électricité par mois'+(s>0?' (après solaire)':'')+'</span></div>'+
+    '<div><b>'+pafMonth.toFixed(2)+' Ẑ</b><span>de PAF par mois</span></div>'+
+    '<div class="'+(bilan>=0?'':'bad')+'"><b>'+(bilan>=0?'+':'')+bilan.toFixed(2)+'</b><span>bilan mensuel (≈ €)</span></div>'+
+    '<div><b>'+auto.toFixed(0)+' %</b><span>couverts par votre solaire</span></div>';
+}
+['c-w','c-t','c-s','c-p'].forEach(id=>$(id).addEventListener('input',calc)); calc();
+
+/* ── LIVE ── */
+let lvOff=null, lvRows=new Map();
+const num=(v,d)=>{ const n=Number(v); return isFinite(n)?n:d; };
+function lvRender(){
+  const tb=$('lv-tab').querySelector('tbody');
+  if(!lvRows.size){ tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.4);padding:1.6rem;">Aucune station reçue pour l\'instant.</td></tr>'; return; }
+  const rows=[...lvRows.values()].sort((a,b)=>(b.hwPowerScore||0)-(a.hwPowerScore||0));
+  tb.innerHTML=rows.map(s=>{
+    const hw=(s.content&&s.content.hardware)||{}, en=hw.energy||null, so=hw.solar||null;
+    const bilan=num(s.bilan,0), hs=String(s.healthStatus||'?').replace(/_/g,' ');
+    const ok=/healthy|ok/i.test(hs);
+    const conso=en&&(en.avg_w_recent!=null||en.today_kwh!=null)?num(en.avg_w_recent,0).toFixed(1)+' W · '+num(en.today_kwh,0).toFixed(2)+' kWh':'—';
+    const sol=so&&(so.power_w!=null||so.yield_today_wh!=null)?num(so.power_w,0).toFixed(0)+' W · '+num(so.yield_today_wh,0).toFixed(0)+' Wh':'—';
+    return '<tr><td class="m">'+esc(s.stationName||s.stationId)+'</td>'+
+      '<td><span class="pill '+(ok?'go':'no')+'">'+esc(hs.toUpperCase())+'</span></td>'+
+      '<td class="w">'+esc(s.hwTier||'?')+' · '+num(s.hwPowerScore,0).toFixed(0)+'</td>'+
+      '<td class="w">'+num(s.costPaf,0).toFixed(1)+'</td>'+
+      '<td class="w '+(bilan>=0?'pos':'neg')+'">'+(bilan>=0?'+':'')+bilan.toFixed(1)+'</td>'+
+      '<td class="w">'+esc(conso)+'</td><td class="w">'+esc(sol)+'</td></tr>';
+  }).join('');
+}
+function lvGo(){
+  const relay=$('lv-relay').value.trim(), st=$('lv-st');
+  if(!/^wss?:\/\/[^\s]+$/.test(relay)){ st.textContent='❌ URL invalide (ws:// ou wss://)'; return; }
+  if(typeof UPlanetHeartbox==='undefined'){ st.textContent='❌ bibliothèque LIVE non chargée (connexion à la passerelle copylaradio.com ?)'; return; }
+  if(lvOff){ try{lvOff();}catch(e){} lvOff=null; }
+  lvRows=new Map(); lvRender(); st.textContent='⏳ Connexion à '+relay+'…'; store('relay',relay);
+  lvOff=UPlanetHeartbox.init(relay,{
+    onUpdate(id,station){ lvRows.set(id,station); lvRender(); st.textContent='⬤ '+lvRows.size+' station'+(lvRows.size>1?'s':''); },
+    onEose(){ st.textContent=lvRows.size?'✅ '+lvRows.size+' station'+(lvRows.size>1?'s':'')+' vue'+(lvRows.size>1?'s':'')+' par ce relais':'⚠️ aucune station (kind 30850) sur ce relais'; },
+    onError(err){ st.textContent='❌ '+(err&&err.message?err.message:String(err)); }
+  });
+}
+$('lv-relay').value=load('relay','wss://relay.copylaradio.com');
+$('lv-go').addEventListener('click',lvGo);
+$('lv-relay').addEventListener('keydown',e=>{ if(e.key==='Enter') lvGo(); });
+</script>
+<script>
+/* Thème CYBER/SOLAR mémorisé d'une page à l'autre */
+(function(){
+  var K='uplanet.theme', orig=window.toggleTheme;
+  window.toggleTheme=function(){ orig(); try{localStorage.setItem(K,isSolar?'sp':'cy');}catch(e){} };
+  window.addEventListener('load',function(){ try{ if(localStorage.getItem(K)==='sp'&&!isSolar) orig(); }catch(e){} });
+})();
+</script>
+</body>
+</html>

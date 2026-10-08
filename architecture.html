@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture — Astroport.ONE</title>
+<script src="libs/p5.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:#050a12;color:#e0f0ff;font-family:'Segoe UI',sans-serif;overflow-x:hidden;}
+body.sp{background:#0d1a0d;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;height:52px;
+  background:rgba(5,10,18,0.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(0,245,255,0.12);transition:background .5s;
+}
+body.sp nav{background:rgba(13,26,13,0.85);border-color:rgba(127,214,127,0.12);}
+.logo{font-family:'Courier New',monospace;font-size:1rem;color:#00f5ff;letter-spacing:3px;font-weight:700;text-decoration:none;}
+.logo span{color:#00ff88;}
+body.sp .logo{color:#7fd67f;}
+.nav-right{display:flex;align-items:center;gap:1.2rem;}
+nav a{color:rgba(255,255,255,0.5);text-decoration:none;font-size:.78rem;letter-spacing:1px;transition:color .2s;}
+nav a:hover{color:#00f5ff;}
+body.sp nav a:hover{color:#7fd67f;}
+.nav-links{display:flex;align-items:center;gap:1.2rem;}
+
+/* ── TOGGLE ── */
+.tog-wrap{display:flex;align-items:center;gap:7px;cursor:pointer;}
+.tl{font-size:.65rem;letter-spacing:1px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.4);}
+.tl.active-cyber{color:#00f5ff;}
+.tl.active-solar{color:#7fd67f;}
+.tog-track{width:42px;height:21px;border-radius:11px;background:rgba(0,245,255,0.1);border:1px solid #00f5ff;position:relative;transition:all .4s;}
+.tog-thumb{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#00f5ff;transition:all .4s;}
+body.sp .tog-track{border-color:#7fd67f;background:rgba(127,214,127,0.1);}
+body.sp .tog-thumb{left:23px;background:#7fd67f;}
+
+/* ── HEADER PAGE ── */
+.page-header{
+  padding:8rem 2rem 3rem;text-align:center;
+  background:linear-gradient(180deg,rgba(0,245,255,0.05) 0%,transparent 100%);
+  border-bottom:1px solid rgba(0,245,255,0.1);
+}
+body.sp .page-header{background:linear-gradient(180deg,rgba(127,214,127,0.05) 0%,transparent 100%);border-bottom-color:rgba(127,214,127,0.1);}
+h1{font-family:'Courier New',monospace;font-size:2.5rem;color:#00f5ff;letter-spacing:3px;margin-bottom:1rem;}
+body.sp h1{color:#7fd67f;}
+.header-sub{font-size:1rem;color:rgba(255,255,255,0.6);line-height:1.75;max-width:680px;margin:0 auto;}
+
+/* ── CONTENT ── */
+.sec{padding:4rem 2rem;max-width:1100px;margin:0 auto;}
+.sec-label{font-family:'Courier New',monospace;font-size:.62rem;color:#00ff88;letter-spacing:4px;margin-bottom:.4rem;}
+body.sp .sec-label{color:#e8d44d;}
+h2{font-family:'Courier New',monospace;font-size:1.8rem;color:#00f5ff;margin-bottom:.8rem;letter-spacing:2px;}
+body.sp h2{color:#7fd67f;}
+.sep{width:50px;height:2px;background:#00f5ff;margin-bottom:1.5rem;}
+body.sp .sep{background:#7fd67f;}
+p{color:rgba(255,255,255,0.65);line-height:1.8;margin-bottom:1.2rem;font-size:.95rem;}
+strong{color:#fff;}
+code{font-family:'Courier New',monospace;font-size:.85em;color:#00f5ff;background:rgba(0,245,255,0.07);padding:.05rem .3rem;border-radius:2px;}
+body.sp code{color:#7fd67f;background:rgba(127,214,127,0.07);}
+hr{border:0;border-top:1px solid rgba(255,255,255,0.06);max-width:1100px;margin:0 auto;}
+a.link-hl{color:#00f5ff;text-decoration:none;border-bottom:1px dotted #00f5ff;}
+body.sp a.link-hl{color:#7fd67f;border-bottom-color:#7fd67f;}
+
+/* ── CARDS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem;}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2rem;}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr;}}
+.step-card{padding:1.5rem;background:rgba(0,245,255,0.03);border:1px solid rgba(0,245,255,0.15);border-radius:4px;display:flex;flex-direction:column;}
+body.sp .step-card{background:rgba(127,214,127,0.03);border-color:rgba(127,214,127,0.15);}
+.step-card h3{font-family:'Courier New',monospace;color:#00f5ff;font-size:1rem;margin-bottom:.8rem;display:flex;align-items:center;gap:10px;}
+body.sp .step-card h3{color:#7fd67f;}
+.step-card .num{background:#00f5ff;color:#000;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:bold;flex-shrink:0;}
+body.sp .step-card .num{background:#7fd67f;}
+.step-card p{font-size:.85rem;margin-bottom:0;flex-grow:1;}
+.info-box{background:rgba(0,255,136,0.05);border-left:3px solid #00ff88;padding:1.2rem 1.5rem;margin:1.5rem 0;border-radius:0 4px 4px 0;}
+body.sp .info-box{background:rgba(232,212,77,0.05);border-color:#e8d44d;}
+.info-box h4{color:#00ff88;font-family:'Courier New',monospace;letter-spacing:1px;margin-bottom:.4rem;}
+body.sp .info-box h4{color:#e8d44d;}
+.info-box p{font-size:.88rem;margin-bottom:0;}
+.note{font-family:'Courier New',monospace;font-size:.68rem;color:rgba(255,255,255,0.35);letter-spacing:1px;margin-top:.6rem;}
+
+/* ── FIGURES SVG ── */
+.fig{margin:1.5rem 0;border:1px solid rgba(0,245,255,0.12);border-radius:4px;background:rgba(0,0,0,0.25);overflow-x:auto;}
+body.sp .fig{border-color:rgba(127,214,127,0.15);}
+.fig svg{display:block;width:100%;height:auto;min-width:640px;}
+.svg-t{font-family:'Courier New',monospace;fill:#e0f0ff;}
+.svg-d{font-family:'Segoe UI',sans-serif;fill:rgba(255,255,255,0.55);}
+.stk{stroke:#00f5ff;}
+body.sp .stk{stroke:#7fd67f;}
+.fil{fill:#00f5ff;}
+body.sp .fil{fill:#7fd67f;}
+.acc{fill:#00ff88;}
+body.sp .acc{fill:#e8d44d;}
+
+/* ── P5 STAGE ── */
+.stage{position:relative;border:1px solid rgba(0,245,255,0.15);border-radius:4px;background:radial-gradient(ellipse at 50% 30%,rgba(0,245,255,0.06),transparent 70%),#03070d;}
+body.sp .stage{border-color:rgba(127,214,127,0.2);background:radial-gradient(ellipse at 50% 30%,rgba(127,214,127,0.07),transparent 70%),#08120a;}
+#p5holder{width:100%;height:560px;touch-action:pan-y;cursor:grab;}
+#p5holder:active{cursor:grabbing;}
+#p5holder canvas{display:block;}
+#hint{position:absolute;left:1rem;top:.9rem;font-family:'Courier New',monospace;font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,0.3);pointer-events:none;}
+#clock{position:absolute;right:1rem;top:.8rem;font-family:'Courier New',monospace;font-size:1.1rem;color:#00ff88;letter-spacing:2px;text-shadow:0 0 8px rgba(0,255,136,0.4);pointer-events:none;}
+body.sp #clock{color:#e8d44d;text-shadow:0 0 8px rgba(232,212,77,0.4);}
+#tip{position:absolute;pointer-events:none;z-index:5;opacity:0;transition:opacity .12s;
+  background:rgba(5,10,18,0.94);border:1px solid rgba(0,245,255,0.35);border-radius:3px;padding:.45rem .7rem;
+  font-family:'Courier New',monospace;font-size:.68rem;line-height:1.6;color:#e0f0ff;max-width:260px;}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:.7rem 1rem;padding:.8rem 1rem;border-top:1px solid rgba(0,245,255,0.12);font-family:'Courier New',monospace;font-size:.7rem;color:rgba(255,255,255,0.55);}
+body.sp .controls{border-color:rgba(127,214,127,0.15);}
+.controls button,.controls select{background:rgba(0,245,255,0.07);border:1px solid #00f5ff;color:#00f5ff;font-family:'Courier New',monospace;font-size:.7rem;letter-spacing:1px;padding:.3rem .7rem;border-radius:2px;cursor:pointer;}
+body.sp .controls button,body.sp .controls select{background:rgba(127,214,127,0.07);border-color:#7fd67f;color:#7fd67f;}
+.controls select option{background:#050a12;}
+.controls input[type=range]{flex:1;min-width:140px;accent-color:#00f5ff;}
+body.sp .controls input[type=range]{accent-color:#7fd67f;}
+.layer-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.6rem;margin-top:1rem;}
+.lyr{cursor:pointer;text-align:left;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-left:4px solid var(--lc);border-radius:3px;padding:.6rem .8rem;color:#e0f0ff;font-family:inherit;transition:background .2s;}
+.lyr:hover,.lyr.on{background:rgba(255,255,255,0.09);}
+.lyr b{display:block;font-family:'Courier New',monospace;font-size:.72rem;letter-spacing:1px;color:var(--lc);}
+.lyr span{font-size:.72rem;color:rgba(255,255,255,0.55);line-height:1.5;display:block;margin-top:.15rem;}
+#layer-detail{min-height:3.2rem;}
+#evlog{list-style:none;font-family:'Courier New',monospace;font-size:.7rem;line-height:1.8;padding:.8rem 1rem;border-top:1px solid rgba(0,245,255,0.12);min-height:8.2rem;color:rgba(255,255,255,0.6);}
+body.sp #evlog{border-color:rgba(127,214,127,0.15);}
+#evlog li{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#evlog li b{color:#00ff88;font-weight:400;margin-right:.6rem;}
+body.sp #evlog li b{color:#e8d44d;}
+#evlog li:first-child{color:#fff;}
+
+/* ── TABLE ── */
+.keytab{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:1rem;}
+.keytab th{font-family:'Courier New',monospace;font-size:.62rem;letter-spacing:2px;color:#00ff88;text-align:left;padding:.5rem .6rem;border-bottom:1px solid rgba(0,245,255,0.25);}
+body.sp .keytab th{color:#e8d44d;border-color:rgba(127,214,127,0.3);}
+.keytab td{padding:.6rem;border-bottom:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.7);vertical-align:top;line-height:1.55;}
+.keytab td:first-child{font-family:'Courier New',monospace;color:#00f5ff;white-space:nowrap;}
+body.sp .keytab td:first-child{color:#7fd67f;}
+.tabwrap{overflow-x:auto;}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:.4rem;background:var(--lc);}
+
+footer{text-align:center;padding:2rem;font-family:'Courier New',monospace;font-size:.7rem;color:rgba(255,255,255,0.25);border-top:1px solid rgba(255,255,255,0.05);}
+footer a{color:#00f5ff;text-decoration:none;}
+body.sp footer a{color:#7fd67f;}
+
+/* MENU MOBILE */
+.menu-btn{display:none;background:none;border:none;color:#00f5ff;font-size:1.5rem;cursor:pointer;padding-left:.5rem;}
+body.sp .menu-btn{color:#7fd67f;}
+@media(max-width:850px){
+  h1{font-size:1.7rem;}
+  .menu-btn{display:block;}
+  .nav-links{position:absolute;top:52px;left:0;right:0;background:rgba(5,10,18,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,245,255,0.15);flex-direction:column;padding:1.5rem 0;gap:1.5rem;transform:translateY(-150%);opacity:0;visibility:hidden;transition:all .4s ease;z-index:-1;}
+  .nav-links.open{transform:translateY(0);opacity:1;visibility:visible;}
+  body.sp .nav-links{background:rgba(13,26,13,0.95);border-color:rgba(127,214,127,0.15);}
+  #p5holder{height:440px;}
+  #hint{display:none;}
+  .sec{padding:3rem 1.2rem;}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto !important;}}
+
+/* ── MENU COMMUN (identique sur toutes les pages) ── */
+nav a.on{color:#00f5ff;}
+body.sp nav a.on{color:#7fd67f;}
+a.nav-recruit{color:#ff4488 !important;border:1px solid #ff4488;padding:0.2rem 0.6rem;border-radius:3px;font-weight:bold;}
+a.nav-recruit:hover,a.nav-recruit.on{background:#ff4488;color:#fff !important;}
+body.sp a.nav-recruit{color:#f4a020 !important;border-color:#f4a020;}
+body.sp a.nav-recruit:hover,body.sp a.nav-recruit.on{background:#f4a020;color:#050a12 !important;}
+/* barre de sections de la page (sous le menu) */
+.subnav{position:sticky;top:52px;z-index:400;background:rgba(5,10,18,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,245,255,0.1);}
+body.sp .subnav{background:rgba(13,26,13,0.92);border-color:rgba(127,214,127,0.12);}
+.subnav-in{max-width:1100px;margin:0 auto;display:flex;gap:.4rem;overflow-x:auto;padding:.55rem 1rem;scrollbar-width:none;}
+.subnav-in::-webkit-scrollbar{display:none;}
+.subnav-in a{flex:0 0 auto;padding:.28rem .75rem;border:1px solid rgba(255,255,255,0.12);border-radius:20px;color:rgba(255,255,255,0.6);text-decoration:none;font-family:'Courier New',monospace;font-size:.66rem;letter-spacing:1px;white-space:nowrap;transition:all .2s;}
+.subnav-in a:hover,.subnav-in a.on{border-color:#00f5ff;color:#00f5ff;}
+body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7fd67f;}
+
+/* menu hamburger sous 1040px (5 liens + bascule de thème) */
+@media(max-width:1040px){
+  .menu-btn{display:block;}
+  .nav-links{position:absolute;top:52px;left:0;right:0;background:rgba(5,10,18,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,245,255,0.15);flex-direction:column;padding:1.4rem 0;gap:1.3rem;transform:translateY(-150%);opacity:0;visibility:hidden;transition:all .4s ease;z-index:-1;}
+  .nav-links.open{transform:translateY(0);opacity:1;visibility:visible;}
+  body.sp .nav-links{background:rgba(13,26,13,0.96);border-color:rgba(127,214,127,0.15);}
+}
+@media(max-width:600px){ nav{padding:0 .8rem;} .logo{letter-spacing:1px;font-size:.85rem;} .nav-right{gap:.6rem;} .tl{display:none;} }
+</style>
+</head>
+<body id="body">
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">ASTRO<span>PORT</span>.ONE</a>
+  <div class="nav-right">
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" onclick="closeMenu()">ACCUEIL</a>
+      <a href="architecture.html" class="on" onclick="closeMenu()">ARCHITECTURE</a>
+      <a href="capitaine.html" onclick="closeMenu()">GUIDE CAPITAINE</a>
+      <a href="install.html" class="nav-recruit" onclick="closeMenu()">NOUS RECRUTONS</a>
+      <a href="https://github.com/papiche/Astroport.ONE" target="_blank" rel="noopener" onclick="closeMenu()">GITHUB</a>
+    </div>
+    <div class="tog-wrap" onclick="toggleTheme()">
+      <span class="tl active-cyber" id="tlc">CYBER</span>
+      <div class="tog-track"><div class="tog-thumb" id="tthumb"></div></div>
+      <span class="tl" id="tls">SOLAR</span>
+    </div>
+    <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">☰</button>
+  </div>
+</nav>
+
+<header class="page-header">
+  <h1>L'ARCHITECTURE DE L'ESSAIM</h1>
+  <p class="header-sub">Aucun serveur central : le système d'information d'une constellation Astroport.ONE est <strong>tissé de clefs publiques</strong>. Chaque clef ouvre une couche : réseau, identité, messages, services, monnaie — et se déploie dans l'espace (la grille géographique) et dans le temps (les cycles de la station).</p>
+</header>
+
+<div class="subnav"><div class="subnav-in" id="subnav"><a href="#clefs">CLEFS</a><a href="#couches">COUCHES 3D·4D</a><a href="#geo">GÉOGRAPHIE</a><a href="#temps">TEMPS</a><a href="#eco">ÉCONOMIE</a><a href="#entree">ORIGIN → ẐEN</a></div></div>
+
+<!-- ═════════════ 1 · L'ATOME : UN SECRET, DES CLEFS ═════════════ -->
+<section class="sec" id="clefs">
+  <div class="sec-label">// L'ATOME</div>
+  <h2>UN SECRET, PLUSIEURS CLEFS PUBLIQUES</h2>
+  <div class="sep"></div>
+  <p>Un MULTIPASS naît d'un couple secret <code>SALT + PEPPER</code> (le « DISCO », reconstitué par partage de secret SSSS). De lui dérivent, par la même graine, les trois clefs publiques que le reste du système va relier entre elles. La <strong>swarm.key</strong> de la constellation agit comme un sel commun : elle donne le <code>UPLANETNAME</code> qui entre dans la dérivation du portefeuille Ğ1.</p>
+  <p>La même clef NOSTR sert aussi de <strong>login au cloud personnel</strong> : <strong>FaceCloud</strong> (l'interface <code>ucloud.html</code>, avec l'analyse de visages) et le montage <strong>WebDAV</strong> sous <code>/dav</code>. Une requête signée NIP-98 suffit à ouvrir son coffre, chiffré en AES-256-GCM avant d'être confié à IPFS ; pour les clients DAV qui ne savent pas signer, un jeton <code>dav_token</code> sert de mot de passe Basic Auth.</p>
+
+  <div class="fig">
+  <svg viewBox="0 0 900 430" role="img" aria-label="Du secret SALT+PEPPER aux clefs NOSTR, Ğ1 et IPNS et au login FaceCloud et DAV, avec la swarm.key comme sel commun">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fil"/></marker>
+      <radialGradient id="gl"><stop offset="0" stop-color="#00f5ff" stop-opacity=".35"/><stop offset="1" stop-color="#00f5ff" stop-opacity="0"/></radialGradient>
+    </defs>
+    <!-- swarm.key ring -->
+    <ellipse cx="190" cy="215" rx="170" ry="165" fill="none" stroke="#e8d44d" stroke-width="1.5" stroke-dasharray="4 6">
+      <animate attributeName="stroke-dashoffset" from="0" to="-100" dur="8s" repeatCount="indefinite"/>
+    </ellipse>
+    <text x="190" y="20" text-anchor="middle" class="svg-t" font-size="12" style="fill:#e8d44d">swarm.key  →  UPLANETNAME</text>
+    <text x="190" y="35" text-anchor="middle" class="svg-d" font-size="11">ORIGIN : 0000…0000  ·  ẐEN : clef de la constellation</text>
+    <!-- DISCO -->
+    <circle cx="190" cy="215" r="80" fill="url(#gl)"/>
+    <circle cx="190" cy="215" r="56" fill="#050a12" class="stk" stroke-width="2"/>
+    <text x="190" y="209" text-anchor="middle" class="svg-t" font-size="15" font-weight="700">DISCO</text>
+    <text x="190" y="229" text-anchor="middle" class="svg-d" font-size="11">SALT + PEPPER</text>
+    <!-- arrows -->
+    <path d="M240 186 C 330 120, 380 85, 470 70" fill="none" class="stk" stroke-width="1.6" marker-end="url(#ar)"/>
+    <path d="M246 205 C 340 190, 400 175, 470 168" fill="none" class="stk" stroke-width="1.6" marker-end="url(#ar)"/>
+    <path d="M246 228 C 340 250, 400 262, 470 268" fill="none" class="stk" stroke-width="1.6" marker-end="url(#ar)"/>
+    <path d="M330 300 C 380 270, 400 200, 470 180" fill="none" stroke="#e8d44d" stroke-width="1.4" stroke-dasharray="3 4"/>
+    <text x="318" y="318" class="svg-d" font-size="10" style="fill:#e8d44d">+ UPLANETNAME</text>
+    <!-- outputs -->
+    <g>
+      <rect x="470" y="30" width="410" height="80" rx="4" fill="rgba(0,245,255,0.05)" class="stk" stroke-width="1"/>
+      <text x="486" y="54" class="svg-t acc" font-size="13" font-weight="700">NOSTR</text>
+      <text x="486" y="74" class="svg-d" font-size="12">NSEC / NPUB → HEX · identité sociale, signe tous les événements</text>
+      <text x="486" y="94" class="svg-d" font-size="11">et signe aussi les requêtes de connexion (NIP-98)</text>
+    </g>
+    <g>
+      <rect x="470" y="128" width="410" height="80" rx="4" fill="rgba(0,245,255,0.05)" class="stk" stroke-width="1"/>
+      <text x="486" y="152" class="svg-t acc" font-size="13" font-weight="700">Ğ1 · G1PUBNOSTR</text>
+      <text x="486" y="172" class="svg-d" font-size="12">dunikey → adresse SS58 · portefeuille ẐEN</text>
+      <text x="486" y="192" class="svg-d" font-size="11">dépend de la swarm.key (via UPLANETNAME)</text>
+    </g>
+    <g>
+      <rect x="470" y="226" width="410" height="80" rx="4" fill="rgba(0,245,255,0.05)" class="stk" stroke-width="1"/>
+      <text x="486" y="250" class="svg-t acc" font-size="13" font-weight="700">IPNS · NOSTRNS</text>
+      <text x="486" y="270" class="svg-d" font-size="12">clef IPFS → /ipns/k51… · coffre uDRIVE du MULTIPASS</text>
+    </g>
+    <g>
+      <rect x="470" y="324" width="410" height="86" rx="4" fill="rgba(255,176,0,0.07)" stroke="#ffb000" stroke-width="1"/>
+      <text x="486" y="348" class="svg-t" font-size="13" font-weight="700" style="fill:#ffb000">LOGIN · FaceCloud &amp; DAV</text>
+      <text x="486" y="368" class="svg-d" font-size="12">signature NIP-98 de la clef NOSTR : aucun mot de passe à retenir</text>
+      <text x="486" y="388" class="svg-d" font-size="11">repli Basic Auth <tspan class="svg-t" font-size="11">email:dav_token</tspan> pour les clients DAV classiques</text>
+    </g>
+    <!-- la clef NOSTR sert de login -->
+    <path d="M880 70 C 898 70, 898 367, 880 367" fill="none" stroke="#ffb000" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#ar)"/>
+    <text x="450" y="424" text-anchor="middle" class="svg-d" font-size="11">Une station a sa propre chaîne : SSH ed25519 → Ğ1 → IPFSNODEID (niveau « Y »)</text>
+  </svg>
+  </div>
+  <p class="note">LA STATION : même principe — sa clef SSH ed25519 dérive vers son IPFSNODEID (<code>ssh_to_g1ipfs.py</code>). Quand les deux coïncident, la station est au niveau Y : ce lien prouve que l'accès SSH annoncé appartient bien à cette machine.</p>
+</section>
+
+<hr>
+
+<!-- ═════════════ 2 · LES COUCHES (p5.js) ═════════════ -->
+<section class="sec" id="couches">
+  <div class="sec-label">// LES COUCHES · 3D ET 4D</div>
+  <h2>LE MILLE-FEUILLE DE L'INFORMATION</h2>
+  <div class="sep"></div>
+  <p>Cinq plans empilés, <strong>alignés à la verticale</strong> : une même station occupe la même position sur chaque plan, et sa chaîne de clefs les traverse tous. L'axe vertical est la profondeur fonctionnelle, le plan horizontal est l'espace géographique. Lancez le temps : la <strong>quatrième dimension</strong> fait vivre les cycles réels des scripts (heure, nuit de 20h12, semaine de paiement). Faites pivoter la scène à la souris, ou isolez une couche avec la légende.</p>
+
+  <div class="stage">
+    <div id="p5holder"></div>
+    <div id="clock">J1 00:00</div>
+    <div id="hint">GLISSER : PIVOTER · CTRL+MOLETTE : ZOOM · SURVOL : CLEFS</div>
+    <div id="tip"></div>
+    <div class="controls">
+      <button id="btn-play" type="button">⏸ PAUSE</button>
+      <label>VITESSE <select id="sel-speed">
+        <option value="1">1 h / s</option>
+        <option value="3">3 h / s</option>
+        <option value="12">12 h / s</option>
+      </select></label>
+      <label style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:220px;">TEMPS <input id="rng-time" type="range" min="0" max="167.9" step="0.1" value="0"></label>
+    </div>
+    <ul id="evlog"></ul>
+  </div>
+  <p class="note">STATIONS FICTIVES (DÉMO) · LES ÉVÉNEMENTS ET LES CYCLES REPRODUISENT CEUX DES SCRIPTS : _12345.sh, NOSTRCARD.refresh.sh, 20h12.process.sh</p>
+
+  <div class="layer-list" id="layer-list"></div>
+  <div class="info-box" style="margin-top:1rem;"><h4 id="ld-title">TOUTES LES COUCHES</h4><p id="layer-detail">Cliquez une couche pour l'isoler et lire les clefs qui la composent.</p></div>
+</section>
+
+<hr>
+
+<!-- ═════════════ 3 · LEXIQUE DES CLEFS ═════════════ -->
+<section class="sec">
+  <div class="sec-label">// LEXIQUE</div>
+  <h2>QUI EST QUI DANS L'ESSAIM</h2>
+  <div class="sep"></div>
+  <div class="tabwrap">
+  <table class="keytab">
+    <tr><th>CLEF</th><th>D'OÙ ELLE VIENT</th><th>CE QU'ELLE OUVRE</th></tr>
+    <tr><td>swarm.key</td><td>Secret partagé de la constellation (PSK libp2p, 32 octets). Non publique.</td><td>Réseau IPFS privé et <code>UPLANETNAME</code>. En mode ORIGIN : <code>000…000</code>, espace d'accueil ouvert.</td></tr>
+    <tr><td>IPFSNODEID</td><td>PeerID libp2p de la station.</td><td>Balise IPNS (<code>12345.json</code>, <code>_MySwarm.moats</code>), tunnels <code>/x/&lt;service&gt;-ID</code>.</td></tr>
+    <tr><td>Y-Level (SSH)</td><td>Clef SSH ed25519 → Ğ1 → IPFS.</td><td>Prouve qu'une clef SSH annoncée appartient à la station ; condition pour être ajoutée aux <code>authorized_keys</code> des capitaines.</td></tr>
+    <tr><td>NODEHEX · NODEG1PUB</td><td>Clefs NOSTR et Ğ1 de la station.</td><td>Événements signés par la station, portefeuille du nœud.</td></tr>
+    <tr><td>MULTIPASS</td><td>Email + DISCO (SALT/PEPPER).</td><td>HEX NOSTR, G1PUBNOSTR (Ğ1), NOSTRNS (IPNS), login FaceCloud/DAV. Porte les <strong>ẐEN détenus (OPEX)</strong> et paie la redevance hebdomadaire.</td></tr>
+    <tr><td>ZenCard</td><td>Créée depuis le MULTIPASS et son GPS.</td><td>Carte ẐEN (<code>.g1pub</code>) du joueur : mémorise l'<strong>historique des ẐEN contribués (CAPEX)</strong>.</td></tr>
+    <tr><td>Capitaine</td><td><code>CAPTAINEMAIL</code> → <code>captainHEX</code>, <code>CAPTAING1PUB</code>.</td><td>Reçoit la PAF (<code>CAPTAIN_DEDICATED</code>), suit les MULTIPASS en NOSTR, transmet la swarm.key aux nouveaux.</td></tr>
+    <tr><td>Portefeuilles coopératifs</td><td><code>UPLANETNAME.&lt;rôle&gt;</code></td><td>TREASURY, RND, ASSETS, CAPITAL, IMPOT, AMORTISSEMENT, SOCIETY, INTRUSION : la règle des 3×1/3.</td></tr>
+    <tr><td>UMAP · SECTOR · REGION</td><td>Cellules géographiques de 0,01°, 0,1° et 1°.</td><td>Une clef NOSTR par cellule : ancrage territorial des données. Les messages aimés y remontent de la UMAP au SECTOR (≥ 3 likes) puis à la REGION (≥ 12 likes).</td></tr>
+  </table>
+  </div>
+</section>
+
+<hr>
+
+<!-- ═════════════ 4 · 3D GÉOGRAPHIQUE ═════════════ -->
+<section class="sec" id="geo">
+  <div class="sec-label">// PLAN 3D · L'ESPACE</div>
+  <h2>LA GRILLE GÉOGRAPHIQUE EMPILÉE</h2>
+  <div class="sep"></div>
+  <p>Les coordonnées GPS d'un MULTIPASS le rangent dans trois cellules emboîtées. Chaque niveau est un plan de la 3D, et on <strong>monte d'échelle de bas en haut</strong> : du voisinage (UMAP) au secteur, puis à la région. Chaque cellule possède sa propre clef publique, et le contenu <strong>aimé remonte</strong> : à partir de <strong>3 likes</strong> un message entre dans le journal du SECTOR, à partir de <strong>12 likes</strong> dans celui de la REGION. La qualité fait monter, sans modération centrale.</p>
+  <div class="fig"><svg id="svg-geo" viewBox="0 0 980 560" role="img" aria-label="Trois plans isométriques emboîtés : REGION, SECTOR, UMAP"></svg></div>
+</section>
+
+<hr>
+
+<!-- ═════════════ 5 · 4D : LE TEMPS ═════════════ -->
+<section class="sec" id="temps">
+  <div class="sec-label">// AXE 4D · LE TEMPS</div>
+  <h2>LES CYCLES QUI FONT BATTRE LA CONSTELLATION</h2>
+  <div class="sep"></div>
+  <p>Rien n'est temps réel permanent : l'essaim respire par cycles. Neuf jours de vie d'une station, avec chaque cycle à sa place. Chaque trait vertical fin est une heure ; le curseur parcourt la fenêtre.</p>
+  <div class="fig"><svg id="svg-time" viewBox="0 0 900 430" role="img" aria-label="Frise de neuf jours : cycle horaire, 20h12 quotidien, paiement hebdomadaire, fenêtres de confiance"></svg></div>
+  <div class="grid-3">
+    <div class="step-card"><h3>↻ CHAQUE HEURE</h3><p><code>_12345.sh</code> scanne les pairs IPFS, rafraîchit les balises, lance le backfill NOSTR (jamais deux fois en moins de 50 min) et <code>NOSTRCARD.refresh.sh</code>. Si ce dernier tourne encore au cycle suivant, le Capitaine est prévenu : la station est saturée.</p></div>
+    <div class="step-card"><h3>☾ À 20h12</h3><p>Traitement quotidien : nettoyage de <code>~/.zen/tmp</code> (donc des fichiers secrets temporaires), rafraîchissement des joueurs, <code>backfill --days 1</code>. Une balise de plus de 12 h est considérée morte et retirée du swarm.</p></div>
+    <div class="step-card"><h3>⚖ CHAQUE SEMAINE</h3><p>Tous les 7 jours depuis sa naissance, le MULTIPASS paie sa redevance (NCARD) au portefeuille du Capitaine. La liste de relais (kind 10002) et le suivi du Capitaine (kind 3) sont republiés.</p></div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ═════════════ ÉCONOMIE : CAPEX / OPEX / OPENCOLLECTIVE ═════════════ -->
+<section class="sec" id="eco">
+  <div class="sec-label">// LA MONNAIE QUI CIRCULE</div>
+  <h2>CAPEX, OPEX ET COLLECTIFS OPENCOLLECTIVE</h2>
+  <div class="sep"></div>
+  <p>Deux clefs, deux mémoires. La <strong>ZenCard</strong> garde l'<strong>historique des ẐEN contribués</strong> à la coopérative : le capital engagé (<strong>CAPEX</strong>). Le <strong>MULTIPASS</strong> porte les <strong>ẐEN détenus</strong>, ceux qui servent à vivre dans l'essaim : le fonctionnement courant (<strong>OPEX</strong>), à commencer par sa redevance hebdomadaire. Entre les deux, un pont avec <a class="link-hl" href="https://opencollective.com/" target="_blank">OpenCollective</a>.</p>
+
+  <div class="fig">
+  <svg viewBox="0 0 900 360" role="img" aria-label="OpenCollective alimente la ZenCard (CAPEX) et le MULTIPASS (OPEX) ; le MULTIPASS paie le Capitaine, qui répartit en trois tiers">
+    <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fil"/></marker></defs>
+    <g>
+      <rect x="20" y="110" width="190" height="120" rx="6" fill="rgba(79,124,255,0.08)" stroke="#6f8fff" stroke-width="1.4"/>
+      <text x="115" y="146" text-anchor="middle" class="svg-t" font-size="14" font-weight="700" style="fill:#8fa8ff">OPENCOLLECTIVE</text>
+      <text x="115" y="168" text-anchor="middle" class="svg-d" font-size="12">tout collectif</text>
+      <text x="115" y="186" text-anchor="middle" class="svg-d" font-size="11">slug OCSLUG paramétrable</text>
+      <text x="115" y="208" text-anchor="middle" class="svg-d" font-size="11">paliers → satellite, constellation…</text>
+    </g>
+    <path d="M210 150 C 270 150, 270 70, 340 70" fill="none" class="stk" stroke-width="1.6" marker-end="url(#ar2)"/>
+    <path d="M210 190 C 270 190, 270 270, 340 270" fill="none" class="stk" stroke-width="1.6" marker-end="url(#ar2)"/>
+    <text x="20" y="76" class="svg-d" font-size="11">contributions, parrainages</text>
+    <text x="20" y="92" class="svg-d" font-size="11">(OC2UPlanet) →</text>
+    <g>
+      <rect x="340" y="20" width="230" height="100" rx="6" fill="rgba(0,245,255,0.05)" class="stk" stroke-width="1.4"/>
+      <text x="356" y="50" class="svg-t acc" font-size="14" font-weight="700">ZENCARD · CAPEX</text>
+      <text x="356" y="72" class="svg-d" font-size="12">historique des ẐEN contribués</text>
+      <text x="356" y="92" class="svg-d" font-size="11">le capital engagé dans la coopérative</text>
+    </g>
+    <g>
+      <rect x="340" y="220" width="230" height="100" rx="6" fill="rgba(0,245,255,0.05)" class="stk" stroke-width="1.4"/>
+      <text x="356" y="250" class="svg-t acc" font-size="14" font-weight="700">MULTIPASS · OPEX</text>
+      <text x="356" y="272" class="svg-d" font-size="12">ẐEN détenus</text>
+      <text x="356" y="292" class="svg-d" font-size="11">le fonctionnement courant, la redevance</text>
+    </g>
+    <path d="M455 120 L455 218" fill="none" stroke="#e8d44d" stroke-width="1.3" stroke-dasharray="3 4"/>
+    <path d="M570 270 L 650 270" fill="none" stroke="#ff4488" stroke-width="1.8" marker-end="url(#ar2)"/>
+    <text x="574" y="258" class="svg-d" font-size="11" style="fill:#ff4488">chaque semaine</text>
+    <g>
+      <rect x="650" y="220" width="230" height="100" rx="6" fill="rgba(255,68,136,0.07)" stroke="#ff4488" stroke-width="1.4"/>
+      <text x="666" y="250" class="svg-t" font-size="14" font-weight="700" style="fill:#ff4488">CAPTAIN_DEDICATED</text>
+      <text x="666" y="272" class="svg-d" font-size="12">reçoit la PAF (NCARD)</text>
+      <text x="666" y="292" class="svg-d" font-size="11">puis répartit en trois tiers</text>
+    </g>
+    <path d="M765 220 L765 150" fill="none" stroke="#ff4488" stroke-width="1.6" marker-end="url(#ar2)"/>
+    <g font-family="Courier New, monospace" font-size="12">
+      <rect x="650" y="60" width="70" height="40" rx="4" fill="rgba(255,176,0,0.12)" stroke="#ffb000"/><text x="685" y="84" text-anchor="middle" style="fill:#ffb000">TREASURY</text>
+      <rect x="735" y="60" width="60" height="40" rx="4" fill="rgba(255,176,0,0.12)" stroke="#ffb000"/><text x="765" y="84" text-anchor="middle" style="fill:#ffb000">RND</text>
+      <rect x="810" y="60" width="70" height="40" rx="4" fill="rgba(255,176,0,0.12)" stroke="#ffb000"/><text x="845" y="84" text-anchor="middle" style="fill:#ffb000">ASSETS</text>
+    </g>
+    <text x="765" y="130" text-anchor="middle" class="svg-d" font-size="11">règle des 3 × 1/3</text>
+    <text x="450" y="352" text-anchor="middle" class="svg-d" font-size="11">Le tout adossé à la Ğ1 (Duniter v2s) : 1 ẐEN = 1 € en production UPlanet.</text>
+  </svg>
+  </div>
+
+  <div class="grid-3">
+    <div class="step-card"><h3>🏛 CAPEX · ZenCard</h3><p>Chaque ẐEN contribué à la coopérative reste inscrit dans l'historique de la ZenCard. C'est la mémoire de ce que chacun a mis au pot commun.</p></div>
+    <div class="step-card"><h3>⚙ OPEX · MULTIPASS</h3><p>Les ẐEN du MULTIPASS se dépensent : redevance hebdomadaire au Capitaine, likes (1 ẐEN = 1 like), services de l'essaim. Un solde trop bas déclenche un avertissement avant toute conséquence.</p></div>
+    <div class="step-card"><h3>🤝 Tout collectif OpenCollective</h3><p>Le pont n'est pas lié à un collectif unique : le slug et la correspondance des paliers avec les catégories (satellite, constellation, labo, cloud) sont configurables. Une autre coopérative peut brancher son propre collectif.</p></div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ═════════════ 6 · ORIGIN → ẐEN ═════════════ -->
+<section class="sec" id="entree">
+  <div class="sec-label">// LA PORTE D'ENTRÉE</div>
+  <h2>D'ORIGIN À ẐEN : ENTRER DANS UNE CONSTELLATION</h2>
+  <div class="sep"></div>
+  <p>Une nouvelle machine installée par la communauté démarre en <strong>ORIGIN</strong>, l'espace d'accueil d'UPlanet (swarm.key à zéros). Elle devient membre d'une constellation ẐEN le jour où un Capitaine l'y invite en lui transmettant la clef de l'essaim.</p>
+  <div class="grid-3">
+    <div class="step-card"><h3><span class="num">1</span> Installation</h3><p>La machine s'installe en ORIGIN, crée son MULTIPASS et publie sa balise IPNS (<code>12345.json</code>).</p></div>
+    <div class="step-card"><h3><span class="num">2</span> Détection</h3><p>Les stations du swarm voient apparaître la balise. Les 12345.json venus d'un pair sont non fiables : chaque station vérifie son <code>_MySwarm.moats</code> (<code>is_astroport_node</code>), y compris pour les stations annoncées de proche en proche.</p></div>
+    <div class="step-card"><h3><span class="num">3</span> Alerte Capitaine</h3><p>Le Capitaine reçoit un email : hostname, capitaine de la machine, mode ORIGIN, Power-Score, services partagés. Une seule notification par station.</p></div>
+    <div class="step-card"><h3><span class="num">4</span> Évaluation</h3><p>Le Capitaine rencontre le propriétaire (NOSTR ou email) et évalue la machine et son capitaine : puissance, fiabilité, PAF négociée et contrôlée avec PowerJoular.</p></div>
+    <div class="step-card"><h3><span class="num">5</span> Passage en ẐEN</h3><p>La swarm.key de la constellation est transmise. Le nouvel arrivant lance <code>zen_join.beta.sh</code> : ses comptes ORIGIN sont nettoyés, la clef ẐEN installée, ses portefeuilles coopératifs initialisés.</p></div>
+    <div class="step-card"><h3><span class="num">6</span> Membre de l'essaim</h3><p>Sa station rejoint le réseau privé, ses événements sont synchronisés, ses services partagés par tunnels <code>/x/</code>. Son capitaine peut, à son tour, être vouché par ses pairs.</p></div>
+  </div>
+
+  <div class="info-box" style="margin-top:2rem;">
+    <h4>GARDE-FOUS D'UNE CONSTELLATION OUVERTE AUX PAIRS</h4>
+    <p>Un pair du swarm ne doit pas pouvoir se faire passer pour un capitaine fondateur. Les événements <strong>kind 3</strong> (suivis), <strong>30800</strong> (DID) et <strong>30850</strong> (santé économique) sont donc toujours importés avec vérification de signature, même quand la synchronisation tourne en mode rapide. Ces événements décident quelles clefs SSH sont acceptées : confiance à deux sauts, depuis les capitaines fondateurs, avec quorum et réciprocité au deuxième saut.</p>
+  </div>
+</section>
+
+<footer>
+  © 2024-2026 Astroport.ONE · <a href="index.html">Accueil</a> · <a href="architecture.html">Architecture</a> · <a href="capitaine.html">Guide capitaine</a> · <a href="install.html">Nous recrutons</a> · <a href="https://github.com/papiche/Astroport.ONE" target="_blank" rel="noopener">GitHub</a> · AGPL v3
+</footer>
+
+<script>
+/* ── THEME + MENU (comme install.html) ── */
+let isSolar=false;
+function toggleTheme(){
+  isSolar=!isSolar;
+  document.getElementById('body').classList.toggle('sp',isSolar);
+  document.getElementById('tlc').className='tl'+(isSolar?'':' active-cyber');
+  document.getElementById('tls').className='tl'+(isSolar?' active-solar':'');
+}
+function toggleMenu(){
+  const nav=document.getElementById('nav-links'),btn=document.getElementById('menu-btn');
+  nav.classList.toggle('open');
+  btn.textContent=nav.classList.contains('open')?'✕':'☰';
+}
+function closeMenu(){
+  document.getElementById('nav-links').classList.remove('open');
+  document.getElementById('menu-btn').textContent='☰';
+}
+
+/* ═════════ DONNÉES DES COUCHES ═════════ */
+const LAYERS=[
+  {k:'net', name:'RÉSEAU', col:'#00f5ff', short:'libp2p · swarm.key',
+   desc:'IPFS/libp2p : chaque station est un pair identifié par son IPFSNODEID. Les balises IPNS (12345.json) se découvrent de proche en proche. En ORIGIN la swarm.key est à zéros ; en ẐEN, la clef de la constellation ferme l\'essaim.'},
+  {k:'id',  name:'IDENTITÉS', col:'#00ff88', short:'clefs publiques',
+   desc:'La clef de la station (niveau Y : SSH → Ğ1 → IPFS) et les MULTIPASS qui lui sont rattachés : chacun porte un HEX NOSTR, une adresse Ğ1 et une clef IPNS dérivés du même DISCO.'},
+  {k:'nos', name:'NOSTR', col:'#a78bfa', short:'relais · événements',
+   desc:'Chaque station héberge un relais strfry. backfill_constellation.sh réplique les événements entre relais (WebSocket ou tunnel P2P). Kind 3, 30800 et 30850 sont toujours vérifiés par signature.'},
+  {k:'svc', name:'DRAGONS', col:'#ffb000', short:'services /x/',
+   desc:'DRAGON_p2p_ssh.sh publie les services locaux (Ollama, ComfyUI, Qdrant, Nextcloud, SSH…) par tunnels ipfs p2p /x/<service>-IPFSNODEID, qui traversent les box des habitants sans ouvrir de port. Le cloud personnel (FaceCloud, WebDAV /dav) est annoncé par cloud_dav_url dans le 12345.json.'},
+  {k:'eco', name:'ÉCONOMIE', col:'#ff4488', short:'ẐEN · Ğ1',
+   desc:'La ZenCard garde l\'historique des ẐEN contribués (CAPEX), le MULTIPASS les ẐEN détenus (OPEX) : c\'est lui qui paie chaque semaine sa redevance au portefeuille du Capitaine. La coopérative répartit en trois tiers (TREASURY, RND, ASSETS), sur la blockchain Duniter v2s (Ğ1). Compatible avec tout collectif OpenCollective.'}
+];
+const NL=LAYERS.length, GAP=84, S=265;
+
+const ST=[
+  {n:'HUB α',   x:-.55,z:-.32,hub:1,cap:1, id:'12D3Koo…hub-α'},
+  {n:'HUB β',   x: .48,z:-.55,hub:1,        id:'12D3Koo…hub-β'},
+  {n:'SAT 1',   x:-.02,z: .08,              id:'12D3Koo…sat-1'},
+  {n:'SAT 2',   x:-.68,z: .42,              id:'12D3Koo…sat-2'},
+  {n:'SAT 3',   x: .22,z: .56,              id:'12D3Koo…sat-3'},
+  {n:'SAT 4',   x: .72,z: .02,              id:'12D3Koo…sat-4'},
+  {n:'NOUVEAU', x: .86,z: .66,new:1,        id:'12D3Koo…nouveau'}
+];
+const CAP=0, NEW=ST.length-1;
+const SERVICES=['ollama','comfyui','qdrant','nextcloud','ssh','strfry'];
+
+/* MULTIPASS autour de chaque station (positions déterministes) */
+const MPS=[];
+ST.forEach((s,si)=>{
+  if(s.new) return;
+  const n=s.hub?5:3;
+  for(let i=0;i<n;i++){
+    const a=i/n*Math.PI*2+si, r=.11+.03*(i%2);
+    MPS.push({st:si,x:s.x+Math.cos(a)*r,z:s.z+Math.sin(a)*r,id:'MULTIPASS '+(si+1)+'.'+(i+1)});
+  }
+});
+const SVCS=[];
+ST.forEach((s,si)=>{
+  if(s.new) return;
+  const n=s.hub?4:2;
+  for(let i=0;i<n;i++){
+    const a=i/n*Math.PI*2+si*1.3, r=.12;
+    SVCS.push({st:si,x:s.x+Math.cos(a)*r,z:s.z+Math.sin(a)*r,id:'/x/'+SERVICES[(si+i)%SERVICES.length]+'-'+s.n.replace(' ','')});
+  }
+});
+const COOP=[ // portefeuilles coopératifs autour du Capitaine
+  {x:ST[CAP].x+.20,z:ST[CAP].z-.12,id:'TREASURY'},
+  {x:ST[CAP].x+.24,z:ST[CAP].z+.05,id:'RND'},
+  {x:ST[CAP].x+.12,z:ST[CAP].z+.20,id:'ASSETS'}
+];
+/* arêtes du maillage (stations ẐEN) */
+const EDGES=[];
+for(let i=0;i<NEW;i++)for(let j=i+1;j<NEW;j++){
+  const d=Math.hypot(ST[i].x-ST[j].x,ST[i].z-ST[j].z);
+  if(d<1.0)EDGES.push([i,j]);
+}
+/* ═════════ ÉVÉNEMENTS (temps simulé, en heures sur 7 jours) ═════════ */
+const WEEK=168, EVENTS=[];
+for(let h=0;h<WEEK;h++){
+  EVENTS.push({t:h,      k:'scan'});
+  EVENTS.push({t:h+.12,  k:'sync'});
+  EVENTS.push({t:h+.5,   k:'refresh'});
+}
+for(let d=0;d<7;d++) EVENTS.push({t:d*24+20.2,k:'nightly'});
+EVENTS.push({t:6*24+2,  k:'pay'});
+EVENTS.push({t:1*24+6,  k:'detect'});
+EVENTS.push({t:4*24+12, k:'key'});
+EVENTS.sort((a,b)=>a.t-b.t);
+
+/* ═════════ ÉTAT ═════════ */
+let simT=0, evIdx=0, speed=1, playing=true, lastMs=0;
+let yaw=-.62, pitch=.95, zoomK=1, lastUser=-1e9;
+const pulses=[], ripples=[], flash=new Array(NL).fill(0);
+let newState='origin';
+const hit=[];
+let selLayer=-1;
+const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduce) playing=false;
+
+function clockStr(t){
+  const d=Math.floor(t/24)+1, h=Math.floor(t%24), m=Math.floor((t*60)%60);
+  return 'J'+d+' '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+}
+function logEv(msg){
+  const ul=document.getElementById('evlog');
+  const li=document.createElement('li');
+  li.innerHTML='<b>'+clockStr(simT)+'</b>'+msg;
+  ul.insertBefore(li,ul.firstChild);
+  while(ul.children.length>6) ul.removeChild(ul.lastChild);
+}
+function layerY(i){ return -(i-(NL-1)/2)*GAP; }  // i=0 en bas
+function stationPos(si,l){ return {l:l,x:ST[si].x,z:ST[si].z}; }
+
+function spawnSeg(a,b,col,dur,r){ pulses.push({a:a,b:b,col:col,t0:performance.now()/1000,dur:dur||1.4,r:r||4}); }
+function spawnRipple(l,x,z,col){ ripples.push({l:l,x:x,z:z,col:col,t0:performance.now()/1000}); }
+
+function fire(ev){
+  const day=Math.floor(simT/24), hh=Math.floor(simT%24);
+  switch(ev.k){
+    case 'scan':
+      for(let i=0;i<ST.length;i++){ if(ST[i].new&&newState==='origin'&&i!==NEW) continue; spawnRipple(0,ST[i].x,ST[i].z,LAYERS[0].col); }
+      if(speed<=3||hh%6===0) logEv('↻ cycle horaire : scan du swarm → backfill → refresh des MULTIPASS');
+      break;
+    case 'sync':
+      EDGES.forEach(e=>{
+        if(Math.random()<.55) spawnSeg({l:2,x:ST[e[0]].x,z:ST[e[0]].z},{l:2,x:ST[e[1]].x,z:ST[e[1]].z},LAYERS[2].col,1.6,3.5);
+      });
+      if(newState==='zen') spawnSeg({l:2,x:ST[CAP].x,z:ST[CAP].z},{l:2,x:ST[NEW].x,z:ST[NEW].z},LAYERS[2].col,1.6,3.5);
+      break;
+    case 'refresh':
+      flash[1]=1;
+      break;
+    case 'nightly':
+      for(let l=0;l<NL;l++) setTimeout(()=>{flash[l]=1;},l*160);
+      logEv('☾ 20h12 : nettoyage ~/.zen/tmp · DRAGON relancé · backfill --days 1');
+      for(let i=0;i<NEW;i++) SVCS.filter(s=>s.st===i).forEach(s=>spawnRipple(3,s.x,s.z,LAYERS[3].col));
+      break;
+    case 'pay':
+      MPS.forEach((m,i)=>{
+        setTimeout(()=>spawnSeg({l:1,x:m.x,z:m.z},{l:4,x:ST[CAP].x,z:ST[CAP].z},LAYERS[4].col,2.0,4),i*90);
+      });
+      logEv('⚖ J7 : redevance hebdomadaire des MULTIPASS → portefeuille du Capitaine');
+      break;
+    case 'detect':
+      spawnRipple(0,ST[NEW].x,ST[NEW].z,'#ffffff'); spawnRipple(0,ST[NEW].x,ST[NEW].z,LAYERS[0].col);
+      spawnSeg({l:0,x:ST[NEW].x,z:ST[NEW].z},{l:0,x:ST[CAP].x,z:ST[CAP].z},'#ffffff',2.0,5);
+      setTimeout(()=>spawnSeg({l:0,x:ST[CAP].x,z:ST[CAP].z},{l:1,x:ST[CAP].x,z:ST[CAP].z},'#ffffff',1.2,5),1500);
+      logEv('🛰 nouvelle machine détectée (ORIGIN) → alerte envoyée au Capitaine');
+      break;
+    case 'key':
+      spawnSeg({l:0,x:ST[CAP].x,z:ST[CAP].z},{l:0,x:ST[NEW].x,z:ST[NEW].z},'#e8d44d',2.2,6);
+      setTimeout(()=>{ newState='zen'; flash[0]=1; spawnRipple(0,ST[NEW].x,ST[NEW].z,'#e8d44d'); },2000);
+      logEv('🔑 swarm.key transmise → zen_join : la machine passe de ORIGIN à ẐEN');
+      break;
+  }
+}
+function resetFromTime(t){
+  evIdx=0; while(evIdx<EVENTS.length&&EVENTS[evIdx].t<=t) evIdx++;
+  newState=(t>=4*24+12+.1)?'zen':'origin';
+  pulses.length=0; ripples.length=0;
+}
+function advance(dt){
+  if(!playing) return;
+  simT+=dt*speed;
+  if(simT>=WEEK){ simT-=WEEK; resetFromTime(simT); newState='origin'; logEv('↺ la semaine recommence'); }
+  while(evIdx<EVENTS.length&&EVENTS[evIdx].t<=simT){ fire(EVENTS[evIdx]); evIdx++; }
+  document.getElementById('rng-time').value=simT;
+  document.getElementById('clock').textContent=clockStr(simT);
+}
+
+/* ═════════ PROJECTION 3D ═════════ */
+function P(x,y,z){
+  const X=x*S, Y=y, Z=z*S;
+  const cy=Math.cos(yaw), sy=Math.sin(yaw);
+  const x1=X*cy-Z*sy, z1=X*sy+Z*cy;
+  const cp=Math.cos(pitch), sp=Math.sin(pitch);
+  const y1=Y*cp-z1*sp, z2=Y*sp+z1*cp;
+  const k=1000/(1000+z2+420)*zoomK*constrain(width/680,.4,1.1);   // l'échelle suit la largeur du canvas
+  return {x:width/2+x1*k, y:height/2+y1*k-4, s:k, d:z2};
+}
+function hexA(hex,a){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return 'rgba('+r+','+g+','+b+','+a+')';
+}
+function layerAlpha(l){ return selLayer<0?1:(selLayer===l?1:.18); }
+
+/* ═════════ p5 ═════════ */
+let holder;
+function setup(){
+  holder=document.getElementById('p5holder');
+  const c=createCanvas(holder.clientWidth,holder.clientHeight);
+  c.parent(holder);
+  textFont('Courier New');
+  pixelDensity(Math.min(2,window.devicePixelRatio||1));
+  /* pointeur : souris = 2 axes, tactile = yaw seul (le scroll vertical reste libre) */
+  const el=c.elt; let drag=null;
+  el.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,t:e.pointerType};el.setPointerCapture(e.pointerId);lastUser=millis();});
+  el.addEventListener('pointermove',e=>{
+    const r=el.getBoundingClientRect(); mouseXc=e.clientX-r.left; mouseYc=e.clientY-r.top;
+    if(!drag) return;
+    const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY;
+    yaw+=dx*.008; if(drag.t==='mouse') pitch=constrain(pitch+dy*.006,.35,1.4);
+    lastUser=millis();
+  });
+  el.addEventListener('pointerup',()=>{drag=null;});
+  el.addEventListener('pointerleave',()=>{drag=null;mouseXc=-999;});
+  /* zoom : Ctrl/⌘ + molette (ou pincement trackpad) ; la molette seule fait défiler la page */
+  el.addEventListener('wheel',e=>{ if(!(e.ctrlKey||e.metaKey)) return; e.preventDefault();zoomK=constrain(zoomK*(e.deltaY>0?.94:1.06),.55,1.9);lastUser=millis();},{passive:false});
+  lastMs=performance.now();
+}
+let mouseXc=-999, mouseYc=-999;
+function windowResized(){ resizeCanvas(holder.clientWidth,holder.clientHeight); }
+
+function palette(){
+  const sp=document.getElementById('body').classList.contains('sp');
+  return {line:sp?'#7fd67f':'#00f5ff', txt:sp?'#d8ecd8':'#e0f0ff'};
+}
+
+function draw(){
+  const now=performance.now(); const dt=Math.min(.1,(now-lastMs)/1000); lastMs=now;
+  advance(dt);
+  if(millis()-lastUser>4000&&!reduce) yaw+=.0016;
+  for(let l=0;l<NL;l++) flash[l]=Math.max(0,flash[l]-dt*1.1);
+  clear();
+  hit.length=0;
+  const pal=palette();
+
+  /* ordre : plans du plus lointain au plus proche */
+  const order=[...Array(NL).keys()].sort((a,b)=>P(0,layerY(b),0).d-P(0,layerY(a),0).d);
+
+  /* liens verticaux (chaîne de clefs d'une station à travers les couches) */
+  stroke(255,255,255,26); strokeWeight(1);
+  drawingContext.setLineDash([3,6]);
+  ST.forEach((s,si)=>{
+    const a=P(s.x,layerY(0),s.z), b=P(s.x,layerY(NL-1),s.z);
+    if(s.new&&newState==='origin'){ stroke(255,255,255,12); }
+    else stroke(255,255,255,26);
+    line(a.x,a.y,b.x,b.y);
+  });
+  drawingContext.setLineDash([]);
+
+  order.forEach(l=>drawLayer(l,pal));
+
+  drawPulses(now/1000);
+  drawLabels(pal);
+  drawTooltip();
+}
+
+function drawLayer(l,pal){
+  const L=LAYERS[l], y=layerY(l), a=layerAlpha(l), f=flash[l];
+  /* plateau */
+  const c=[P(-1,y,-1),P(1,y,-1),P(1,y,1),P(-1,y,1)];
+  noStroke(); fill(hexA(L.col,(.07+f*.22)*a));
+  beginShape(); c.forEach(p=>vertex(p.x,p.y)); endShape(CLOSE);
+  stroke(hexA(L.col,(.55+f*.4)*a)); strokeWeight(1.3); noFill();
+  beginShape(); c.forEach(p=>vertex(p.x,p.y)); endShape(CLOSE);
+  /* grille géographique */
+  stroke(hexA(L.col,.1*a)); strokeWeight(1);
+  for(let i=1;i<8;i++){
+    const t=-1+i*.25;
+    let p1=P(t,y,-1),p2=P(t,y,1); line(p1.x,p1.y,p2.x,p2.y);
+    p1=P(-1,y,t); p2=P(1,y,t); line(p1.x,p1.y,p2.x,p2.y);
+  }
+  const col=color(L.col);
+  const dim=a<1;
+  /* contenu de la couche */
+  if(l===0){
+    stroke(hexA(L.col,.45*a)); strokeWeight(1.4);
+    EDGES.forEach(e=>{ const p=P(ST[e[0]].x,y,ST[e[0]].z),q=P(ST[e[1]].x,y,ST[e[1]].z); line(p.x,p.y,q.x,q.y); });
+    /* nouvelle machine : lien pointillé vers le Capitaine tant qu'elle est ORIGIN */
+    const p=P(ST[NEW].x,y,ST[NEW].z),q=P(ST[CAP].x,y,ST[CAP].z);
+    if(newState==='origin'){ drawingContext.setLineDash([4,7]); stroke(255,255,255,70*a); line(p.x,p.y,q.x,q.y); drawingContext.setLineDash([]); }
+    else{ stroke(hexA(L.col,.5*a)); strokeWeight(1.6); EDGES.length;
+      const n2=P(ST[2].x,y,ST[2].z); line(p.x,p.y,n2.x,n2.y); line(p.x,p.y,q.x,q.y); }
+    ST.forEach((s,si)=>{
+      const pp=P(s.x,y,s.z), isNew=s.new;
+      const origin=isNew&&newState==='origin';
+      const r=(s.hub?9:6.5)*pp.s;
+      if(origin){ noFill(); stroke(255,255,255,170*a); strokeWeight(1.6); drawingContext.setLineDash([3,3]); circle(pp.x,pp.y,r*2.2); drawingContext.setLineDash([]); }
+      else{ fill(hexA(L.col,.85*a)); stroke(255,255,255,120*a); strokeWeight(1); circle(pp.x,pp.y,r*2); }
+      hit.push({x:pp.x,y:pp.y,r:r+6,lines:[s.n+(s.cap?' · CAPITAINE':''),'IPFSNODEID '+s.id,origin?'swarm.key : ORIGIN (000…000)':'swarm.key : constellation ẐEN'],col:L.col});
+    });
+  }
+  if(l===1){
+    MPS.forEach(m=>{
+      const s=ST[m.st]; const p=P(m.x,y,m.z), q=P(s.x,y,s.z);
+      stroke(hexA(L.col,.3*a)); strokeWeight(1); line(p.x,p.y,q.x,q.y);
+      noStroke(); fill(hexA(L.col,.9*a)); circle(p.x,p.y,5*p.s*2);
+      hit.push({x:p.x,y:p.y,r:7,lines:[m.id,'HEX NOSTR · G1PUBNOSTR · NOSTRNS','dérivés du même DISCO'],col:L.col});
+    });
+    ST.forEach(s=>{
+      if(s.new&&newState==='origin') return;
+      const p=P(s.x,y,s.z); noFill(); stroke(hexA(L.col,.95*a)); strokeWeight(2); circle(p.x,p.y,(s.hub?10:8)*p.s*2);
+      hit.push({x:p.x,y:p.y,r:12,lines:['Clef de station '+s.n,'niveau Y : SSH ed25519 → Ğ1 → '+s.id],col:L.col});
+    });
+  }
+  if(l===2){
+    stroke(hexA(L.col,.25*a)); strokeWeight(1);
+    EDGES.forEach(e=>{ const p=P(ST[e[0]].x,y,ST[e[0]].z),q=P(ST[e[1]].x,y,ST[e[1]].z); line(p.x,p.y,q.x,q.y); });
+    if(newState==='zen'){ const p=P(ST[NEW].x,y,ST[NEW].z),q=P(ST[CAP].x,y,ST[CAP].z); line(p.x,p.y,q.x,q.y); }
+    ST.forEach(s=>{
+      if(s.new&&newState==='origin') return;
+      const p=P(s.x,y,s.z), r=(s.hub?9:7)*p.s;
+      fill(hexA(L.col,.9*a)); stroke(255,255,255,90*a); strokeWeight(1);
+      quad(p.x,p.y-r,p.x+r,p.y,p.x,p.y+r,p.x-r,p.y);
+      hit.push({x:p.x,y:p.y,r:r+4,lines:['Relais strfry · '+s.n,'ws://…:7777 · backfill N²','kinds 3 / 30800 / 30850 vérifiés'],col:L.col});
+    });
+  }
+  if(l===3){
+    SVCS.forEach(m=>{
+      const s=ST[m.st]; const p=P(m.x,y,m.z), q=P(s.x,y,s.z);
+      stroke(hexA(L.col,.35*a)); strokeWeight(1); line(p.x,p.y,q.x,q.y);
+      noStroke(); fill(hexA(L.col,.9*a)); rectMode(CENTER); rect(p.x,p.y,6.5*p.s*2,6.5*p.s*2); rectMode(CORNER);
+      hit.push({x:p.x,y:p.y,r:8,lines:[m.id,'ipfs p2p listen / forward','passe les box sans port ouvert'],col:L.col});
+    });
+    ST.forEach(s=>{
+      if(s.new&&newState==='origin') return;
+      const p=P(s.x,y,s.z); noFill(); stroke(hexA(L.col,.55*a)); strokeWeight(1.2); circle(p.x,p.y,18*p.s*2);
+    });
+  }
+  if(l===4){
+    const cp=P(ST[CAP].x,y,ST[CAP].z);
+    COOP.forEach(w=>{
+      const p=P(w.x,y,w.z); stroke(hexA(L.col,.4*a)); strokeWeight(1); line(p.x,p.y,cp.x,cp.y);
+      noStroke(); fill(hexA('#ffb000',.9*a)); circle(p.x,p.y,5.5*p.s*2);
+      hit.push({x:p.x,y:p.y,r:8,lines:['Portefeuille '+w.id,'règle des 3×1/3 · UPLANETNAME.'+w.id],col:L.col});
+    });
+    ST.forEach(s=>{
+      if(s.new&&newState==='origin') return;
+      const p=P(s.x,y,s.z); const big=s.cap;
+      fill(hexA(L.col,(big?.95:.55)*a)); stroke(255,255,255,100*a); strokeWeight(1);
+      circle(p.x,p.y,(big?13:6)*p.s*2);
+      if(big) hit.push({x:p.x,y:p.y,r:14,lines:['CAPTAIN_DEDICATED · '+s.n,'perçoit la PAF des MULTIPASS','répartition TREASURY · RND · ASSETS'],col:L.col});
+      else hit.push({x:p.x,y:p.y,r:8,lines:['Portefeuille nœud · '+s.n,'NODEG1PUB'],col:L.col});
+    });
+  }
+  /* ondulations du plan */
+  ripples.forEach(r=>{
+    if(r.l!==l) return;
+    const age=performance.now()/1000-r.t0; if(age>2.4) return;
+    const rad=.04+age*.22;
+    noFill(); stroke(hexA(r.col.length===7?r.col:'#ffffff',(1-age/2.4)*.8*a)); strokeWeight(1.6);
+    beginShape();
+    for(let i=0;i<=28;i++){ const t=i/28*Math.PI*2; const p=P(r.x+Math.cos(t)*rad,y,r.z+Math.sin(t)*rad); vertex(p.x,p.y); }
+    endShape();
+  });
+}
+
+function drawPulses(t){
+  for(let i=pulses.length-1;i>=0;i--){
+    const p=pulses[i], k=(t-p.t0)/p.dur;
+    if(k>1){ pulses.splice(i,1); continue; }
+    if(k<0) continue;
+    const A=P(p.a.x,layerY(p.a.l),p.a.z), B=P(p.b.x,layerY(p.b.l),p.b.z);
+    const e=k*k*(3-2*k);
+    const x=A.x+(B.x-A.x)*e, y=A.y+(B.y-A.y)*e-Math.sin(k*Math.PI)*(p.a.l!==p.b.l?0:10);
+    const a=layerAlpha(p.a.l)*layerAlpha(p.b.l);
+    noStroke(); fill(hexA(p.col,.25*a)); circle(x,y,p.r*4.2);
+    fill(hexA(p.col,.95*a)); circle(x,y,p.r*2);
+  }
+}
+
+function drawLabels(pal){
+  textAlign(LEFT,CENTER); textSize(width<560?9:11); noStroke();
+  for(let l=0;l<NL;l++){
+    const L=LAYERS[l]; const p=P(-1,layerY(l),0);
+    const a=layerAlpha(l);
+    fill(hexA(L.col,.95*a)); textStyle(BOLD);
+    text(L.name,Math.max(8,p.x-92),p.y);
+    if(width>=560){ fill(255,255,255,70*a); textStyle(NORMAL); textSize(9);
+      text(L.short,Math.max(8,p.x-92),p.y+13); textSize(11); }
+  }
+  /* noms des stations : plan réseau (ou couche choisie) */
+  const target=selLayer<0?0:selLayer;
+  textAlign(CENTER,TOP); textSize(10);
+  ST.forEach(s=>{
+    if(s.new&&newState==='zen'&&false) return;
+    const p=P(s.x,layerY(target),s.z);
+    fill(255,255,255,(selLayer<0&&!s.hub&&!s.new?90:200)); noStroke();
+    text(s.n,p.x,p.y+12*p.s);
+  });
+}
+
+let tipEl=null;
+function drawTooltip(){
+  tipEl=tipEl||document.getElementById('tip');
+  let best=null,bd=1e9;
+  for(const h of hit){ const d=Math.hypot(h.x-mouseXc,h.y-mouseYc); if(d<h.r&&d<bd){best=h;bd=d;} }
+  if(!best){ tipEl.style.opacity=0; return; }
+  tipEl.innerHTML='<span style="color:'+best.col+'">'+best.lines[0]+'</span><br>'+best.lines.slice(1).join('<br>');
+  const w=tipEl.offsetWidth;
+  tipEl.style.left=Math.min(holder.clientWidth-w-6,Math.max(6,best.x+14))+'px';
+  tipEl.style.top=Math.max(6,best.y-10)+'px';
+  tipEl.style.opacity=1;
+}
+
+/* ═════════ LÉGENDE + CONTRÔLES ═════════ */
+(function(){
+  const list=document.getElementById('layer-list');
+  const all=document.createElement('button'); all.type='button'; all.className='lyr on'; all.style.setProperty('--lc','#ffffff');
+  all.innerHTML='<b>TOUTES</b><span>vue d\'ensemble des cinq plans</span>';
+  list.appendChild(all);
+  const btns=[all];
+  LAYERS.forEach((L,i)=>{
+    const b=document.createElement('button'); b.type='button'; b.className='lyr'; b.style.setProperty('--lc',L.col);
+    b.innerHTML='<b>'+(NL-i)+' · '+L.name+'</b><span>'+L.short+'</span>';
+    list.appendChild(b); btns.push(b);
+  });
+  btns.forEach((b,i)=>b.addEventListener('click',()=>{
+    selLayer=i-1;
+    btns.forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    document.getElementById('ld-title').textContent=i===0?'TOUTES LES COUCHES':LAYERS[i-1].name+' — '+LAYERS[i-1].short.toUpperCase();
+    document.getElementById('layer-detail').textContent=i===0?'Cliquez une couche pour l\'isoler et lire les clefs qui la composent.':LAYERS[i-1].desc;
+  }));
+  const play=document.getElementById('btn-play');
+  function sync(){ play.textContent=playing?'⏸ PAUSE':'▶ LECTURE'; }
+  play.addEventListener('click',()=>{playing=!playing;sync();});
+  sync();
+  document.getElementById('sel-speed').addEventListener('change',e=>{speed=+e.target.value;});
+  document.getElementById('rng-time').addEventListener('input',e=>{
+    simT=+e.target.value; resetFromTime(simT);
+    document.getElementById('clock').textContent=clockStr(simT);
+  });
+  logEv('▶ une semaine de la constellation : 7 jours, 168 cycles horaires');
+})();
+
+/* ═════════ SVG 3D GÉO (isométrique, de bas en haut) ═════════ */
+(function(){
+  const svg=document.getElementById('svg-geo'), NS='http://www.w3.org/2000/svg';
+  function el(n,a,p){ const e=document.createElementNS(NS,n); for(const k in a) e.setAttribute(k,a[k]); (p||svg).appendChild(e); return e; }
+  function txt(x,y,t,a,p){ const e=el('text',Object.assign({x:x,y:y},a),p); e.textContent=t; return e; }
+  const TW=84, TH=42;
+  /* du plus bas (voisinage) au plus haut (région) */
+  const levels=[
+    {name:'UMAP',   unit:'0,01°', km:'≈ 1,1 km', key:'HEX de la UMAP', sub:'tout ce qui se passe dans le voisinage', cx:410, cy:420, n:4, hi:[1,1], col:'#00ff88'},
+    {name:'SECTOR', unit:'0,1°',  km:'≈ 11 km',  key:'SECTORHEX',      sub:'journal des messages ≥ 3 likes de la zone', cx:410, cy:265, n:4, hi:[2,1], col:'#ffb000'},
+    {name:'REGION', unit:'1°',    km:'≈ 111 km', key:'REGIONHEX',      sub:'journal des contenus ≥ 12 likes de la région', cx:410, cy:110, n:4, hi:[1,2], col:'#ff4488'}
+  ];
+  function iso(L,i,j,u,v){ const gi=i+u-L.n/2, gj=j+v-L.n/2; return [L.cx+(gi-gj)*TW/2, L.cy+(gi+gj)*TH/2]; }
+  function diamond(L,i,j){ return [iso(L,i,j,0,0),iso(L,i,j,1,0),iso(L,i,j,1,1),iso(L,i,j,0,1)].map(p=>p.join(',')).join(' '); }
+
+  /* plans dessinés du haut vers le bas pour que le plus bas recouvre les cônes (ordre SVG = ordre de peinture) */
+  levels.slice().reverse().forEach(L=>{
+    const grp=el('g',{});
+    for(let i=0;i<L.n;i++)for(let j=0;j<L.n;j++){
+      const isHi=(i===L.hi[0]&&j===L.hi[1]);
+      el('polygon',{points:diamond(L,i,j),fill:isHi?L.col:'rgba(255,255,255,0.03)','fill-opacity':isHi?.35:1,stroke:L.col,'stroke-opacity':isHi?1:.4,'stroke-width':isHi?2:1},grp);
+    }
+    const lx=L.cx+L.n*TW/2+66, ly=L.cy;
+    el('line',{x1:L.cx+(L.n/2+.2)*TW/2,y1:L.cy,x2:lx-8,y2:ly,stroke:L.col,'stroke-opacity':.5,'stroke-dasharray':'3 4'},grp);
+    txt(lx,ly-10,L.name+' · '+L.unit+'  '+L.km,{'class':'svg-t','font-size':15,'font-weight':700,fill:L.col},grp);
+    txt(lx,ly+10,'clef publique : '+L.key,{'class':'svg-d','font-size':12},grp);
+    txt(lx,ly+28,L.sub,{'class':'svg-d','font-size':11},grp);
+  });
+
+  /* cônes : le plan du dessous tient tout entier dans la cellule surlignée du plan du dessus */
+  for(let li=0;li<levels.length-1;li++){
+    const A=levels[li], B=levels[li+1];
+    const aC=[iso(A,0,A.n-1,0,1),iso(A,A.n-1,0,1,0),iso(A,0,0,0,0),iso(A,A.n-1,A.n-1,1,1)];  // gauche, droite, haut, bas du plan A
+    const bC=[iso(B,B.hi[0],B.hi[1],0,1),iso(B,B.hi[0],B.hi[1],1,0),iso(B,B.hi[0],B.hi[1],0,0),iso(B,B.hi[0],B.hi[1],1,1)];
+    for(let k=0;k<4;k++) el('line',{x1:aC[k][0],y1:aC[k][1],x2:bC[k][0],y2:bC[k][1],stroke:B.col,'stroke-opacity':.5,'stroke-width':1,'stroke-dasharray':'4 5'});
+  }
+
+  /* propagation : likes qui montent (flèche + points animés) */
+  function climb(li,label,col){
+    const A=levels[li], B=levels[li+1];
+    const x=190, y0=A.cy-30, y1=B.cy+34;
+    el('line',{x1:x,y1:y0,x2:x,y2:y1+8,stroke:col,'stroke-width':2.4,'stroke-dasharray':'2 5','stroke-linecap':'round'});
+    el('polygon',{points:(x-8)+','+(y1+14)+' '+(x+8)+','+(y1+14)+' '+x+','+(y1-2),fill:col});
+    for(let d=0;d<3;d++){
+      const c=el('circle',{r:4.5,fill:col});
+      el('animateMotion',{dur:'2.6s',begin:(d*.85)+'s',repeatCount:'indefinite',path:'M'+x+','+y0+' L'+x+','+(y1+4)},c);
+      el('animate',{attributeName:'opacity',values:'0;1;1;0',dur:'2.6s',begin:(d*.85)+'s',repeatCount:'indefinite'},c);
+    }
+    txt(x-14,(y0+y1)/2-6,'♥ '+label,{'class':'svg-t','font-size':14,'font-weight':700,'text-anchor':'end',fill:col});
+    txt(x-14,(y0+y1)/2+12,'remonte vers '+B.name,{'class':'svg-d','font-size':11,'text-anchor':'end'});
+  }
+  climb(0,'≥ 3 likes','#ffb000');
+  climb(1,'≥ 12 likes','#ff4488');
+
+  /* station épinglée sur la cellule UMAP, avec ses trois likes */
+  const U=levels[0]; const c=iso(U,U.hi[0],U.hi[1],.5,.5);
+  const pin=el('g',{});
+  el('circle',{cx:c[0],cy:c[1],r:7,fill:'#ffffff'},pin);
+  const ring=el('circle',{cx:c[0],cy:c[1],r:7,fill:'none',stroke:'#ffffff','stroke-width':1.5},pin);
+  el('animate',{attributeName:'r',from:7,to:26,dur:'2.4s',repeatCount:'indefinite'},ring);
+  el('animate',{attributeName:'stroke-opacity',from:.9,to:0,dur:'2.4s',repeatCount:'indefinite'},ring);
+  txt(c[0]+14,c[1]-14,'MULTIPASS · GPS  ♥ ♥ ♥',{'class':'svg-t','font-size':11,fill:'#fff'},pin);
+
+  /* axe d'échelle */
+  el('line',{x1:50,y1:500,x2:50,y2:70,stroke:'#e0f0ff','stroke-opacity':.4,'stroke-width':1.2});
+  el('polygon',{points:'44,80 56,80 50,64',fill:'#e0f0ff','fill-opacity':.5});
+  txt(36,290,'ÉCHELLE ×10 à chaque plan : on monte du voisinage vers la région',{'class':'svg-d','font-size':11,transform:'rotate(-90 36 290)','text-anchor':'middle'});
+  txt(490,545,'Le plan du dessous tient tout entier dans la cellule surlignée du plan du dessus. Les documents collaboratifs (commons) restent à la UMAP, republiés dès 3 likes.',{'class':'svg-d','font-size':11,'text-anchor':'middle'});
+})();
+
+/* ═════════ SVG 4D TEMPS ═════════ */
+(function(){
+  const svg=document.getElementById('svg-time'), NS='http://www.w3.org/2000/svg';
+  function el(n,a,p){ const e=document.createElementNS(NS,n); for(const k in a) e.setAttribute(k,a[k]); (p||svg).appendChild(e); return e; }
+  const X0=70, X1=870, H=216; // 9 jours
+  const X=h=>X0+h/H*(X1-X0);
+  function T(x,y,txt,o){ const t=el('text',Object.assign({x:x,y:y,'class':'svg-d','font-size':11},o||{})); t.textContent=txt; return t; }
+  /* jours */
+  for(let d=0;d<=9;d++){
+    el('line',{x1:X(d*24),y1:52,x2:X(d*24),y2:330,stroke:'#ffffff','stroke-opacity':.12});
+    if(d<9) T(X(d*24+12),44,'J'+(d+1),{'text-anchor':'middle','class':'svg-t','font-size':12});
+  }
+  /* couloir : heure */
+  T(8,104,'HEURE',{'class':'svg-t','font-size':11,fill:'#00f5ff'});
+  for(let h=0;h<H;h++) el('line',{x1:X(h),y1:90,x2:X(h),y2:(h%24===0?116:106),stroke:'#00f5ff','stroke-opacity':h%24===0?.9:.55,'stroke-width':h%24===0?1.4:1});
+  T(X(2),82,'scan swarm · backfill · NOSTRCARD.refresh (chaque heure)',{'font-size':11,fill:'#00f5ff'});
+  /* couloir : jour 20h12 */
+  T(8,174,'20h12',{'class':'svg-t','font-size':11,fill:'#a78bfa'});
+  for(let d=0;d<9;d++){
+    const x=X(d*24+20.2);
+    el('line',{x1:x,y1:150,x2:x,y2:196,stroke:'#a78bfa','stroke-width':2});
+    const c=el('circle',{cx:x,cy:173,r:4,fill:'#a78bfa'});
+  }
+  T(X(26),142,'nettoyage ~/.zen/tmp · DRAGON · backfill --days 1',{'font-size':11,fill:'#a78bfa'});
+  /* couloir : semaine */
+  T(8,244,'7 JOURS',{'class':'svg-t','font-size':11,fill:'#ff4488'});
+  el('rect',{x:X(7*24)-4,y:220,width:8,height:46,fill:'#ff4488','fill-opacity':.85});
+  T(X(7*24)+10,236,'redevance NCARD → Capitaine',{'font-size':11,fill:'#ff4488'});
+  T(X(7*24)+10,252,'kind 10002 + kind 3 republiés',{'font-size':11,fill:'#ff4488'});
+  T(X(0)+6,236,'naissance du MULTIPASS',{'font-size':11,fill:'#ff4488'});
+  el('circle',{cx:X(0),cy:243,r:5,fill:'#ff4488'});
+  /* fenêtres de confiance */
+  function bracket(h0,h1,y,col,label){
+    el('line',{x1:X(h0),y1:y,x2:X(h1),y2:y,stroke:col,'stroke-width':3,'stroke-linecap':'round'});
+    el('line',{x1:X(h0),y1:y-5,x2:X(h0),y2:y+5,stroke:col,'stroke-width':2});
+    el('line',{x1:X(h1),y1:y-5,x2:X(h1),y2:y+5,stroke:col,'stroke-width':2});
+    T(X(h1)+8,y+4,label,{'font-size':11,fill:col});
+  }
+  T(8,296,'FENÊTRES',{'class':'svg-t','font-size':11,fill:'#ffb000'});
+  bracket(24,24+12,282,'#ffb000','12 h : une balise plus vieille est retirée du swarm');
+  bracket(24,24+24,304,'#ffb000','24 h : durée de vie d\'un compte visiteur (roaming)');
+  bracket(24,24+6,326,'#ffb000','6 h : pair en échec suspendu (3 échecs)');
+  bracket(0,H,372,'#ffb000','');
+  T(X(0)+10,360,'9 jours : un capitaine silencieux perd sa clef SSH au cycle suivant',{'font-size':11,fill:'#ffb000'});
+  /* curseur "maintenant" */
+  const now=el('g',{});
+  el('line',{x1:X0,y1:52,x2:X0,y2:384,stroke:'#ffffff','stroke-width':1.5,'stroke-opacity':.9},now);
+  el('polygon',{points:(X0-6)+',52 '+(X0+6)+',52 '+X0+',62',fill:'#ffffff'},now);
+  el('animateTransform',{attributeName:'transform',type:'translate',from:'0 0',to:(X1-X0)+' 0',dur:'30s',repeatCount:'indefinite'},now);
+  T(450,414,'Le curseur parcourt la fenêtre de neuf jours. Les durées sont celles des scripts (_12345.sh, 20h12.process.sh, DRAGON_p2p_ssh.sh, backfill_constellation.sh).',{'text-anchor':'middle','font-size':11});
+})();
+</script>
+<script>
+/* Thème CYBER/SOLAR mémorisé d'une page à l'autre */
+(function(){
+  var K='uplanet.theme', orig=window.toggleTheme;
+  window.toggleTheme=function(){ orig(); try{localStorage.setItem(K,isSolar?'sp':'cy');}catch(e){} };
+  window.addEventListener('load',function(){ try{ if(localStorage.getItem(K)==='sp'&&!isSolar) orig(); }catch(e){} });
+})();
+</script>
+<script>
+/* Barre de sections : met en avant la section visible */
+(function(){
+  var links=[].slice.call(document.querySelectorAll('#subnav a'));
+  if(!links.length||!('IntersectionObserver' in window)) return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(!e.isIntersecting) return;
+    links.forEach(function(l){l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id);});
+    var on=document.querySelector('#subnav a.on'); if(on&&on.scrollIntoView) on.scrollIntoView({block:'nearest',inline:'center'});
+  });},{rootMargin:'-30% 0px -60% 0px'});
+  links.forEach(function(l){var s=document.querySelector(l.getAttribute('href')); if(s) io.observe(s);});
+})();
+</script>
+</body>
+</html>

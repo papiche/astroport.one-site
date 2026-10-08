@@ -365,8 +365,8 @@ body.sp footer a{color:#7fd67f;}
 }
 body.sp .menu-btn { color: #7fd67f; }
 
-/* On passe en mode mobile dès 850px car il y a beaucoup de liens */
-@media(max-width: 850px) {
+/* Menu hamburger sous 1040px (5 liens + CYBER/SOLAR + LIVE) */
+@media(max-width: 1040px) {
   .menu-btn { display: block; }
   .nav-links {
     position: absolute;
@@ -401,6 +401,7 @@ body.sp .menu-btn { color: #7fd67f; }
 }
 
 @media(max-width:600px){
+  nav{padding:0 .8rem;} .logo{letter-spacing:1px;font-size:.85rem;} .nav-right{gap:.6rem;} .tl{display:none;}
   .hero-text{width:100%;padding:0 1.2rem;background:linear-gradient(180deg,transparent,rgba(5,10,18,0.9) 30%);}
   .hero-ui{align-items:flex-end;padding-bottom:2rem;}
   .hero-right{display:none;}
@@ -495,6 +496,30 @@ body.sp #live-bar{background:rgba(127,214,127,0.05);border-color:rgba(127,214,12
   padding:2px 7px;border-radius:2px;width:250px;outline:none;
 }
 body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
+#live-refresh{
+  background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.45);color:#00ff88;
+  font-family:'Courier New',monospace;font-size:.6rem;letter-spacing:1px;
+  padding:2px 9px;border-radius:2px;cursor:pointer;transition:all .2s;
+}
+#live-refresh:hover{background:#00ff88;color:#050a12;}
+body.sp #live-refresh{background:rgba(127,214,127,0.08);border-color:rgba(127,214,127,0.45);color:#7fd67f;}
+body.sp #live-refresh:hover{background:#7fd67f;color:#0d1a0d;}
+
+/* ── MENU COMMUN (identique sur toutes les pages) ── */
+nav a.on{color:#00f5ff;}
+body.sp nav a.on{color:#7fd67f;}
+a.nav-recruit{color:#ff4488 !important;border:1px solid #ff4488;padding:0.2rem 0.6rem;border-radius:3px;font-weight:bold;}
+a.nav-recruit:hover,a.nav-recruit.on{background:#ff4488;color:#fff !important;}
+body.sp a.nav-recruit{color:#f4a020 !important;border-color:#f4a020;}
+body.sp a.nav-recruit:hover,body.sp a.nav-recruit.on{background:#f4a020;color:#050a12 !important;}
+/* barre de sections de la page (sous le menu) */
+.subnav{position:sticky;top:52px;z-index:400;background:rgba(5,10,18,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,245,255,0.1);}
+body.sp .subnav{background:rgba(13,26,13,0.92);border-color:rgba(127,214,127,0.12);}
+.subnav-in{max-width:1100px;margin:0 auto;display:flex;gap:.4rem;overflow-x:auto;padding:.55rem 1rem;scrollbar-width:none;}
+.subnav-in::-webkit-scrollbar{display:none;}
+.subnav-in a{flex:0 0 auto;padding:.28rem .75rem;border:1px solid rgba(255,255,255,0.12);border-radius:20px;color:rgba(255,255,255,0.6);text-decoration:none;font-family:'Courier New',monospace;font-size:.66rem;letter-spacing:1px;white-space:nowrap;transition:all .2s;}
+.subnav-in a:hover,.subnav-in a.on{border-color:#00f5ff;color:#00f5ff;}
+body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7fd67f;}
 </style>
 </head>
 <body id="body">
@@ -506,15 +531,11 @@ body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
   <div class="nav-right">
     <!-- Conteneur des liens qui sera caché sur mobile -->
     <div class="nav-links" id="nav-links">
-      <a href="#network" onclick="closeMenu()">RÉSEAU</a>
-      <a href="#dragons" onclick="closeMenu()">DRAGONS</a>
-      <a href="#ecosystem" onclick="closeMenu()">ÉCOSYSTÈME</a>
-      <a href="#soutien" onclick="closeMenu()">SOUTENIR</a>
-      <a href="#savoir" onclick="closeMenu()">SAVOIR</a>
-      <a href="#zines" onclick="closeMenu()">ZINES</a>
-      <a href="#media" onclick="closeMenu()">MÉDIAS</a>
+      <a href="index.html" class="on" onclick="closeMenu()">ACCUEIL</a>
+      <a href="architecture.html" onclick="closeMenu()">ARCHITECTURE</a>
+      <a href="capitaine.html" onclick="closeMenu()">GUIDE CAPITAINE</a>
       <a href="install.html" class="nav-recruit" onclick="closeMenu()">NOUS RECRUTONS</a>
-      <a href="https://github.com/papiche/Astroport.ONE" target="_blank" onclick="closeMenu()">GITHUB</a>
+      <a href="https://github.com/papiche/Astroport.ONE" target="_blank" rel="noopener" onclick="closeMenu()">GITHUB</a>
     </div>
 
     <!-- Le bouton Cyber/Solar reste toujours visible -->
@@ -537,6 +558,7 @@ body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
   <span style="font-weight:700;letter-spacing:2px;">⬤ LIVE NOSTR</span>
   <input id="live-relay-input" type="text" value="wss://relay.copylaradio.com"
     placeholder="wss://relay…" title="Relay NOSTR — modifiable" />
+  <button id="live-refresh" type="button" onclick="refreshLive()" title="Interroger ce relai et afficher la constellation qu'il voit">⟳ INTERROGER</button>
   <span id="live-count" style="color:rgba(255,255,255,0.45);">0 station</span>
   <span id="live-status">Connexion…</span>
   <a id="live-swarm-link" href="#" style="display:none;color:inherit;text-decoration:none;margin-left:auto;" title="Voir dashboard économique"></a>
@@ -584,6 +606,7 @@ body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
 
 <!-- CONTENT SECTIONS -->
 <div class="sections">
+<div class="subnav"><div class="subnav-in" id="subnav"><a href="#network">RÉSEAU</a><a href="#dragons">DRAGONS</a><a href="#ecosystem">ÉCOSYSTÈME</a><a href="#soutien">SOUTENIR</a><a href="#savoir">SAVOIR</a><a href="#zines">ZINES</a><a href="#media">MÉDIAS</a></div></div>
 
 <hr>
 <section class="sec" id="network">
@@ -898,7 +921,7 @@ body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
   </div>
 </div>
 
-<footer>© 2024 Astroport.ONE · <a href="#">AGPL v3</a> · <a href="https://github.com/papiche/Astroport.ONE" target="_blank">GitHub</a> · Infrastructure as Choreography <a href="./atom4peace/" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></footer>
+<footer>© 2024-2026 Astroport.ONE · <a href="index.html">Accueil</a> · <a href="architecture.html">Architecture</a> · <a href="capitaine.html">Guide capitaine</a> · <a href="install.html">Nous recrutons</a> · <a href="https://github.com/papiche/Astroport.ONE" target="_blank" rel="noopener">GitHub</a> · AGPL v3 · Infrastructure as Choreography <a href="./atom4peace/" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></footer>
 
 </div><!-- /sections -->
 
@@ -1418,6 +1441,26 @@ function activateLive(){
   });
 }
 
+/* Réinterroger : on déconnecte l'ancien relai, on vide la scène LIVE et on relit
+   la constellation telle que le relai saisi dans la barre la voit (kind 30850). */
+function refreshLive(){
+  if(!isLive) return;
+  const input=document.getElementById('live-relay-input');
+  const relay=input.value.trim();
+  if(!/^wss?:\/\/[^\s]+$/.test(relay)){
+    document.getElementById('live-status').textContent='❌ URL de relai invalide (ws:// ou wss://)';
+    return;
+  }
+  if(liveDisconnect){try{liveDisconnect();}catch(e){}liveDisconnect=null;}
+  clearLiveNodes();
+  if(typeof closePanel==='function') closePanel();
+  const link=document.getElementById('live-swarm-link'); if(link) link.style.display='none';
+  activateLive();
+}
+document.getElementById('live-relay-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter') refreshLive();
+});
+
 function deactivateLive(){
   if(liveDisconnect){try{liveDisconnect();}catch(e){}liveDisconnect=null;}
   clearLiveNodes();
@@ -1551,6 +1594,27 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMedia();});
     scanDir('video/','video',/\.(mp4|webm|ogg|mov)$/i),
   ]);
   renderMGrid();
+})();
+</script>
+<script>
+/* Thème CYBER/SOLAR mémorisé d'une page à l'autre */
+(function(){
+  var K='uplanet.theme', orig=window.toggleTheme;
+  window.toggleTheme=function(){ orig(); try{localStorage.setItem(K,isSolar?'sp':'cy');}catch(e){} };
+  window.addEventListener('load',function(){ try{ if(localStorage.getItem(K)==='sp'&&!isSolar) orig(); }catch(e){} });
+})();
+</script>
+<script>
+/* Barre de sections : met en avant la section visible */
+(function(){
+  var links=[].slice.call(document.querySelectorAll('#subnav a'));
+  if(!links.length||!('IntersectionObserver' in window)) return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(!e.isIntersecting) return;
+    links.forEach(function(l){l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id);});
+    var on=document.querySelector('#subnav a.on'); if(on&&on.scrollIntoView) on.scrollIntoView({block:'nearest',inline:'center'});
+  });},{rootMargin:'-30% 0px -60% 0px'});
+  links.forEach(function(l){var s=document.querySelector(l.getAttribute('href')); if(s) io.observe(s);});
 })();
 </script>
 </body>
