@@ -78,6 +78,8 @@ body.sp a.link-hl:hover { background: rgba(127,214,127,0.1); }
   margin: 2rem auto;
   max-width: 800px;
   font-family: 'Courier New', monospace;
+  max-width: 100%;
+  overflow-wrap: anywhere; /* la commande passe à la ligne sur téléphone */
   font-size: 1rem;
   color: #00f5ff;
   user-select: all;
@@ -339,27 +341,37 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
   <div class="sec-label">// PROCÉDURE</div>
   <h2>L'INSTALLATION EN 3 ÉTAPES</h2>
   <div class="sep"></div>
-  <p>Que vous vouliez être simple Armateur ou devenir Capitaine, le début de l'aventure tient en une ligne de commande :</p>
+  <p>Que vous vouliez être simple Armateur ou devenir Capitaine, le début de l'aventure tient en une ligne de commande. Une station, c'est désormais <strong>un seul programme, <code>astroportd</code></strong> : relai NOSTR, uCloud chiffré, économie Ẑen et interface web, sans Docker et sans droits administrateur.</p>
 
   <div class="install-cmd">
-    bash &lt;(curl -sL https://install.astroport.com)
+    curl -fsSL https://raw.githubusercontent.com/papiche/astroportd/main/install.sh | bash
   </div>
 
   <div class="grid-2">
     <div class="step-card">
-      <h3><span class="num">1</span> Lancer le script</h3>
-      <p>Ouvrez un terminal sur votre machine Linux (Debian, Ubuntu, Mint) et collez la commande. Le script installe Docker, gère le réseau et vous laisse choisir votre profil d'installation (Standard, IA, Nextcloud).</p>
+      <h3><span class="num">1</span> Lancer l'installeur</h3>
+      <p>Ouvrez un terminal sur votre machine Linux (Debian, Ubuntu, Mint, Raspberry Pi OS ; PC, ARM 64 bits ou Raspberry Pi) et collez la commande. L'installeur télécharge <code>astroportd</code> depuis les versions publiées, <strong>vérifie son empreinte SHA-256</strong>, examine votre matériel (cœurs, mémoire, disque, GPU) et vous propose un profil léger, standard ou confort. Pour voir ce diagnostic sans rien installer : <code>install.sh --check-hardware</code>.</p>
     </div>
-    
+
     <div class="step-card">
-      <h3><span class="num">2</span> Créer son MULTIPASS</h3>
-      <p>Ouvrez votre navigateur web sur <code>http://127.0.0.1:54321/g1</code>. Saisissez votre adresse email. Le système génère automatiquement vos clés cryptographiques souveraines. Vous préférez rejoindre une station existante ? <a href="https://u.copylaradio.com/earth/g1.html" target="_blank" rel="noopener" class="link-hl">Choisissez l'Astroport où activer votre MULTIPASS</a>.</p>
+      <h3><span class="num">2</span> Initialiser la station</h3>
+      <p>L'assistant <code>astroportd init</code> s'enchaîne : il crée l'identité de la station (clé Y-Level : SSH → IPFS → Ğ1 → NOSTR), vous fait choisir votre UPlanet (ORIGIN pour découvrir, ẐEN pour la coopérative), demande votre nom de domaine et la position de la station. Si les ports 80 et 443 sont libres, <code>astroportd</code> gère lui-même le HTTPS ; sinon il se place derrière votre proxy.</p>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="num">3</span> Créer le compte du Capitaine</h3>
+      <p>Ouvrez la page <code>/welcome</code> de votre station (l'adresse est affichée à la fin, par exemple <code>http://127.0.0.1:18080/welcome</code>) et saisissez le <strong>code d'installation</strong> écrit dans le journal (terminal, ou <code>journalctl --user -u astroportd</code>). Vous recevez votre identifiant, votre code PASS et votre carte de secours à imprimer. Vos proches créent ensuite leur MULTIPASS sur la page <code>/register</code> de votre station.</p>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="num">✓</span> Juste un MULTIPASS ?</h3>
+      <p>Pas besoin d'installer quoi que ce soit pour avoir son MULTIPASS : <a href="index.html?rejoindre" class="link-hl">rejoignez la station la plus proche qui a encore de la place</a>. Votre position reste dans votre navigateur : elle sert seulement à choisir la station.</p>
     </div>
   </div>
 
   <div class="info-box" style="margin-top: 1.5rem; border-color:#ff4488; background:rgba(255,68,136,0.05);">
-    <h4 style="color:#ff4488;"><span class="num" style="display:inline-block;background:transparent;border:1px solid currentColor;border-radius:50%;width:20px;height:20px;text-align:center;line-height:18px;margin-right:8px;">3</span> Rencontrer la Constellation</h4>
-    <p>Copiez votre clé secrète <strong><code>nsec</code></strong> générée. C'est elle qui vous permettra de rencontrer un Capitaine de la constellation (sur NOSTR ou par email à <em>support@qo-op.com</em>) pour officialiser l'entrée de votre machine. Si vous souhaitez en rester là, vous toucherez vos 1xPAF d'Armateur. Si vous voulez aller plus loin, commencez votre formation de Capitaine : le <a href="capitaine.html" class="link-hl">guide du Capitaine</a> vous accompagne pas à pas (ports de la box, Nginx Proxy Manager, NextCloud, énergie et mode LIVE).</p>
+    <h4 style="color:#ff4488;">Rejoindre la Constellation</h4>
+    <p>Dès son démarrage, votre station publie toute seule sa <strong>balise</strong> sur le relai de la coopérative : places libres, position approchée (à environ 1 km, jamais votre adresse), puissance. Elle apparaît dans le mode <a href="index.html" class="link-hl">LIVE</a> et les futurs membres de votre quartier la trouvent par le bouton « Rejoindre ». Pour officialiser l'entrée de votre machine et convenir de la PAF, contactez un Capitaine de la constellation (sur NOSTR ou par email à <em>support@qo-op.com</em>). Si vous souhaitez en rester là, vous toucherez vos 1xPAF d'Armateur. Pour aller plus loin, le <a href="capitaine.html" class="link-hl">guide du Capitaine</a> vous accompagne pas à pas.</p>
   </div>
 </section>
 

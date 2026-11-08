@@ -339,6 +339,8 @@ body.sp .tier-btn:hover{background:#7fd67f;color:#0d1a0d;}
   display: inline-block;
   margin: 0 auto 1.5rem auto;
   font-family: 'Courier New', monospace;
+  max-width: 100%;
+  overflow-wrap: anywhere; /* la commande passe à la ligne sur téléphone */
   font-size: 0.85rem;
   color: #00f5ff;
   user-select: all; /* Permet de sélectionner tout le texte en un clic */
@@ -504,6 +506,11 @@ body.sp #live-relay-input{border-color:rgba(127,214,127,0.25);color:#7fd67f;}
 #live-refresh:hover{background:#00ff88;color:#050a12;}
 body.sp #live-refresh{background:rgba(127,214,127,0.08);border-color:rgba(127,214,127,0.45);color:#7fd67f;}
 body.sp #live-refresh:hover{background:#7fd67f;color:#0d1a0d;}
+#live-join{background:#00ff88;border:1px solid #00ff88;color:#050a12;font-family:'Courier New',monospace;font-size:.6rem;font-weight:700;letter-spacing:1px;padding:2px 9px;border-radius:2px;cursor:pointer;}
+#live-join:hover{filter:brightness(1.15);}
+body.sp #live-join{background:#7fd67f;border-color:#7fd67f;color:#0d1a0d;}
+#p-join{display:inline-block;margin-top:.5rem;padding:.35rem .8rem;border:1px solid #00ff88;color:#00ff88;text-decoration:none;font-family:'Courier New',monospace;font-size:.7rem;letter-spacing:1px;border-radius:2px;}
+#p-join:hover{background:#00ff88;color:#050a12;}
 
 /* ── MENU COMMUN (identique sur toutes les pages) ── */
 nav a.on{color:#00f5ff;}
@@ -559,6 +566,7 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
   <input id="live-relay-input" type="text" value="wss://relay.copylaradio.com"
     placeholder="wss://relay…" title="Relay NOSTR — modifiable" />
   <button id="live-refresh" type="button" onclick="refreshLive()" title="Interroger ce relai et afficher la constellation qu'il voit">⟳ INTERROGER</button>
+  <button id="live-join" type="button" onclick="joinNearest()" title="Trouver la station la plus proche qui a encore de la place et y créer mon MULTIPASS (votre position reste dans ce navigateur)">🚀 REJOINDRE</button>
   <span id="live-count" style="color:rgba(255,255,255,0.45);">0 station</span>
   <span id="live-status">Connexion…</span>
   <a id="live-swarm-link" href="#" style="display:none;color:inherit;text-decoration:none;margin-left:auto;" title="Voir dashboard économique"></a>
@@ -583,6 +591,7 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
   <div class="p-sec">Dragons actifs</div><div id="p-svc"></div>
   <div class="p-sec">Constellation</div><div id="p-const" style="color:rgba(255,255,255,0.5)"></div>
   <div class="p-sec">Connexions</div><div id="p-links" style="color:rgba(255,255,255,0.4);font-size:.72rem"></div>
+  <div id="p-join-box" hidden><div class="p-sec">Accueil</div><div id="p-seats" style="color:rgba(255,255,255,0.6)"></div><a id="p-join" href="#">→ CRÉER MON MULTIPASS ICI</a></div>
 </div>
 
 <!-- HERO (canvas) -->
@@ -596,6 +605,7 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
       <div class="hero-btns">
         <a href="#network" class="btn-p">EXPLORER LE RÉSEAU</a>
         <a href="https://github.com/papiche/Astroport.ONE" target="_blank" class="btn-s">GITHUB →</a>
+        <a href="#" class="btn-s" onclick="joinNearest();return false;" title="La station la plus proche qui a encore de la place">🚀 REJOINDRE UNE STATION</a>
       </div>
     </div>
     <div class="hero-right">
@@ -903,10 +913,10 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
 
 <div class="cta">
   <h2>ENTRER DANS LA ZONE ALPHA</h2>
-  <p>Vous avez un Raspberry Pi 5, un vieux PC ou un serveur ? Lancez cette commande pour rejoindre la Constellation ORIGIN et initier votre nœud.</p>
-  
+  <p>Vous avez un Raspberry Pi 5, un vieux PC ou un serveur ? Lancez cette commande pour installer <code>astroportd</code> et initier votre nœud (<a href="install.html#procedure" style="color:inherit">les 3 étapes</a>). Juste un MULTIPASS ? <a href="#" onclick="joinNearest();return false;" style="color:inherit">Rejoignez la station la plus proche</a>.</p>
+
   <div class="install-cmd">
-    bash &lt;(curl -sL https://install.astroport.com)
+    curl -fsSL https://raw.githubusercontent.com/papiche/astroportd/main/install.sh | bash
   </div>
 
   <div class="alpha-box">
@@ -1125,6 +1135,7 @@ function openPanel(i){
   document.getElementById('p-svc').innerHTML=n.services.map(s=>`<span class="svc-tag">${s}</span>`).join('');
   document.getElementById('p-const').textContent='Constellation '+n.constellation;
   document.getElementById('p-links').textContent=pairs.filter(([a,b])=>a===i||b===i).map(([a,b])=>nodes[a===i?b:a].hostname).join(', ');
+  document.getElementById('p-join-box').hidden=true;
   document.getElementById('panel').classList.add('open');
 }
 function closePanel(){document.getElementById('panel').classList.remove('open');}
@@ -1271,7 +1282,8 @@ function latLonToVec3(lat,lon,r){
 function healthToHex(status){
   const m={healthy:'#00ff88',warning:'#ffd32a',critical:'#ff4757',
             volunteer:'#cc77ff',rnd_solidarity:'#00d4ff',
-            assets_solidarity:'#7bed9f',growth_slowdown:'#ffd32a'};
+            assets_solidarity:'#7bed9f',growth_slowdown:'#ffd32a',
+            drawdown:'#ff9f43',unknown:'#808090'};
   return m[status]||'#808090';
 }
 function healthToInt(status){return parseInt(healthToHex(status).slice(1),16);}
@@ -1417,6 +1429,7 @@ function activateLive(){
       document.getElementById('live-status').textContent='⬤';
     },
     onEose(){
+      if(joinPending){joinPending=false;setTimeout(joinNearest,300);}
       const cnt=liveMeshList.length;
       console.log('[LIVE] EOSE —', cnt, 'station(s) chargée(s)');
       if(cnt===0){
@@ -1440,6 +1453,47 @@ function activateLive(){
       document.getElementById('live-status').textContent='❌ '+(err&&err.message?err.message:String(err));
     }
   });
+}
+
+/* Lien « index.html?rejoindre » (page Nous recrutons) : lance directement le choix de station. */
+window.addEventListener('load',function(){if(/[?&]rejoindre\b/.test(location.search))setTimeout(joinNearest,800);});
+
+/* ── REJOINDRE : la station la plus proche qui a encore de la place ──
+   La position reste dans le navigateur (tri local). Les places annoncées datent de quelques heures :
+   une station astroportd est revérifiée en direct (GET <url>/api/v1/register, ouvert à toute origine). */
+var joinPending=false;
+function joinNearest(){
+  var st=document.getElementById('live-status');
+  if(!isLive){joinPending=true;toggleLive();if(!isLive)joinPending=false;return;}
+  if(typeof UPlanetHeartbox==='undefined'||typeof UPlanetHeartbox.nearest!=='function'){
+    st.textContent='❌ heartbox.js trop ancien : choisissez une station sur le globe';return;
+  }
+  var go=function(lat,lon){
+    var list=UPlanetHeartbox.nearest(lat,lon,{});
+    if(!list.length){st.textContent='⚠️ Aucune station n’annonce de place pour le moment';return;}
+    tryJoin(list,0);
+  };
+  st.textContent='📍 Localisation… (votre position reste dans ce navigateur)';
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(p){go(p.coords.latitude,p.coords.longitude);},function(){go();},{timeout:10000,maximumAge:600000});
+  } else go();
+}
+function tryJoin(list,i){
+  var st=document.getElementById('live-status');
+  if(i>=list.length||i>=4){st.textContent='⚠️ Les stations proches sont complètes : réessayez bientôt';return;}
+  var c=list[i],s=c.station;
+  var leave=function(){
+    st.textContent='🚀 '+s.stationName+(c.km!==null?' ('+(c.km<10?c.km.toFixed(1):Math.round(c.km))+' km)':'')+' → création du MULTIPASS…';
+    setTimeout(function(){window.location.href=c.joinUrl;},1200);
+  };
+  if(!s.astroportd){leave();return;}
+  st.textContent='⏳ Vérification des places de '+s.stationName+'…';
+  var ctrl=typeof AbortController!=='undefined'?new AbortController():null;
+  if(ctrl)setTimeout(function(){ctrl.abort();},5000);
+  fetch(s.stationUrl+'/api/v1/register',{cache:'no-store',signal:ctrl?ctrl.signal:undefined})
+    .then(function(r){return r.json();})
+    .then(function(j){if(j.open)leave();else tryJoin(list,i+1);})
+    .catch(function(){leave();});
 }
 
 /* Réinterroger : on déconnecte l'ancien relai, on vide la scène LIVE et on relit
@@ -1508,6 +1562,18 @@ function openLivePanel(station){
     +' R&D:'+station.rndBalance.toFixed(0)+'Ẑ'
     +' Assets:'+station.assetsBalance.toFixed(0)+'Ẑ'
     +' Impôt:'+station.impotBalance.toFixed(0)+'Ẑ';
+  // Accueil de nouveaux MULTIPASS (champs de heartbox.js récent ; absents d'un ancien heartbox).
+  var box=document.getElementById('p-join-box');
+  if(station.stationUrl!==undefined){
+    var free=station.multipassTotal>0?station.multipassTotal-station.multipassUsed:Infinity;
+    var ok=station.registerOpen&&free>0&&!!station.stationUrl;
+    document.getElementById('p-seats').textContent=!station.registerOpen?'Inscriptions fermées'
+      :free===Infinity?'Place disponible':free>0?free+' place(s) libre(s)':'Complète';
+    var a=document.getElementById('p-join');
+    a.hidden=!ok;
+    if(ok)a.href=station.stationUrl+(station.astroportd?'/register':'/g1');
+    box.hidden=false;
+  } else box.hidden=true;
   document.getElementById('panel').classList.add('open');
 }
 

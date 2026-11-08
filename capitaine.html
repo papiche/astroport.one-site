@@ -144,6 +144,7 @@ body.sp .prog i{background:#e8d44d;}
 .check li{display:flex;gap:.8rem;align-items:flex-start;padding:.7rem .9rem;border:1px solid rgba(255,255,255,0.08);border-radius:4px;margin-bottom:.5rem;cursor:pointer;transition:background .2s;font-size:.9rem;color:rgba(255,255,255,0.75);line-height:1.55;}
 .check li:hover{background:rgba(255,255,255,0.04);}
 .check li input{margin-top:.25rem;accent-color:#00ff88;width:16px;height:16px;flex-shrink:0;}
+.check li>div{min-width:0;}.check li code{overflow-wrap:anywhere;}
 .check li.done{color:rgba(255,255,255,0.4);text-decoration:line-through;border-color:rgba(0,255,136,0.25);}
 .check li small{display:block;color:rgba(255,255,255,0.4);text-decoration:none;font-size:.75rem;}
 
@@ -240,15 +241,15 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
 
 <header class="page-header">
   <h1>GUIDE DU CAPITAINE</h1>
-  <p class="header-sub">Ouvrir sa CoeurBOX au monde en six étapes : régler la box, brancher <strong>Nginx Proxy Manager</strong>, installer <strong>NextCloud</strong>, déclarer sa consommation et sa production d'énergie, puis se voir apparaître en <strong>LIVE</strong> dans la constellation.</p>
+  <p class="header-sub">Ouvrir sa CoeurBOX au monde avec <strong>astroportd</strong>, un seul programme : installer, ouvrir trois ports, laisser la station gérer son <strong>HTTPS</strong>, brancher les téléphones sur l'<strong>uCloud</strong> chiffré, convenir de sa PAF, puis se voir apparaître en <strong>LIVE</strong> dans la constellation.</p>
 </header>
 
 <div class="steps-bar"><div class="steps-in" id="steps">
   <a href="#principe"><b>1</b>PRINCIPE</a>
   <a href="#avant"><b>2</b>PRÉPARER</a>
   <a href="#ports"><b>3</b>PORTS</a>
-  <a href="#npm"><b>4</b>NGINX PROXY MANAGER</a>
-  <a href="#nextcloud"><b>5</b>NEXTCLOUD</a>
+  <a href="#https"><b>4</b>HTTPS</a>
+  <a href="#ucloud"><b>5</b>uCLOUD</a>
   <a href="#paf"><b>6</b>PAF &amp; ÉNERGIE</a>
   <a href="#live"><b>7</b>LIVE</a>
 </div></div>
@@ -294,7 +295,7 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
   <div class="grid-3">
     <div class="step-card"><h3>🧭 Votre rôle</h3><p>Le <strong>Capitaine</strong> accueille des MULTIPASS sur sa station, la maintient en ligne et touche une rétribution en échange. Vous pouvez aussi être simple <em>Armateur</em> (l'hébergeur matériel).</p></div>
     <div class="step-card"><h3>💶 Votre PAF</h3><p>Chaque station apportée se voit attribuer une <strong>Participation Aux Frais</strong>, négociée avec la constellation, qui rembourse ses frais réels (étape 6).</p></div>
-    <div class="step-card"><h3>👀 Votre visibilité</h3><p>Votre station affiche sa consommation et sa production d'énergie. En mode <strong>LIVE</strong>, toute la constellation la voit (étape 7).</p></div>
+    <div class="step-card"><h3>👀 Votre visibilité</h3><p>Votre station publie seule sa <strong>balise</strong> : places libres, position approchée, puissance. En mode <strong>LIVE</strong>, toute la constellation la voit, et les futurs membres de votre quartier la trouvent (étape 7).</p></div>
   </div>
 </section>
 
@@ -308,13 +309,14 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
   <p>Cochez au fur et à mesure : votre avancement est gardé dans ce navigateur. Chaque point renvoie à l'étape qui l'explique.</p>
   <div class="prog"><i id="prog-bar"></i></div>
   <ul class="check" id="check">
-    <li data-k="install"><input type="checkbox"><div>Astroport.ONE est installé sur la CoeurBOX <small>Commande en une ligne sur la page <a class="link-hl" href="install.html">Nous recrutons</a> : <code>bash &lt;(curl -sL https://install.astroport.com)</code></small></div></li>
+    <li data-k="ad-install"><input type="checkbox"><div>astroportd est installé sur la CoeurBOX <small>Une ligne, sans Docker ni droits administrateur (page <a class="link-hl" href="install.html#procedure">Nous recrutons</a>) : <code>curl -fsSL https://raw.githubusercontent.com/papiche/astroportd/main/install.sh | bash</code></small></div></li>
+    <li data-k="ad-init"><input type="checkbox"><div>L'assistant <code>astroportd init</code> est passé <small>Identité Y-Level de la station, choix de l'UPlanet (ORIGIN ou ẐEN), nom de domaine, position de la station, visio.</small></div></li>
     <li data-k="ip"><input type="checkbox"><div>La CoeurBOX a une adresse IP locale fixe <small>Dans l'interface de votre box : réservez l'adresse (bail DHCP statique) pour que les redirections ne cassent pas au redémarrage.</small></div></li>
-    <li data-k="dom"><input type="checkbox"><div>J'ai un nom de domaine qui pointe vers l'IP publique de ma box <small>Un enregistrement DNS <code>A</code> pour <code>astroport</code>, <code>ipfs</code>, <code>relay</code>, <code>u</code> et <code>cloud</code> (ou un joker <code>*</code>).</small></div></li>
-    <li data-k="ports"><input type="checkbox"><div>Les ports 80, 443 et 4001 sont redirigés vers la CoeurBOX <small>Voir l'étape 3.</small></div></li>
-    <li data-k="npm"><input type="checkbox"><div>Les hôtes sont créés dans Nginx Proxy Manager, avec leur certificat et les trois chemins de <code>u.</code> <small>Voir l'étape 4 (A à D).</small></div></li>
-    <li data-k="nc"><input type="checkbox"><div>NextCloud est installé et répond sur <code>cloud.mondomaine</code> <small>Voir l'étape 5.</small></div></li>
-    <li data-k="paf"><input type="checkbox"><div>Ma PAF est négociée et ma consommation est mesurée <small>Voir l'étape 6.</small></div></li>
+    <li data-k="ad-dom"><input type="checkbox"><div>Mon nom de domaine pointe vers l'IP publique de ma box <small>Un seul enregistrement DNS <code>A</code> suffit (par exemple <code>station.mondomaine.fr</code>) : application, relai NOSTR et uCloud partagent la même adresse.</small></div></li>
+    <li data-k="ad-ports"><input type="checkbox"><div>Les ports 80, 443 et 4101 sont redirigés vers la CoeurBOX <small>Voir l'étape 3.</small></div></li>
+    <li data-k="ad-service"><input type="checkbox"><div>La station démarre toute seule <small><code>systemctl --user enable --now astroportd</code> et <code>loginctl enable-linger $USER</code> (étape 4).</small></div></li>
+    <li data-k="ad-captain"><input type="checkbox"><div>Mon compte de Capitaine est créé <small>Page <code>/welcome</code> de la station, avec le code d'installation écrit dans le journal (étape 4).</small></div></li>
+    <li data-k="paf"><input type="checkbox"><div>Ma PAF est convenue avec la constellation <small>Voir l'étape 6.</small></div></li>
     <li data-k="live"><input type="checkbox"><div>Je me vois en LIVE dans la constellation <small>Voir l'étape 7.</small></div></li>
   </ul>
 </section>
@@ -326,162 +328,124 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
   <div class="sec-label">// ÉTAPE 3 · OUVRIR LA BOX</div>
   <h2>TROIS PORTS SUFFISENT</h2>
   <div class="sep"></div>
-  <p>Beaucoup de services tournent sur votre CoeurBOX, mais <strong>un seul point d'entrée</strong> les protège : Nginx Proxy Manager (NPM). Sur votre box Internet, vous ne redirigez que ce qui mène à NPM, plus le port des pairs IPFS.</p>
+  <p>Une station, c'est <strong>un seul programme</strong> : <code>astroportd</code>. Il sert sur la même adresse l'application web, le relai NOSTR, l'uCloud (WebDAV, CardDAV, CalDAV) et la visio. Plus besoin d'un aiguilleur devant : sur votre box, vous redirigez le web vers lui, plus le port du maillage entre stations.</p>
 
   <div class="fig">
-  <svg viewBox="0 0 900 330" role="img" aria-label="Internet, box, Nginx Proxy Manager sur le port 443, puis les services internes">
+  <svg viewBox="0 0 900 300" role="img" aria-label="Internet, box, puis astroportd qui sert tout sur une seule adresse">
     <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fil"/></marker></defs>
-    <!-- Internet -->
-    <ellipse cx="70" cy="165" rx="55" ry="40" fill="rgba(79,124,255,0.08)" stroke="#6f8fff"/>
-    <text x="70" y="162" text-anchor="middle" class="svg-t" font-size="13" font-weight="700">INTERNET</text>
-    <text x="70" y="180" text-anchor="middle" class="svg-d" font-size="10">vos amis</text>
-    <path d="M125 165 L 205 165" fill="none" class="stk" stroke-width="2" marker-end="url(#a2)"/>
-    <text x="165" y="154" text-anchor="middle" class="svg-t" font-size="11" style="fill:#e8d44d">443</text>
-    <!-- box -->
-    <rect x="205" y="120" width="120" height="90" rx="5" fill="rgba(255,176,0,0.07)" stroke="#ffb000"/>
-    <text x="265" y="152" text-anchor="middle" class="svg-t" font-size="13" font-weight="700" style="fill:#ffb000">VOTRE BOX</text>
-    <text x="265" y="170" text-anchor="middle" class="svg-d" font-size="10">redirections :</text>
-    <text x="265" y="186" text-anchor="middle" class="svg-t" font-size="10" style="fill:#ffb000">80 · 443 · 4001</text>
-    <path d="M325 165 L 395 165" fill="none" class="stk" stroke-width="2" marker-end="url(#a2)"/>
-    <!-- NPM -->
-    <rect x="395" y="105" width="130" height="120" rx="5" fill="rgba(0,245,255,0.07)" class="stk" stroke-width="2"/>
-    <text x="460" y="138" text-anchor="middle" class="svg-t acc" font-size="14" font-weight="700">NPM</text>
-    <text x="460" y="157" text-anchor="middle" class="svg-d" font-size="10">Nginx Proxy Manager</text>
-    <text x="460" y="177" text-anchor="middle" class="svg-d" font-size="10">HTTPS · certificats</text>
-    <text x="460" y="195" text-anchor="middle" class="svg-d" font-size="10">aiguille par nom d'hôte</text>
-    <!-- services -->
+    <ellipse cx="70" cy="150" rx="55" ry="40" fill="rgba(79,124,255,0.08)" stroke="#6f8fff"/>
+    <text x="70" y="147" text-anchor="middle" class="svg-t" font-size="13" font-weight="700">INTERNET</text>
+    <text x="70" y="165" text-anchor="middle" class="svg-d" font-size="10">vos amis</text>
+    <path d="M125 150 L 205 150" fill="none" class="stk" stroke-width="2" marker-end="url(#a2)"/>
+    <text x="165" y="139" text-anchor="middle" class="svg-t" font-size="11" style="fill:#e8d44d">443</text>
+    <rect x="205" y="105" width="120" height="90" rx="5" fill="rgba(255,176,0,0.07)" stroke="#ffb000"/>
+    <text x="265" y="137" text-anchor="middle" class="svg-t" font-size="13" font-weight="700" style="fill:#ffb000">VOTRE BOX</text>
+    <text x="265" y="155" text-anchor="middle" class="svg-d" font-size="10">redirections :</text>
+    <text x="265" y="171" text-anchor="middle" class="svg-t" font-size="10" style="fill:#ffb000">80 · 443 · 4101</text>
+    <path d="M325 150 L 395 150" fill="none" class="stk" stroke-width="2" marker-end="url(#a2)"/>
+    <rect x="395" y="80" width="150" height="140" rx="5" fill="rgba(0,245,255,0.07)" class="stk" stroke-width="2"/>
+    <text x="470" y="113" text-anchor="middle" class="svg-t acc" font-size="14" font-weight="700">astroportd</text>
+    <text x="470" y="132" text-anchor="middle" class="svg-d" font-size="10">un seul programme</text>
+    <text x="470" y="152" text-anchor="middle" class="svg-d" font-size="10">HTTPS automatique</text>
+    <text x="470" y="170" text-anchor="middle" class="svg-d" font-size="10">(Let's Encrypt)</text>
+    <text x="470" y="200" text-anchor="middle" class="svg-t" font-size="10" style="fill:#e8d44d">station.mondomaine</text>
     <g font-family="Courier New, monospace" font-size="11">
-      <path d="M525 150 C 560 100, 570 55, 600 45" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
-      <path d="M525 158 C 560 140, 570 112, 600 105" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
-      <path d="M525 172 C 560 185, 570 170, 600 165" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
-      <path d="M525 182 C 560 215, 570 228, 600 225" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
-      <path d="M525 195 C 560 250, 570 285, 600 285" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
-      <rect x="600" y="26" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="43" class="acc">astroport.mondomaine → :12345</text><text x="612" y="58" class="svg-d" font-size="10">carte de la station</text>
-      <rect x="600" y="86" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="103" class="acc">ipfs.mondomaine → :8080</text><text x="612" y="118" class="svg-d" font-size="10">passerelle IPFS</text>
-      <rect x="600" y="146" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="163" class="acc">relay.mondomaine → :7777</text><text x="612" y="178" class="svg-d" font-size="10">relais NOSTR (WebSocket)</text>
-      <rect x="600" y="206" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="223" class="acc">u.mondomaine → :54321</text><text x="612" y="238" class="svg-d" font-size="10">UPassport : MULTIPASS</text>
-      <rect x="600" y="266" width="280" height="40" rx="4" fill="rgba(255,176,0,0.07)" stroke="#ffb000"/><text x="612" y="283" style="fill:#ffb000">cloud.mondomaine → :8001</text><text x="612" y="298" class="svg-d" font-size="10">NextCloud (étape 5)</text>
+      <path d="M545 125 C 570 90, 580 60, 600 50" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M545 140 C 570 125, 580 112, 600 108" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M545 160 C 570 170, 580 168, 600 166" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M545 175 C 570 210, 580 222, 600 224" fill="none" class="stk" stroke-width="1.4" marker-end="url(#a2)"/>
+      <rect x="600" y="30" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="47" class="acc">https://station… (navigateur)</text><text x="612" y="62" class="svg-d" font-size="10">application : MULTIPASS, photos, messages</text>
+      <rect x="600" y="88" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="105" class="acc">wss://station… (client NOSTR)</text><text x="612" y="120" class="svg-d" font-size="10">relai NOSTR de la station</text>
+      <rect x="600" y="146" width="280" height="40" rx="4" fill="rgba(0,245,255,0.05)" class="stk"/><text x="612" y="163" class="acc">/dav · CardDAV · CalDAV</text><text x="612" y="178" class="svg-d" font-size="10">uCloud chiffré des téléphones (étape 5)</text>
+      <rect x="600" y="204" width="280" height="40" rx="4" fill="rgba(255,176,0,0.07)" stroke="#ffb000"/><text x="612" y="221" style="fill:#ffb000">4101 : maillage P2P</text><text x="612" y="236" class="svg-d" font-size="10">les autres stations de votre UPlanet</text>
     </g>
-    <text x="265" y="258" text-anchor="middle" class="svg-d" font-size="10">4001 : les pairs IPFS</text>
-    <path d="M265 210 L 265 245" fill="none" stroke="#ffb000" stroke-width="1.4" stroke-dasharray="3 4"/>
   </svg>
   </div>
 
   <h3 class="sub">Sur votre box Internet : à rediriger (NAT/PAT)</h3>
   <div class="tabwrap"><table class="t">
     <tr><th>PORT</th><th>PROTOCOLE</th><th>VERS</th><th>POURQUOI</th><th></th></tr>
-    <tr><td class="m">80</td><td>TCP</td><td class="m">CoeurBOX :80</td><td>NPM : redirige vers HTTPS et obtient les certificats Let's Encrypt</td><td><span class="pill go">OUVRIR</span></td></tr>
-    <tr><td class="m">443</td><td>TCP</td><td class="m">CoeurBOX :443</td><td>NPM : tout le HTTPS et le WebSocket (relais NOSTR, UPassport…)</td><td><span class="pill go">OUVRIR</span></td></tr>
-    <tr><td class="m">4001</td><td>TCP + UDP</td><td class="m">CoeurBOX :4001</td><td>IPFS : les pairs de l'essaim vous trouvent et vous échangent des blocs</td><td><span class="pill go">OUVRIR</span></td></tr>
+    <tr><td class="m">80</td><td>TCP</td><td class="m">CoeurBOX :80</td><td>astroportd : obtient le certificat Let's Encrypt et redirige vers HTTPS</td><td><span class="pill go">OUVRIR</span></td></tr>
+    <tr><td class="m">443</td><td>TCP</td><td class="m">CoeurBOX :443</td><td>astroportd : application, relai NOSTR (WebSocket), uCloud, API</td><td><span class="pill go">OUVRIR</span></td></tr>
+    <tr><td class="m">443</td><td>UDP</td><td class="m">CoeurBOX :443</td><td>Visio entre membres : la station sert elle-même STUN et le relais d'appel (si vous avez choisi la visio à <code>init</code>)</td><td><span class="pill go">OUVRIR</span></td></tr>
+    <tr><td class="m">4101</td><td>TCP</td><td class="m">CoeurBOX :4101</td><td>Maillage P2P : les stations de votre UPlanet se joignent, se répliquent et s'ouvrent des tunnels, sans autre port public</td><td><span class="pill go">OUVRIR</span></td></tr>
     <tr><td class="m">30333</td><td>TCP + UDP</td><td class="m">CoeurBOX :30333</td><td>Seulement si vous hébergez un nœud Duniter v2s (blockchain Ğ1)</td><td><span class="pill opt">OPTIONNEL</span></td></tr>
   </table></div>
 
   <div class="warn-box">
     <h4>À NE JAMAIS REDIRIGER</h4>
-    <p><code>81</code> (administration de NPM), <code>5001</code> (API IPFS), <code>7777</code>, <code>8080</code>, <code>12345</code>, <code>54321</code> (services, déjà joignables via NPM en HTTPS), <code>8001/8002/8443</code> (NextCloud). Le pare-feu <code>firewall.sh</code> de la CoeurBOX les ferme à Internet : ils ne sont accessibles que depuis votre réseau local.</p>
+    <p><code>18080</code> et <code>8090</code> (écoutes locales d'astroportd, sans HTTPS), <code>22</code> (SSH : entre Capitaines amis, il passe par le tunnel du maillage, fermé par défaut et ouvert dans <em>Options › Tunnels</em>), et les ports des services locaux (Ollama <code>11434</code>, ComfyUI <code>8188</code>, API IPFS <code>5001</code>) : la station les partage, si vous le décidez, par le maillage.</p>
   </div>
 </section>
 
 <hr>
 
-<!-- ═════════════ 4 · NPM ═════════════ -->
-<section class="sec" id="npm">
-  <div class="sec-label">// ÉTAPE 4 · CONFIGURER</div>
-  <h2>NGINX PROXY MANAGER, PAS À PAS</h2>
+<!-- ═════════════ 4 · HTTPS ═════════════ -->
+<section class="sec" id="https">
+  <div class="sec-label">// ÉTAPE 4 · METTRE EN LIGNE</div>
+  <h2>HTTPS, SERVICE ET COMPTE DU CAPITAINE</h2>
   <div class="sep"></div>
-  <p>NPM est le standardiste de votre CoeurBOX : un visiteur demande <code>relay.mondomaine</code>, NPM le sert au bon service, en HTTPS. Bonne nouvelle : l'installateur crée déjà ces hôtes pour vous (<code>install/setup/setup_npm.sh</code>). Cette étape sert à <strong>vérifier, réparer ou refaire à la main</strong>.</p>
+  <p>Si les ports 80 et 443 de la CoeurBOX sont libres, <strong>astroportd gère lui-même le HTTPS</strong> : il demande et renouvelle son certificat Let's Encrypt pour le domaine donné à <code>init</code>. Rien d'autre à installer.</p>
 
-  <h3 class="sub">A · Se connecter</h3>
+  <h3 class="sub">A · La commande de la station</h3>
+  <p><code>astroportd init</code> vous l'a affichée et l'a enregistrée dans le service. Pour une station publique, elle ressemble à :</p>
+  <div class="cmd">astroportd serve --db ~/.zen/astroportd/uplanet.db --blobs ~/.zen/astroportd/blobs \
+  --domain station.mondomaine.fr --acme-email moi@mondomaine.fr \
+  --p2p-listen /ip4/0.0.0.0/tcp/4101 --lat 45.76 --lon 4.84<button class="cp" type="button">COPIER</button></div>
+  <p>En UPlanet ẐEN, ajoutez <code>--swarm-key ./swarm.key</code>. La position (<code>--lat</code>, <code>--lon</code>) règle l'entretien de nuit sur le soleil (20h12) et place votre station sur la carte, arrondie à environ 1 km.</p>
+
+  <h3 class="sub">B · Qu'elle démarre toute seule</h3>
+  <div class="cmd">astroportd init --systemd
+systemctl --user daemon-reload
+systemctl --user enable --now astroportd
+loginctl enable-linger "$USER"<button class="cp" type="button">COPIER</button></div>
+  <p>Les journaux : <code>journalctl --user -u astroportd -f</code>. Mettre à jour : relancez simplement l'installeur, il garde votre station et redémarre le service.</p>
+
+  <h3 class="sub">C · Créer le compte du Capitaine</h3>
   <div class="grid-3">
-    <div class="step-card"><h3><span class="num">1</span> Ouvrir l'interface</h3><p>Depuis un appareil de <strong>votre réseau local</strong> : <code>http://IP_DE_LA_COEURBOX:81</code> (ou <code>http://127.0.0.1:81</code> sur la CoeurBOX elle-même).</p></div>
-    <div class="step-card"><h3><span class="num">2</span> S'identifier</h3><p>Utilisateur <code>support@qo-op.com</code>. L'installateur a remplacé le mot de passe par défaut par un mot de passe généré, gardé dans un fichier (commande ci-dessous).</p></div>
-    <div class="step-card"><h3><span class="num">3</span> Aller aux hôtes</h3><p>Menu <strong>Hosts → Proxy Hosts</strong>. C'est là que vous voyez la liste des services publiés (capture ci-dessous).</p></div>
+    <div class="step-card"><h3><span class="num">1</span> Lire le code</h3><p>Au premier démarrage, la station écrit un <strong>code d'installation</strong> dans son journal : il prouve que vous avez la main sur la machine.</p></div>
+    <div class="step-card"><h3><span class="num">2</span> Ouvrir /welcome</h3><p><code>https://station.mondomaine.fr/welcome</code> (ou <code>http://127.0.0.1:18080/welcome</code> sans domaine). Saisissez le code et votre email.</p></div>
+    <div class="step-card"><h3><span class="num">3</span> Garder sa carte</h3><p>Notez votre code PASS et imprimez votre carte de secours. L'écran <strong>Station</strong> (le cockpit) vous guide ensuite : domaine, maillage, adresses de la coopérative, premier membre.</p></div>
   </div>
-  <div class="cmd">cat ~/.zen/nginx-proxy-manager/data/.admin_pass<button class="cp" type="button">COPIER</button></div>
 
-  <h3 class="sub">B · Le configurateur : vos valeurs, prêtes à recopier</h3>
-  <p>Renseignez votre domaine et l'adresse locale de la CoeurBOX : le tableau se met à jour, avec des boutons pour copier chaque nom et <strong>tester</strong> que l'hôte répond depuis Internet.</p>
+  <h3 class="sub">D · Vérifier depuis Internet</h3>
+  <p>Saisissez votre domaine : la page teste le HTTPS, le relai NOSTR et l'inscription des membres, comme le ferait un visiteur.</p>
   <div class="form">
-    <label>VOTRE DOMAINE<input id="dom" type="text" value="mondomaine.fr" autocomplete="off" spellcheck="false"></label>
-    <label>IP LOCALE DE LA COEURBOX<input id="lip" type="text" value="192.168.1.16" autocomplete="off" spellcheck="false"></label>
+    <label>VOTRE DOMAINE<input id="dom" type="text" value="station.mondomaine.fr" autocomplete="off" spellcheck="false"></label>
   </div>
   <div class="tabwrap"><table class="t" id="hosts-tab">
-    <thead><tr><th>DOMAIN NAMES</th><th>SCHEME</th><th>FORWARD HOSTNAME / IP</th><th>PORT</th><th>WEBSOCKETS</th><th>RÔLE</th><th></th></tr></thead>
+    <thead><tr><th>ADRESSE</th><th>CE QUI EST TESTÉ</th><th></th></tr></thead>
     <tbody></tbody>
   </table></div>
 
-  <div class="fig">
-    <div class="imgs">
-      <div><img src="img/npm-proxy-hosts.jpg" alt="Liste des Proxy Hosts de NPM : astroport, ipfs, relay et u, vers les ports 12345, 8080, 7777 et 54321, tous en Let's Encrypt et en ligne" loading="lazy"></div>
-      <div><img src="img/npm-custom-locations.jpg" alt="Onglet Custom Locations de l'hôte u. (uSPOT API) dans NPM : /ipns et /ipfs vers le port 8080, /12345 vers le port 12345" loading="lazy"></div>
-    </div>
-    <div class="figcap">À GAUCHE : la liste des quatre hôtes de base, chacun en <b>Let's Encrypt</b>, accès <b>Public</b>, statut <b>Online</b>. À DROITE : l'onglet <b>Custom Locations</b> de l'hôte <b>u.</b> (uSPOT API) : <code>/ipns</code> et <code>/ipfs</code> → port 8080 (passerelle IPFS), <code>/12345</code> → port 12345 (carte de la station). Cet exemple utilise 192.168.1.16 : remplacez par l'IP de votre CoeurBOX.</div>
-  </div>
-
-  <h3 class="sub">C · Créer un hôte (et son certificat)</h3>
-  <div class="grid-2">
-    <div class="step-card"><h3><span class="num">1</span> Onglet « Details »</h3><p><strong>Add Proxy Host</strong>. Domain Names = le nom du tableau. Scheme <code>http</code>, Forward Hostname/IP = l'IP de la CoeurBOX, Forward Port = le port du tableau. Cochez <strong>Websockets Support</strong> là où le tableau l'indique (relais NOSTR et UPassport en ont besoin).</p></div>
-    <div class="step-card"><h3><span class="num">2</span> Onglet « SSL »</h3><p>SSL Certificate : <strong>Request a new SSL Certificate</strong> (Let's Encrypt), puis cochez <strong>Force SSL</strong> et <strong>HTTP/2 Support</strong>, acceptez les conditions et indiquez un email. Les ports 80 et 443 doivent déjà être redirigés (étape 3), sinon la demande échoue.</p></div>
-  </div>
   <div class="info-box">
-    <h4>L'HÔTE ipfs AVEC SON CHEMIN /12345/</h4>
-    <p>Pour que les stations se synchronisent entre elles, l'hôte <code>ipfs</code> sert aussi <code>/12345/</code>. Dans l'onglet <strong>Advanced</strong> (Custom Nginx Configuration), collez :</p>
-    <div class="cmd" id="adv-cmd" style="margin-bottom:.4rem;">location /12345/ {
-    proxy_pass http://192.168.1.16:12345/;
-}<button class="cp" type="button">COPIER</button></div>
+    <h4>VOUS AVEZ DÉJÀ UN PROXY (NGINX PROXY MANAGER…) ?</h4>
+    <p>Si les ports 80 et 443 sont déjà pris, <code>init</code> le voit : astroportd écoute alors en local sur <code>127.0.0.1:8090</code> et vous demande le <strong>domaine que sert votre proxy</strong> (option <code>--public-domain</code>). La station se présente sous ce domaine : balise du mode LIVE, bouton REJOINDRE, liens envoyés aux membres. Dans le proxy, créez <strong>un seul hôte</strong> : votre domaine vers <code>http://127.0.0.1:8090</code>, avec <strong>Websockets Support</strong> coché (le relai NOSTR en a besoin) et un certificat Let's Encrypt. Proxy sur une autre machine : écoutez sur <code>--http-listen 0.0.0.0:8090</code> et visez <code>http://IP_DE_LA_COEURBOX:8090</code>. La visio passe alors par le port <strong>UDP 8090</strong>, à rediriger sur la box. Les anciens hôtes <code>astroport.</code>, <code>ipfs.</code>, <code>relay.</code>, <code>u.</code> et <code>cloud.</code> d'Astroport.ONE ne servent plus à astroportd.</p>
   </div>
-  <h3 class="sub">D · Les trois chemins de <code>u.</code> (uSPOT API)</h3>
-  <p>L'hôte <code>u.</code> sert l'API uSPOT/UPassport (port 54321). On lui ajoute <strong>trois chemins personnalisés</strong> qui renvoient vers d'autres services de la CoeurBOX : un même nom de domaine donne alors accès à l'API, à la passerelle IPFS et à la carte de la station. <strong>L'installateur ne crée pas ces chemins</strong> : à ajouter à la main.</p>
-  <div class="grid-3">
-    <div class="step-card"><h3><span class="num">1</span> Ouvrir l'hôte</h3><p>Hosts → Proxy Hosts → les trois points de la ligne <code>u.</code> → <strong>Edit</strong>.</p></div>
-    <div class="step-card"><h3><span class="num">2</span> Custom Locations</h3><p>Onglet <strong>Custom Locations</strong> → <strong>Add location</strong>, trois fois. Pour chacune : le chemin, Scheme <code>http</code>, l'IP et le port du tableau ci-dessous.</p></div>
-    <div class="step-card"><h3><span class="num">3</span> Enregistrer</h3><p><strong>Save</strong>. Testez ensuite <code>https://u.mondomaine/12345</code> dans le navigateur : la carte de votre station doit s'afficher.</p></div>
-  </div>
-  <div class="tabwrap"><table class="t" id="loc-tab">
-    <thead><tr><th>HÔTE</th><th>LOCATION</th><th>SCHEME</th><th>FORWARD HOSTNAME / IP</th><th>FORWARD PORT</th><th>VERS</th><th></th></tr></thead>
-    <tbody></tbody>
-  </table></div>
-
-  <p>Pour tout refaire en une commande à partir de ce que l'installateur sait déjà (hôtes et certificats, <em>sans</em> les chemins de <code>u.</code>) :</p>
-  <div class="cmd">~/.zen/Astroport.ONE/install/setup/setup_npm.sh<button class="cp" type="button">COPIER</button></div>
 </section>
 
 <hr>
 
-<!-- ═════════════ 5 · NEXTCLOUD ═════════════ -->
-<section class="sec" id="nextcloud">
+<!-- ═════════════ 5 · uCLOUD ═════════════ -->
+<section class="sec" id="ucloud">
   <div class="sec-label">// ÉTAPE 5 · LE CLOUD DES PROCHES</div>
-  <h2>NEXTCLOUD : SYNCHRONISER SON SMARTPHONE CHEZ SOI</h2>
+  <h2>uCLOUD : SYNCHRONISER SON SMARTPHONE CHEZ SOI</h2>
   <div class="sep"></div>
-  <p>C'est ce service qui permet à <strong>vous-même et à vos amis</strong> de sauvegarder et synchroniser leur smartphone — photos, contacts, agenda, documents — <strong>à un endroit connu et sûr</strong> : votre CoeurBOX, plutôt que chez un géant du numérique. Chaque personne garde ses données, vous gardez la maîtrise du lieu.</p>
+  <p>C'est ce service qui permet à <strong>vous-même et à vos amis</strong> de sauvegarder et synchroniser leur smartphone (photos, contacts, agenda, documents) <strong>à un endroit connu et sûr</strong> : votre CoeurBOX, plutôt que chez un géant du numérique. Il est <strong>intégré à astroportd</strong> : pas de NextCloud à installer, pas de conteneur, pas de port en plus.</p>
 
   <div class="grid-3">
-    <div class="step-card"><h3>📱 Pour qui ?</h3><p>Pour vous, votre famille, vos amis : chacun un compte, <strong>128 Go</strong> prévus par ZenCard, des sauvegardes de téléphone automatiques.</p></div>
-    <div class="step-card"><h3>🔒 Pourquoi chez vous ?</h3><p>Les données restent sur un matériel que vous connaissez. Si vous le souhaitez, un disque dédié en <code>BTRFS</code> (<code>/nextcloud-data</code>) apporte compression et instantanés.</p></div>
-    <div class="step-card"><h3>🚪 Quelle porte ?</h3><p>NextCloud AIO écoute en interne sur <code>8001</code> ; NPM le publie sur <code>cloud.mondomaine</code> en HTTPS. Rien d'autre à ouvrir sur la box.</p></div>
+    <div class="step-card"><h3>📱 Pour qui ?</h3><p>Chaque MULTIPASS hébergé sur votre station a son uCloud : vous, votre famille, vos amis. Ils s'inscrivent sur <code>/register</code>, ou vous les invitez par un lien.</p></div>
+    <div class="step-card"><h3>🔒 Chiffré</h3><p>Les fichiers sont <strong>chiffrés</strong> sur le disque de la station. Photos avec reconnaissance des visages (FaceCloud), partage entre amis, sauvegarde privée chez un ami.</p></div>
+    <div class="step-card"><h3>🚪 Quelle porte ?</h3><p>La même adresse que la station, en HTTPS : <strong>WebDAV</strong> pour les fichiers, <strong>CardDAV</strong> pour les contacts, <strong>CalDAV</strong> pour l'agenda.</p></div>
   </div>
-
-  <h3 class="sub">Installer (à lancer sur la CoeurBOX)</h3>
-  <div class="cmd">cd ~/.zen/Astroport.ONE
-./install.sh "" "" "" nextcloud<button class="cp" type="button">COPIER</button></div>
-  <p>Ou, si Astroport.ONE est déjà installé, seulement le conteneur :</p>
-  <div class="cmd">docker compose -f ~/.zen/Astroport.ONE/_DOCKER/nextcloud/docker-compose.yml up -d<button class="cp" type="button">COPIER</button></div>
-  <p>Ensuite, <strong>relancez la configuration de NPM</strong> : elle détecte NextCloud et crée l'hôte <code>cloud.mondomaine</code> automatiquement.</p>
-  <div class="cmd">~/.zen/Astroport.ONE/install/setup/setup_npm.sh<button class="cp" type="button">COPIER</button></div>
-
-  <div class="tabwrap"><table class="t">
-    <tr><th>PORT</th><th>CE QUE C'EST</th><th>ACCÈS</th></tr>
-    <tr><td class="m">8001</td><td>NextCloud lui-même (Apache), publié par NPM</td><td><span class="pill go">VIA NPM (HTTPS)</span></td></tr>
-    <tr><td class="m">8002</td><td>Tableau de bord de NextCloud AIO (mises à jour, sauvegardes)</td><td><span class="pill no">RÉSEAU LOCAL SEULEMENT</span></td></tr>
-    <tr><td class="m">8443</td><td>Assistant de première configuration d'AIO</td><td><span class="pill no">RÉSEAU LOCAL SEULEMENT</span></td></tr>
-  </table></div>
 
   <h3 class="sub">Brancher un smartphone, en trois gestes</h3>
   <div class="grid-3">
-    <div class="step-card"><h3><span class="num">1</span> Créer le compte</h3><p>Dans NextCloud, créez un compte pour la personne (ou laissez-la le faire : son email, c'est son MULTIPASS).</p></div>
-    <div class="step-card"><h3><span class="num">2</span> Installer l'appli</h3><p>Sur le téléphone, installez l'application <strong>Nextcloud</strong>, indiquez le serveur <code>https://cloud.mondomaine</code> et connectez-vous.</p></div>
-    <div class="step-card"><h3><span class="num">3</span> Activer la sauvegarde</h3><p>Dans l'appli, activez le <strong>téléversement automatique des photos</strong> : le téléphone se synchronise désormais chez vous.</p></div>
+    <div class="step-card"><h3><span class="num">1</span> Un jeton par appareil</h3><p>Le membre ouvre <strong>Mon compte › Mes appareils</strong> et crée un jeton pour son téléphone : il pourra le retirer seul s'il perd l'appareil.</p></div>
+    <div class="step-card"><h3><span class="num">2</span> Installer les applis</h3><p>Sur Android : <strong>DAVx⁵</strong> (contacts, agenda) et une appli de synchronisation WebDAV pour les photos ; sur iPhone, les comptes CardDAV et CalDAV des Réglages. Serveur : <code>https://station.mondomaine.fr/dav/</code>, identifiant : l'email du membre, mot de passe : le jeton de l'appareil.</p></div>
+    <div class="step-card"><h3><span class="num">3</span> Activer la sauvegarde</h3><p>Activez l'envoi automatique des photos : le téléphone se synchronise désormais chez vous, et les visages apparaissent dans <strong>Personnes</strong>.</p></div>
   </div>
+  <p>Vous aviez déjà un NextCloud ou un autre serveur WebDAV ? Chaque membre peut le reprendre dans <strong>uCloud › Sources</strong> : la station recopie ses fichiers, puis les range par type.</p>
 </section>
 
 <hr>
@@ -489,13 +453,14 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
 <!-- ═════════════ 6 · PAF & ÉNERGIE ═════════════ -->
 <section class="sec" id="paf">
   <div class="sec-label">// ÉTAPE 6 · LA JUSTE PART</div>
-  <h2>PAF, CONSOMMATION ET PRODUCTION D'ÉNERGIE</h2>
+  <h2>PAF, LOYERS ET ÉNERGIE</h2>
   <div class="sep"></div>
-  <p>Chaque station apportée par un nouvel <strong>Armateur</strong> ou <strong>Capitaine</strong> se voit attribuer une <strong>PAF</strong> (Participation Aux Frais), négociée avec la constellation. Pour que ce remboursement reste honnête, la station <strong>affiche ce qu'elle consomme et ce qu'elle produit</strong>.</p>
+  <p>Chaque station apportée par un nouvel <strong>Armateur</strong> ou <strong>Capitaine</strong> se voit attribuer une <strong>PAF</strong> (Participation Aux Frais), négociée avec la constellation. astroportd en tient les comptes : chaque semaine, à 20h12 solaire, il clôture la semaine (recettes des loyers moins la PAF) et ventile le surplus selon la règle des 3×1/3 (trésorerie, R&amp;D, actifs).</p>
 
   <div class="grid-2">
-    <div class="step-card"><h3>⚡ Consommation · PowerJoular</h3><p>Mesure la consommation réelle du processeur et de la machine, jour après jour. Publiée dans l'état de la station (<code>energy</code> : kWh du jour, du mois, total, puissance moyenne).</p><div class="cmd" style="margin-bottom:0;margin-top:.8rem;">~/.zen/Astroport.ONE/install/install_powerjoular.sh<button class="cp" type="button">COPIER</button></div></div>
-    <div class="step-card"><h3>☀ Production · Victron MPPT</h3><p>Lit votre régulateur solaire par Bluetooth. Publiée dans l'état de la station (<code>solar</code> : puissance instantanée, énergie du jour, du mois, tension de batterie).</p><div class="cmd" style="margin-bottom:0;margin-top:.8rem;">~/.zen/Astroport.ONE/install/install_victron.sh<button class="cp" type="button">COPIER</button></div></div>
+    <div class="step-card"><h3>💶 Déclarer sa PAF et ses loyers</h3><p>Deux réglages de la commande de la station, en <strong>centimes de Ẑen</strong> par semaine : la PAF (charges de la station) et le loyer d'un MULTIPASS. Ils figurent dans la balise publique de la station (<code>cost:paf</code>, <code>price:multipass</code>).</p><div class="cmd" style="margin-bottom:0;margin-top:.8rem;">--weekly-costs 1400 --weekly-rent 100<button class="cp" type="button">COPIER</button></div></div>
+    <div class="step-card"><h3>⚡ Mesurer sa consommation et sa production</h3><p>Le plugin <a class="link-hl" href="https://github.com/papiche/astroportd-plugins/tree/main/energy" target="_blank" rel="noopener">energy</a> installe <strong>PowerJoular</strong> (consommation réelle du processeur et de la machine) et, si vous avez des panneaux, la lecture des régulateurs <strong>Victron</strong> en Bluetooth. La station affiche ces mesures dans son cockpit et les publie dans sa balise : toute la constellation voit que la PAF correspond aux frais réels.</p><div class="cmd" style="margin-bottom:0;margin-top:.8rem;">git clone https://github.com/papiche/astroportd-plugins.git
+cd astroportd-plugins/energy &amp;&amp; ./install.sh --solar<button class="cp" type="button">COPIER</button></div></div>
   </div>
 
   <h3 class="sub">Calculez votre bilan</h3>
@@ -517,7 +482,8 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
   <div class="sec-label">// ÉTAPE 7 · SE VOIR EN VRAI</div>
   <h2>LE MODE LIVE</h2>
   <div class="sep"></div>
-  <p>Votre station publie régulièrement son état de santé, sa PAF, sa consommation et sa production sur le relais NOSTR de la constellation. Interrogez un relais : vous voyez <strong>les stations qu'il connaît</strong>, en direct. Si vous changez de relais, appuyez sur <strong>INTERROGER</strong> pour relire la constellation telle que ce relais la voit.</p>
+  <p>Votre station publie toute seule sa <strong>balise</strong> (événement NOSTR kind 30850) sur le relai commun de la coopérative, <code>wss://relay.</code> suivi du domaine de la configuration OVH de la coopérative : au démarrage, à chaque place prise ou libérée, et au moins toutes les 6 heures. Elle y dit sa santé économique, ses places libres, sa position approchée et sa puissance. Les futurs membres la trouvent ainsi par le bouton <strong>REJOINDRE</strong> de la <a class="link-hl" href="index.html">page d'accueil</a>, ou par la page <code>/stations</code> de n'importe quelle station de votre UPlanet.</p>
+  <p>Interrogez un relai : vous voyez <strong>les stations qu'il connaît</strong>, en direct. Si vous changez de relai, appuyez sur <strong>INTERROGER</strong>.</p>
 
   <div class="live">
     <div class="live-bar">
@@ -527,11 +493,11 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
       <span id="lv-st">Prêt</span>
     </div>
     <div class="tabwrap"><table class="t" id="lv-tab">
-      <thead><tr><th>STATION</th><th>SANTÉ</th><th>PUISSANCE</th><th>PAF (Ẑ)</th><th>BILAN (Ẑ)</th><th>CONSO.</th><th>SOLAIRE</th></tr></thead>
-      <tbody><tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.4);padding:1.6rem;">Appuyez sur <b>INTERROGER</b> pour charger les stations du relais.</td></tr></tbody>
+      <thead><tr><th>STATION</th><th>SANTÉ</th><th>PLACES</th><th>PUISSANCE</th><th>PAF (Ẑ)</th><th>BILAN (Ẑ)</th><th>CONSO.</th><th>SOLAIRE</th><th>LOGICIEL</th></tr></thead>
+      <tbody><tr><td colspan="9" style="text-align:center;color:rgba(255,255,255,0.4);padding:1.6rem;">Appuyez sur <b>INTERROGER</b> pour charger les stations du relais.</td></tr></tbody>
     </table></div>
   </div>
-  <p class="figcap" style="padding:.6rem 0 0;border:0;">CONSO. : puissance moyenne récente (PowerJoular) et énergie du jour. SOLAIRE : puissance instantanée et énergie du jour (Victron). « — » : la station ne publie pas encore cette mesure. Pour la vue 3D de la constellation, utilisez le bouton <b>LIVE</b> de la <a class="link-hl" href="index.html">page d'accueil</a>.</p>
+  <p class="figcap" style="padding:.6rem 0 0;border:0;">PLACES : MULTIPASS hébergés / places prévues (∞ : sans limite annoncée). CONSO. : puissance moyenne sur 30 jours et énergie du jour (PowerJoular). SOLAIRE : puissance et énergie du jour (Victron). « — » : la station n'a pas le plugin energy. LOGICIEL : <code>astroportd/…</code> ou l'ancien Astroport.ONE. Pour la vue 3D de la constellation, utilisez le bouton <b>LIVE</b> de la <a class="link-hl" href="index.html">page d'accueil</a>.</p>
 </section>
 
 <footer>
@@ -601,62 +567,53 @@ document.querySelectorAll('.cmd .cp').forEach(b=>{
 })();
 
 /* ── Configurateur NPM ── */
-const HOSTS=[
-  {sub:'astroport',port:12345,ws:false,role:'Carte de la station, découverte de l\'essaim'},
-  {sub:'ipfs',     port:8080, ws:false,role:'Passerelle IPFS publique (+ chemin /12345/)'},
-  {sub:'relay',    port:7777, ws:true, role:'Relais NOSTR (strfry)'},
-  {sub:'u',        port:54321,ws:true, role:'uSPOT API (UPassport) : MULTIPASS, API + 3 chemins (voir D)'},
-  {sub:'cloud',    port:8001, ws:false,role:'NextCloud (étape 5)',opt:true},
-  {sub:'g1',       port:9944, ws:true, role:'RPC Duniter, si vous hébergez un nœud Ğ1',opt:true}
-];
+/* ── Vérifier sa station depuis Internet ── */
 function validDomain(d){ return /^(?=.{3,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i.test(d); }
-function validIp(i){ return /^((25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(25[0-5]|2[0-4]\d|1?\d?\d)$/.test(i); }
+const CHECKS=[
+  {path:'/',kind:'https',what:'Application web en HTTPS (certificat Let\'s Encrypt)'},
+  {path:'',kind:'ws',what:'Relai NOSTR de la station (WebSocket)'},
+  {path:'/api/v1/register',kind:'api',what:'Inscription des MULTIPASS : ouverte ? places ?'}
+];
 function renderHosts(){
-  const dom=$('dom').value.trim().toLowerCase(), ip=$('lip').value.trim();
-  const okD=validDomain(dom), okI=validIp(ip);
-  $('dom').style.borderColor=okD?'':'#ff4488'; $('lip').style.borderColor=okI?'':'#ff4488';
-  const d=okD?dom:'mondomaine.fr', a=okI?ip:'192.168.1.16';
-  if(okD) store('dom',dom); if(okI) store('ip',ip);
+  const dom=$('dom').value.trim().toLowerCase().replace(/^https?:\/\//,'').replace(/\/.*$/,'');
+  const okD=validDomain(dom);
+  $('dom').style.borderColor=okD?'':'#ff4488';
+  const d=okD?dom:'station.mondomaine.fr';
+  if(okD) store('dom',dom);
   const tb=$('hosts-tab').querySelector('tbody'); tb.innerHTML='';
-  HOSTS.forEach(h=>{
-    const fq=h.sub+'.'+d, tr=document.createElement('tr');
-    tr.innerHTML='<td class="m">'+esc(fq)+(h.opt?' <span class="pill opt">OPTION</span>':'')+'</td><td class="m">http</td><td class="m">'+esc(a)+'</td><td class="m">'+h.port+'</td><td>'+(h.ws?'<span class="pill go">OUI</span>':'<span style="color:rgba(255,255,255,0.35)">non</span>')+'</td><td>'+esc(h.role)+'</td><td style="white-space:nowrap"><button class="mini" data-cp="'+esc(fq)+'" type="button">COPIER</button><button class="mini" data-test="'+esc(fq)+'" data-ws="'+(h.ws?1:0)+'" type="button">TESTER</button><span class="tres"></span></td>';
+  CHECKS.forEach(c=>{
+    const url=(c.kind==='ws'?'wss://':'https://')+d+c.path, tr=document.createElement('tr');
+    tr.innerHTML='<td class="m">'+esc(url)+'</td><td>'+esc(c.what)+'</td><td style="white-space:nowrap"><button class="mini" data-test="'+esc(url)+'" data-kind="'+c.kind+'" type="button">TESTER</button><span class="tres"></span></td>';
     tb.appendChild(tr);
   });
-  /* chemins personnalisés de u. */
-  const LOCS=[['/ipns',8080,'passerelle IPFS (noms IPNS)'],['/ipfs',8080,'passerelle IPFS (contenus)'],['/12345',12345,'carte de la station']];
-  const lb=$('loc-tab').querySelector('tbody'); lb.innerHTML='';
-  LOCS.forEach(l=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML='<td class="m">u.'+esc(d)+'</td><td class="m">'+esc(l[0])+'</td><td class="m">http</td><td class="m">'+esc(a)+'</td><td class="m">'+l[1]+'</td><td>'+esc(l[2])+'</td><td><button class="mini" data-cp="'+esc(l[0])+'" type="button">COPIER LE CHEMIN</button></td>';
-    lb.appendChild(tr);
-  });
-  /* config avancée de l'hôte ipfs, avec l'IP choisie */
-  const adv=$('adv-cmd'); const btn=adv.querySelector('button');
-  adv.firstChild.textContent='location /12345/ {\n    proxy_pass http://'+a+':12345/;\n}';
-  adv.appendChild(btn);
 }
-$('loc-tab').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b&&b.dataset.cp) copyText(b.dataset.cp,b); });
 $('hosts-tab').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b) return;
-  if(b.dataset.cp) copyText(b.dataset.cp,b);
-  if(b.dataset.test) testHost(b.dataset.test,b.dataset.ws==='1',b.parentElement.querySelector('.tres'));
+  const b=e.target.closest('button'); if(b&&b.dataset.test) testHost(b.dataset.test,b.dataset.kind,b.parentElement.querySelector('.tres'));
 });
-function testHost(host,ws,out){
+function testHost(url,kind,out){
   out.style.color='rgba(255,255,255,0.5)'; out.textContent='…test';
   const ok=t=>{ out.style.color='#00ff88'; out.textContent='✔ '+t; }, ko=t=>{ out.style.color='#ff4488'; out.textContent='✘ '+t; };
-  if(ws){
-    let done=false; const to=setTimeout(()=>{ if(!done){done=true;try{s.close();}catch(e){}ko('pas de réponse');} },7000);
-    let s; try{ s=new WebSocket('wss://'+host); }catch(e){ clearTimeout(to); return ko('invalide'); }
-    s.onopen=()=>{ if(done) return; done=true; clearTimeout(to); try{s.close();}catch(e){} ok('WebSocket ouvert'); };
+  if(kind==='ws'){
+    let done=false, s; const to=setTimeout(()=>{ if(!done){done=true;try{s.close();}catch(e){}ko('pas de réponse');} },7000);
+    try{ s=new WebSocket(url); }catch(e){ clearTimeout(to); return ko('invalide'); }
+    s.onopen=()=>{ if(done) return; done=true; clearTimeout(to); try{s.close();}catch(e){} ok('relai ouvert'); };
     s.onerror=()=>{ if(done) return; done=true; clearTimeout(to); ko('injoignable'); };
-  }else{
-    const c=new AbortController(), to=setTimeout(()=>c.abort(),7000);
-    fetch('https://'+host+'/',{mode:'no-cors',cache:'no-store',signal:c.signal}).then(()=>{clearTimeout(to);ok('répond en HTTPS');}).catch(()=>{clearTimeout(to);ko('injoignable (DNS, port 443 ou certificat)');});
+    return;
   }
+  const c=new AbortController(), to=setTimeout(()=>c.abort(),7000);
+  if(kind==='api'){
+    // Lisible depuis toute origine (Access-Control-Allow-Origin: *) sur une station astroportd.
+    fetch(url,{cache:'no-store',signal:c.signal}).then(r=>r.json()).then(j=>{
+      clearTimeout(to);
+      if(j.captain_setup) return ok('station prête : créez le compte du Capitaine sur /welcome');
+      ok((j.open?'ouverte':'fermée')+' · '+(j.accounts||0)+' MULTIPASS'+(j.max_accounts?' / '+j.max_accounts:''));
+    }).catch(()=>{ clearTimeout(to); ko('pas de réponse astroportd (version trop ancienne, ou station injoignable)'); });
+    return;
+  }
+  fetch(url,{mode:'no-cors',cache:'no-store',signal:c.signal}).then(()=>{clearTimeout(to);ok('répond en HTTPS');}).catch(()=>{clearTimeout(to);ko('injoignable (DNS, port 443 ou certificat)');});
 }
-$('dom').value=load('dom','mondomaine.fr'); $('lip').value=load('ip','192.168.1.16');
-$('dom').addEventListener('input',renderHosts); $('lip').addEventListener('input',renderHosts);
+$('dom').value=load('dom','station.mondomaine.fr');
+$('dom').addEventListener('input',renderHosts);
 renderHosts();
 
 /* ── Calculateur énergie / PAF ── */
@@ -679,20 +636,26 @@ let lvOff=null, lvRows=new Map();
 const num=(v,d)=>{ const n=Number(v); return isFinite(n)?n:d; };
 function lvRender(){
   const tb=$('lv-tab').querySelector('tbody');
-  if(!lvRows.size){ tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.4);padding:1.6rem;">Aucune station reçue pour l\'instant.</td></tr>'; return; }
+  if(!lvRows.size){ tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:rgba(255,255,255,0.4);padding:1.6rem;">Aucune station reçue pour l\'instant.</td></tr>'; return; }
   const rows=[...lvRows.values()].sort((a,b)=>(b.hwPowerScore||0)-(a.hwPowerScore||0));
   tb.innerHTML=rows.map(s=>{
-    const hw=(s.content&&s.content.hardware)||{}, en=hw.energy||null, so=hw.solar||null;
     const bilan=num(s.bilan,0), hs=String(s.healthStatus||'?').replace(/_/g,' ');
     const ok=/healthy|ok/i.test(hs);
+    const total=num(s.multipassTotal,0), used=num(s.multipassUsed,0);
+    const closed=s.registerOpen===false || (total>0 && used>=total);
+    const places=used+' / '+(total>0?total:'∞')+(closed?' · fermée':'');
+    const soft=String(s.software||'astroport.one');
+    const hw=(s.content&&s.content.hardware)||{}, en=hw.energy||null, so=hw.solar||null;
     const conso=en&&(en.avg_w_recent!=null||en.today_kwh!=null)?num(en.avg_w_recent,0).toFixed(1)+' W · '+num(en.today_kwh,0).toFixed(2)+' kWh':'—';
     const sol=so&&(so.power_w!=null||so.yield_today_wh!=null)?num(so.power_w,0).toFixed(0)+' W · '+num(so.yield_today_wh,0).toFixed(0)+' Wh':'—';
     return '<tr><td class="m">'+esc(s.stationName||s.stationId)+'</td>'+
       '<td><span class="pill '+(ok?'go':'no')+'">'+esc(hs.toUpperCase())+'</span></td>'+
+      '<td class="w '+(closed?'neg':'pos')+'">'+esc(places)+'</td>'+
       '<td class="w">'+esc(s.hwTier||'?')+' · '+num(s.hwPowerScore,0).toFixed(0)+'</td>'+
       '<td class="w">'+num(s.costPaf,0).toFixed(1)+'</td>'+
       '<td class="w '+(bilan>=0?'pos':'neg')+'">'+(bilan>=0?'+':'')+bilan.toFixed(1)+'</td>'+
-      '<td class="w">'+esc(conso)+'</td><td class="w">'+esc(sol)+'</td></tr>';
+      '<td class="w">'+esc(conso)+'</td><td class="w">'+esc(sol)+'</td>'+
+      '<td class="w">'+esc(soft)+'</td></tr>';
   }).join('');
 }
 function lvGo(){
