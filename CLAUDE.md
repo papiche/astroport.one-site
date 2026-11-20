@@ -28,7 +28,7 @@ The file is one self-contained HTML page with three logical layers:
 
 ## Navigation commune (4 pages : index, architecture, capitaine, install)
 
-Le menu `<nav>` est **dupliqué à l'identique** dans les quatre pages (pas de build, pas d'include) : ACCUEIL · ARCHITECTURE · GUIDE CAPITAINE · NOUS RECRUTONS · GITHUB, la page courante porte `class="on"`. Toute nouvelle page ou tout nouveau lien doit être reporté dans les quatre fichiers, ainsi que le pied de page (même liste de liens). Les ancres internes d'une page sont dans la barre `.subnav` (collante, sous le menu) ; `capitaine.html` garde sa barre d'étapes numérotées. Le menu hamburger s'active sous 1040 px (5 liens + CYBER/SOLAR + LIVE sur l'accueil). Le thème CYBER/SOLAR est mémorisé dans `localStorage` (`uplanet.theme`) et suit d'une page à l'autre.
+Le menu `<nav>` est **dupliqué à l'identique** dans les quatre pages (pas de build, pas d'include) : ACCUEIL · ARCHITECTURE · GUIDE CAPITAINE · NOUS RECRUTONS · CARTE (map.astroport.one) · GITHUB (papiche/astroportd), la page courante porte `class="on"`. Toute nouvelle page ou tout nouveau lien doit être reporté dans les quatre fichiers, ainsi que le pied de page (même liste de liens). Les ancres internes d'une page sont dans la barre `.subnav` (collante, sous le menu) ; `capitaine.html` garde sa barre d'étapes numérotées. Le menu hamburger s'active sous 1040 px (6 liens + CYBER/SOLAR + LIVE sur l'accueil). Le thème CYBER/SOLAR est mémorisé dans `localStorage` (`uplanet.theme`) et suit d'une page à l'autre.
 
 ## `architecture.html`
 

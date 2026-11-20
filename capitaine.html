@@ -228,7 +228,8 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
       <a href="architecture.html" onclick="closeMenu()">ARCHITECTURE</a>
       <a href="capitaine.html" class="on" onclick="closeMenu()">GUIDE CAPITAINE</a>
       <a href="install.html" class="nav-recruit" onclick="closeMenu()">NOUS RECRUTONS</a>
-      <a href="https://github.com/papiche/Astroport.ONE" target="_blank" rel="noopener" onclick="closeMenu()">GITHUB</a>
+      <a href="https://map.astroport.one" target="_blank" rel="noopener" onclick="closeMenu()">CARTE</a>
+      <a href="https://github.com/papiche/astroportd" target="_blank" rel="noopener" onclick="closeMenu()">GITHUB</a>
     </div>
     <div class="tog-wrap" onclick="toggleTheme()">
       <span class="tl active-cyber" id="tlc">CYBER</span>
@@ -242,6 +243,7 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
 <header class="page-header">
   <h1>GUIDE DU CAPITAINE</h1>
   <p class="header-sub">Ouvrir sa CoeurBOX au monde avec <strong>astroportd</strong>, un seul programme : installer, ouvrir trois ports, laisser la station gérer son <strong>HTTPS</strong>, brancher les téléphones sur l'<strong>uCloud</strong> chiffré, convenir de sa PAF, puis se voir apparaître en <strong>LIVE</strong> dans la constellation.</p>
+  <p class="header-sub" style="font-size:.85em;opacity:.8">Besoin du détail, d'un dépannage ou de la vue côté membre ? Le <a class="link-hl" href="https://github.com/papiche/astroportd/blob/main/docs/GUIDE.md" target="_blank" rel="noopener">guide complet</a> couvre tout, et la <a class="link-hl" href="https://github.com/papiche/astroportd/blob/main/docs/BIENVENUE.md" target="_blank" rel="noopener">fiche de bienvenue</a> est à donner à vos membres.</p>
 </header>
 
 <div class="steps-bar"><div class="steps-in" id="steps">
@@ -374,7 +376,7 @@ body.sp .subnav-in a:hover,body.sp .subnav-in a.on{border-color:#7fd67f;color:#7
 
   <div class="warn-box">
     <h4>À NE JAMAIS REDIRIGER</h4>
-    <p><code>18080</code> et <code>8090</code> (écoutes locales d'astroportd, sans HTTPS), <code>22</code> (SSH : entre Capitaines amis, il passe par le tunnel du maillage, fermé par défaut et ouvert dans <em>Options › Tunnels</em>), et les ports des services locaux (Ollama <code>11434</code>, ComfyUI <code>8188</code>, API IPFS <code>5001</code>) : la station les partage, si vous le décidez, par le maillage.</p>
+    <p><code>18080</code> et <code>8090</code> (écoutes locales d'astroportd, sans HTTPS), <code>22</code> (SSH : entre Capitaines amis, il passe par le tunnel du maillage, fermé par défaut et ouvert dans <em>Ma station › Réseau › Réglages › Tunnels</em>), et les ports des services locaux (Ollama <code>11434</code>, ComfyUI <code>8188</code>, API IPFS <code>5001</code>) : la station les partage, si vous le décidez, par le maillage.</p>
   </div>
 </section>
 
@@ -405,7 +407,7 @@ loginctl enable-linger "$USER"<button class="cp" type="button">COPIER</button></
   <div class="grid-3">
     <div class="step-card"><h3><span class="num">1</span> Lire le code</h3><p>Au premier démarrage, la station écrit un <strong>code d'installation</strong> dans son journal : il prouve que vous avez la main sur la machine.</p></div>
     <div class="step-card"><h3><span class="num">2</span> Ouvrir /welcome</h3><p><code>https://station.mondomaine.fr/welcome</code> (ou <code>http://127.0.0.1:18080/welcome</code> sans domaine). Saisissez le code et votre email.</p></div>
-    <div class="step-card"><h3><span class="num">3</span> Garder sa carte</h3><p>Notez votre code PASS et imprimez votre carte de secours. L'écran <strong>Station</strong> (le cockpit) vous guide ensuite : domaine, maillage, adresses de la coopérative, premier membre.</p></div>
+    <div class="step-card"><h3><span class="num">3</span> Garder sa carte</h3><p>Notez votre code PASS et imprimez votre carte de secours. <strong>Ma station › Santé</strong> (le cockpit) vous guide ensuite : domaine, maillage, adresses de la coopérative, premier membre.</p></div>
   </div>
 
   <h3 class="sub">D · Vérifier depuis Internet</h3>
@@ -441,11 +443,11 @@ loginctl enable-linger "$USER"<button class="cp" type="button">COPIER</button></
 
   <h3 class="sub">Brancher un smartphone, en trois gestes</h3>
   <div class="grid-3">
-    <div class="step-card"><h3><span class="num">1</span> Un jeton par appareil</h3><p>Le membre ouvre <strong>Mon compte › Mes appareils</strong> et crée un jeton pour son téléphone : il pourra le retirer seul s'il perd l'appareil.</p></div>
+    <div class="step-card"><h3><span class="num">1</span> Un jeton par appareil</h3><p>Le membre ouvre <strong>Moi › Mes appareils</strong> et crée un jeton pour son téléphone : il pourra le retirer seul s'il perd l'appareil.</p></div>
     <div class="step-card"><h3><span class="num">2</span> Installer les applis</h3><p>Sur Android : <strong>DAVx⁵</strong> (contacts, agenda) et une appli de synchronisation WebDAV pour les photos ; sur iPhone, les comptes CardDAV et CalDAV des Réglages. Serveur : <code>https://station.mondomaine.fr/dav/</code>, identifiant : l'email du membre, mot de passe : le jeton de l'appareil.</p></div>
-    <div class="step-card"><h3><span class="num">3</span> Activer la sauvegarde</h3><p>Activez l'envoi automatique des photos : le téléphone se synchronise désormais chez vous, et les visages apparaissent dans <strong>Personnes</strong>.</p></div>
+    <div class="step-card"><h3><span class="num">3</span> Activer la sauvegarde</h3><p>Activez l'envoi automatique des photos : le téléphone se synchronise désormais chez vous, et les visages apparaissent dans <strong>Proches</strong>.</p></div>
   </div>
-  <p>Vous aviez déjà un NextCloud ou un autre serveur WebDAV ? Chaque membre peut le reprendre dans <strong>uCloud › Sources</strong> : la station recopie ses fichiers, puis les range par type.</p>
+  <p>Vous aviez déjà un NextCloud ou un autre serveur WebDAV ? Chaque membre peut le reprendre dans <strong>Fichiers › Sources</strong> : la station recopie ses fichiers, puis les range par type.</p>
 </section>
 
 <hr>
@@ -501,7 +503,7 @@ cd astroportd-plugins/energy &amp;&amp; ./install.sh --solar<button class="cp" t
 </section>
 
 <footer>
-  © 2024-2026 Astroport.ONE · <a href="index.html">Accueil</a> · <a href="architecture.html">Architecture</a> · <a href="capitaine.html">Guide capitaine</a> · <a href="install.html">Nous recrutons</a> · <a href="https://github.com/papiche/Astroport.ONE" target="_blank" rel="noopener">GitHub</a> · AGPL v3
+  © 2024-2026 Astroport.ONE · <a href="index.html">Accueil</a> · <a href="architecture.html">Architecture</a> · <a href="capitaine.html">Guide capitaine</a> · <a href="install.html">Nous recrutons</a> · <a href="https://map.astroport.one" target="_blank" rel="noopener">Carte des stations</a> · <a href="https://github.com/papiche/astroportd/blob/main/docs/GUIDE.md" target="_blank" rel="noopener">Guide complet</a> · <a href="https://qo-op.com" target="_blank" rel="noopener">La coopérative</a> · <a href="https://github.com/papiche/astroportd" target="_blank" rel="noopener">GitHub</a> · AGPL v3
 </footer>
 
 <!-- Libs UPlanet (même chargement que la page d'accueil) -->
